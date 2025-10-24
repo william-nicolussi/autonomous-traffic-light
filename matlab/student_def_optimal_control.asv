@@ -13,7 +13,6 @@ exportFolder = fullfile(currentFolder, nameExportFolder); %...\matlab\def_functi
 if ~exist(exportFolder, 'dir')
     mkdir(exportFolder);
 end
-addpath(exportFolder);
 
 %% Define a symbolic variables use "syms" (e.g. syms s(t)) and the cost function.
 % Symbolic variables
@@ -99,7 +98,7 @@ sol_opt.j = subs(opt_u, l3(t), sol_opt.l3);
 % - Use the "subs" function on the opt_u with the value of l3
 
 %% Export the solution in a matlab function
-syms v0 a0 sf vf af T  
+syms t v0 a0 sf vf af T  
 % Create the matlab function for the solutions
 s_opt_fun = matlabFunction(sol_opt.s,'Vars',[t,v0,a0,sf,vf,af,T],'File', fullfile(exportFolder, 's_opt.m'));
 v_opt_fun = matlabFunction(sol_opt.v,'Vars',[t,v0,a0,sf,vf,af,T],'File', fullfile(exportFolder,'v_opt.m'));
@@ -130,6 +129,7 @@ coef_list_var = [0,coeffs(sol_opt.s,t) .* [1,2,6,24,120]];
 coef_list_fun = matlabFunction(coef_list_var,'Vars',[v0,a0,sf,vf,af,T],'File',fullfile(exportFolder,'coef_list.m'));
 % - Use the matlabFunction function to generate a matlab function using a symbolic function 
 disp(['Coefs list saved into: ' exportFolder]);
+addpath(exportFolder);
 
 %% Export the total cost in a matlab function 
 total_cost_var = simplify(int(sol_opt.j^2,t,0,T));
@@ -137,26 +137,28 @@ total_cost_fun = matlabFunction(total_cost_var,'Vars',[v0,a0,sf,vf,af,T],'File',
 % - Use the matlabFunction function to generate a matlab function using a
 %   symbolic function
 disp(['Total cost saved into: ' exportFolder]);
+addpath(exportFolder);
 
 %% Inspect solutions 
 
-T_max  = 4.;
-t_list = linspace(0,T_max,100);
+Tmax  = 4.;
+t_list = linspace(0,Tmax,100);
 
-v0_val = 10;
-a0_val = 1;
-sf_val = 90;
-vf_val = 25;
-af_val = 0.;
+v0val = 10;
+a0val = 1;
+xfval = 90;
+vfval = 25;
+afval = 0.;
 
 %% The functions work both for vector (t_list) or number (t)
-s_list = s_opt_fun(t_list, v0_val, a0_val, sf_val, vf_val, af_val, T_max);
-v_list = v_opt_fun(t_list, v0_val, a0_val, sf_val, vf_val, af_val, T_max);
-a_list = a_opt_fun(t_list, v0_val, a0_val, sf_val, vf_val, af_val, T_max);
-j_list = j_opt_fun(t_list, v0_val, a0_val, sf_val, vf_val, af_val, T_max);
+% s_list = s_opt_fun(t_list, v0val, a0val, xfval, vfval, afval, Tmax);
+s_list = s_opt_fun(t_list, v0val, a0val, xfval, vfval, afval, Tmax);
+v_list = v_opt_fun(t_list, v0val, a0val, xfval, vfval, afval, Tmax);
+a_list = a_opt_fun(t_list, v0val, a0val, xfval, vfval, afval, Tmax);
+j_list = j_opt_fun(t_list, v0val, a0val, xfval, vfval, afval, Tmax);
 
 %% The functions that used the coeflist
-coeffs = coef_list_fun(v0_val, a0_val, sf_val, vf_val, af_val, T_max);
+coeffs = coef_list_fun(v0val, a0val, xfval, vfval, afval, Tmax);
 % coeffs_s_list = coeffs_s_opt_fun(t_list, coeffs);
 coeffs_s_list = s_from_coeffs(t_list, coeffs);
 coeffs_v_list = v_from_coeffs(t_list, coeffs);
