@@ -45,6 +45,10 @@ pretty(t_vf_sol);
 % - Use the function solve 
 %   Use 'subs' function to solve the system using the frequency instead of the time
 
+%% Export solution
+final_opt_time_pass_fun = matlabFunction(t_vf_sol,'Vars',[v0,a0,sf,vf],'File', fullfile(exportFolder,'final_opt_time_pass.m'));
+disp(['Final opt velocity to pass saved to: ' exportFolder]);
+
 %% Determine the optimal time to reach to final velocity
 %sym z; % We create this variable for more stable solution of the equations
 
