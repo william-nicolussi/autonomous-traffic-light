@@ -31,8 +31,8 @@ pretty(vf_sol);
 % - Use functions 'solve', 'diff', 'subs', and 'matlabFunction'
 
 %% Export solution
-final_opt_vel_pass_fun = matlabFunction(vf_sol,'Vars',[v0,a0,sf,tf],'File', fullfile(exportFolder,'final_opt_vel_pass.m'));
-disp(['Final opt velocity to pass saved to: ' exportFolder]);
+final_opt_vel_pass_fun = matlabFunction(vf_sol,'Vars',[v0,a0,sf,tf],'File', fullfile(targetFolder,'final_opt_vel_pass.m'));
+disp(['Final opt velocity to pass saved to: ' targetFolder]);
 
 %% Determine the optimal time to reach to final velocity
 syms z; % We create this variable for more stable solution of the equations
@@ -56,13 +56,8 @@ pretty(t_vf_sol);
 %% Determine the time to reach the minimum velocity
 syms v_min;
 T_star_all = solve(diff(vf_sol,tf)==0,tf);
-T_star = T_star_all(1);
-disp('Time to reach the minimum velocity T* = ');
-pretty(T_star);
-
-%% Export solution
-time_min_vel_fun = matlabFunction(T_star,'Vars',[v0,a0,sf,v_min],'File', fullfile(exportFolder,'time_min_vel_pass.m'));
-disp(['Time to reach the minimum velocity saved to: ' exportFolder]);
+T_star = T_st
+time_min_vel_fun = matlabFunction(time_min_vel_var,'Vars',[v0,a0,sf,v_min],'File', fullfile(targetFolder,'time_min_vel_pass.m'));
 % time_min_vel_var = solve(diff(final_opt_vel_pass_var,T)==0,T);
 % time_min_vel_fun = matlabfunction(time_min_vel_var(2),'Vars',[a0,sf],'File','time_min_vel.m');
 % - Use functions 'solve', 'diff', 'subs', and 'matlabFunction'
