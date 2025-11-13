@@ -9,6 +9,7 @@ include(lib/basic.cmake)
 
 include_directories(
         matlab/
+        matlab/codegen/lib/primitives/
         lib
         log
 )
@@ -21,15 +22,19 @@ link_directories(
 add_executable(basic_agent
         log/screen_print.c
         log/logvars.cc
+        matlab/codegen/lib/primitives/primitives.c
+        matlab/codegen/lib/primitives/rtGetInf.c
+        matlab/codegen/lib/primitives/rtGetNaN.c
+        matlab/codegen/lib/primitives/rt_nonfinite.c
         starting_point.cc
-    )
+)
 
 
 target_link_libraries(basic_agent agent_lib ${lib_ws32})
 
 target_compile_options(basic_agent
         PUBLIC -DNOT_INLINED -DSERVER
-        )
+)
 
 set_target_properties(basic_agent PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${AGENT_FOLDER})
 # ------------------------------------------------------------------------------------

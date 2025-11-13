@@ -7,8 +7,21 @@
 %
 
 %% Function
-% This function must to be converted in c code using coder add-on.
+% This function must be converted in c code using coder add-on.
 % Copy from this path C:\Program Files\MATLAB\R2024a\extern\include
+
+
+%% Define the folder to get matlabfunction
+% before typing "coder", execute these lines to add the folder to the
+% project path
+
+% nameExportFolder = 'functions_exported';
+% currentFolder = pwd;
+% exportFolder = fullfile(currentFolder, nameExportFolder); %...\matlab\def_functions
+% if ~exist(exportFolder, 'dir')
+%     mkdir(exportFolder);
+% end
+% addpath(exportFolder);
 
 %% Stopping Primitive
 

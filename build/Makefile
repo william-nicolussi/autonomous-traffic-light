@@ -200,6 +200,78 @@ matlab/codegen/lib/primitives/primitives.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.s
 .PHONY : matlab/codegen/lib/primitives/primitives.c.s
 
+matlab/codegen/lib/primitives/rtGetInf.obj: matlab/codegen/lib/primitives/rtGetInf.c.obj
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.obj
+
+# target to build an object file
+matlab/codegen/lib/primitives/rtGetInf.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.c.obj
+
+matlab/codegen/lib/primitives/rtGetInf.i: matlab/codegen/lib/primitives/rtGetInf.c.i
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.i
+
+# target to preprocess a source file
+matlab/codegen/lib/primitives/rtGetInf.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.i
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.c.i
+
+matlab/codegen/lib/primitives/rtGetInf.s: matlab/codegen/lib/primitives/rtGetInf.c.s
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.s
+
+# target to generate assembly for a file
+matlab/codegen/lib/primitives/rtGetInf.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.s
+.PHONY : matlab/codegen/lib/primitives/rtGetInf.c.s
+
+matlab/codegen/lib/primitives/rtGetNaN.obj: matlab/codegen/lib/primitives/rtGetNaN.c.obj
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.obj
+
+# target to build an object file
+matlab/codegen/lib/primitives/rtGetNaN.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.c.obj
+
+matlab/codegen/lib/primitives/rtGetNaN.i: matlab/codegen/lib/primitives/rtGetNaN.c.i
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.i
+
+# target to preprocess a source file
+matlab/codegen/lib/primitives/rtGetNaN.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.i
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.c.i
+
+matlab/codegen/lib/primitives/rtGetNaN.s: matlab/codegen/lib/primitives/rtGetNaN.c.s
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.s
+
+# target to generate assembly for a file
+matlab/codegen/lib/primitives/rtGetNaN.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.s
+.PHONY : matlab/codegen/lib/primitives/rtGetNaN.c.s
+
+matlab/codegen/lib/primitives/rt_nonfinite.obj: matlab/codegen/lib/primitives/rt_nonfinite.c.obj
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.obj
+
+# target to build an object file
+matlab/codegen/lib/primitives/rt_nonfinite.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.c.obj
+
+matlab/codegen/lib/primitives/rt_nonfinite.i: matlab/codegen/lib/primitives/rt_nonfinite.c.i
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.i
+
+# target to preprocess a source file
+matlab/codegen/lib/primitives/rt_nonfinite.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.i
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.c.i
+
+matlab/codegen/lib/primitives/rt_nonfinite.s: matlab/codegen/lib/primitives/rt_nonfinite.c.s
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.s
+
+# target to generate assembly for a file
+matlab/codegen/lib/primitives/rt_nonfinite.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.s
+.PHONY : matlab/codegen/lib/primitives/rt_nonfinite.c.s
+
 starting_point.obj: starting_point.cc.obj
 .PHONY : starting_point.obj
 
@@ -242,6 +314,15 @@ help:
 	@echo ... matlab/codegen/lib/primitives/primitives.obj
 	@echo ... matlab/codegen/lib/primitives/primitives.i
 	@echo ... matlab/codegen/lib/primitives/primitives.s
+	@echo ... matlab/codegen/lib/primitives/rtGetInf.obj
+	@echo ... matlab/codegen/lib/primitives/rtGetInf.i
+	@echo ... matlab/codegen/lib/primitives/rtGetInf.s
+	@echo ... matlab/codegen/lib/primitives/rtGetNaN.obj
+	@echo ... matlab/codegen/lib/primitives/rtGetNaN.i
+	@echo ... matlab/codegen/lib/primitives/rtGetNaN.s
+	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.obj
+	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.i
+	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.s
 	@echo ... starting_point.obj
 	@echo ... starting_point.i
 	@echo ... starting_point.s

@@ -205,6 +205,98 @@ CMakeFiles/basic_agent.dir/log/screen_print.c.obj: C:/Users/HP/Desktop/UniTn/IVA
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/vadefs.h \
   C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print_c.h
 
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.c \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/corecrt.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/errno.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/malloc.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/math.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/stdlib.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/vadefs.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.c \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/corecrt.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/vadefs.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.c \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/corecrt.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/vadefs.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.c \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/syslimits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/corecrt.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/limits.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/vadefs.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h
+
 CMakeFiles/basic_agent.dir/starting_point.cc.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/starting_point.cc \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/algorithm \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/backward/binders.h \
@@ -339,6 +431,7 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: C:/Users/HP/Desktop/UniTn/IVAD
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/x86_64-w64-mingw32/bits/gthr-default.h \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/x86_64-w64-mingw32/bits/gthr.h \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/x86_64-w64-mingw32/bits/os_defines.h \
+  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/limits.h \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/mm_malloc.h \
   C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stddef.h \
@@ -358,6 +451,7 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: C:/Users/HP/Desktop/UniTn/IVAD
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/ctype.h \
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/direct.h \
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/errno.h \
+  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/io.h \
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/limits.h \
   C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/locale.h \
@@ -393,7 +487,10 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: C:/Users/HP/Desktop/UniTn/IVAD
   C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/lib/server_lib.h \
   C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/logvars.h \
   C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print.h \
-  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print_c.h
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print_c.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h \
+  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h
 
 
 C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bits/memoryfwd.h:
@@ -498,6 +595,8 @@ C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bit
 
 C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bits/std_abs.h:
 
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/tmwtypes.h:
+
 C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/wctype.h:
 
 C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bits/invoke.h:
@@ -567,6 +666,8 @@ C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bit
 C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bits/uses_allocator.h:
 
 C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/bits/utility.h:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.h:
 
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print.c:
 
@@ -772,8 +873,30 @@ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/logvars.h:
 
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print_c.h:
 
-C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/chrono:
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.c:
+
+C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h:
+
+C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/stdbool.h:
+
+C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h:
 
 C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/math.h:
 
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.h:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.h:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtwtypes.h:
+
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print.h:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.c:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.c:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.h:
+
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.c:
+
+C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/chrono:

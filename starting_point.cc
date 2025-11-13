@@ -1,36 +1,51 @@
 //
 // Created by Gastone Pietro Rosati Papini on 10/08/22.
 //
+// Shortcuts -> compile: f6; run: f7
 
+// ----- #include <> -----
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <vector>
 #include <algorithm>
 
-extern "C" {
+// ----- #include "" -----
+extern "C"
+{
 #include "screen_print_c.h"
 }
 #include "screen_print.h"
 #include "server_lib.h"
 #include "logvars.h"
+#include "primitives.h"
 
 // --- MATLAB PRIMITIVES INCLUDE ---
 // #include "primitives.h"
 // --- MATLAB PRIMITIVES INCLUDE ---
 
-#define DEFAULT_SERVER_IP    "127.0.0.1"
-#define SERVER_PORT               30000  // Server port
+// ----- #define -----
+#define DEFAULT_SERVER_IP "127.0.0.1"
+#define SERVER_PORT 30000 // Server port
 #define DT 0.05
+#define CSV_FILE_NAME_PI "Values_PI"
 
 // Handler for CTRL-C
 #include <signal.h>
 static uint32_t server_run = 1;
-void intHandler(int signal) {
+void intHandler(int signal)
+{
     server_run = 0;
 }
 
-int main(int argc, const char * argv[]) {
+// ----- PROTOTYPES -----
+static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req,double a_real, double error, double error_integral, double requested_pedal);
+
+
+
+// ----- MAIN -----
+int main(int argc, const char *argv[])
+{
     logger.enable(true);
 
     // Messages variables
@@ -40,14 +55,14 @@ int main(int argc, const char * argv[]) {
     size_t manoeuvre_msg_size = sizeof(manoeuvre_msg.data_buffer);
     uint32_t message_id = 0;
 
-#if not defined( _MSC_VER ) and not defined( _WIN32 )
-    // More portable way of supporting signals on UNIX
-    struct sigaction act;
-    act.sa_handler = intHandler;
-    sigaction(SIGINT, &act, NULL);
-#else
-    signal(SIGINT, intHandler);
-#endif
+    #if not defined(_MSC_VER) and not defined(_WIN32)
+        // More portable way of supporting signals on UNIX
+        struct sigaction act;
+        act.sa_handler = intHandler;
+        sigaction(SIGINT, &act, NULL);
+    #else
+        signal(SIGINT, intHandler);
+    #endif
 
     server_agent_init(DEFAULT_SERVER_IP, SERVER_PORT);
 
@@ -55,17 +70,19 @@ int main(int argc, const char * argv[]) {
     printLine();
     printTable("Waiting for scenario message...", 0);
     printLine();
-    while (server_run == 1) {
+    while (server_run == 1)
+    {
 
         // Clean the buffer
         memset(scenario_msg.data_buffer, '\0', scenario_msg_size);
 
         // Receive scenario message from the environment
-        if (server_receive_from_client(&server_run, &message_id, &scenario_msg.data_struct) == 0) {
+        if (server_receive_from_client(&server_run, &message_id, &scenario_msg.data_struct) == 0)
+        {
             // Init time
             static auto start = std::chrono::system_clock::now();
-            auto time = std::chrono::system_clock::now()-start;
-            double num_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(time).count()/1000.0;
+            auto time = std::chrono::system_clock::now() - start;
+            double num_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(time).count() / 1000.0;
             printLogTitle(message_id, "received message");
 
             // Data struct
@@ -73,18 +90,84 @@ int main(int argc, const char * argv[]) {
             manoeuvre_msg.data_struct.CycleNumber = in->CycleNumber;
             manoeuvre_msg.data_struct.Status = in->Status;
 
-            // Example of using log
-            logger.log_var("Example", "cycle", in->CycleNumber);
-            logger.log_var("Example", "vel", in->VLgtFild);
+            static double init_dist = in->TrfLightDist;
+            double dist = init_dist - in->TrfLightDist;
+            double v_real = in->VLgtFild;
+            double a_real = in->ALgtFild;
+            const double a_max = 5;
+            const double a_min = -10;
+            a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
+
+            /* -- Lezione 14/11 --
+            double req_acc = coueffs_a_opt(DT, coef);
+            double s = coeffs_s_opt(DT, coef);
+            */
 
             // ADD AGENT CODE HERE
+            // TEST 1 [fatto io]
+            double a_req = 1;
+            //double a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-in->ECUupTime);
+            static double v_req = 0;
+            v_req = v_req + a_req * DT;
+            static double s_req = 0;
+            s_req = s_req + v_req*DT + 1/2*a_req*DT*DT;
+
+            // TEST 2
+            // Test acc and brake: lecture 8/11 online
+            // Poi ha disegnato grafico s[m];vel[m/s] con tracciate vel e Rq vel
+            // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel
+            double t = in->ECUupTime;
+            s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            if(t > 5)
+            {
+                s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+                v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+                a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+            }
+            static double s_req_cumulative;
+            s_req_cumulative += s_req;
+
+            // PI implementation
+            const double k_p = 1;
+            const double k_i = 0.1;
+            double error = a_req - a_real;
+            static double error_integral = 0;
+            error_integral = error_integral + error * DT;
+            double requested_pedal = error * k_p + error_integral * k_i;
+            /* Lui ha messo questo: [k_p=1.0;k_i=0.01;]
+            Test 2: [k_p=0.02;k_i=1;] 8/11 online
+            */
+
+            // Send information to logger
+            if (t<15)
+            {
+                create_csv_PI(in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+            }
+
+            //logger.log_var("acc_test", "coef0", coef[0]);
+
+
+            /*  -- lezione 14/11 -- Test the primitives
+            double coef[6];
+            double final_time, finale_distance final_vel;
+            if (dist < 50)
+            {
+                student_stop_primitive(v_real, a_real, dist, coef, &finale_distance, &final_time);
+            }
+            else
+            {
+                student_pass_primitive(v_real, a_real, dist, 15, 15, 0, 0, coef, &final_vel, &final_time, coef, &final_vel, &final_time) //check se possibile mettere T_min=T_mas=0
+            }
+            //double req_acc = a_opt(DT, vel, acc, dist, 20.0, &finale_distance, &final_time-ECUtime);
+            //double req_vel = v_opt(DT, vel, acc, dist, 20.0, &final_time-ECUtime);
+            double req_acc = coeffs_a_opt(DT, coef);
+            */
 
             // ADD LOW LEVEL CONTROL CODE HERE
-            manoeuvre_msg.data_struct.RequestedAcc = -0.3;
+            manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
             manoeuvre_msg.data_struct.RequestedSteerWhlAg = 0.0;
-
-            // Write log
-            logger.write_line("Example");
 
             // Screen print
             printLogVar(message_id, "Time", num_seconds);
@@ -92,10 +175,13 @@ int main(int argc, const char * argv[]) {
             printLogVar(message_id, "CycleNumber", in->CycleNumber);
 
             // Send manoeuvre message to the environment
-            if (server_send_to_client(server_run, message_id, &manoeuvre_msg.data_struct) == -1) {
+            if (server_send_to_client(server_run, message_id, &manoeuvre_msg.data_struct) == -1)
+            {
                 perror("error send_message()");
                 exit(EXIT_FAILURE);
-            } else {
+            }
+            else
+            {
                 printLogTitle(message_id, "sent message");
             }
         }
@@ -104,4 +190,24 @@ int main(int argc, const char * argv[]) {
     // Close the server of the agent
     server_agent_close();
     return 0;
+}
+
+// ----- FUNCTIONS -----
+static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double error, double error_integral, double requested_pedal)
+{
+    const char* fileName = CSV_FILE_NAME_PI; //for now leave the define
+    logger.log_var(fileName, "cycle", in->CycleNumber);
+    logger.log_var(fileName, "time",  in->ECUupTime);
+    logger.log_var(fileName, "s_req", s_req);
+    logger.log_var(fileName, "dist", dist);
+    logger.log_var(fileName, "v_req", v_req);
+    logger.log_var(fileName, "v_real", in->VLgtFild);
+    logger.log_var(fileName, "a_req", a_req);
+    logger.log_var(fileName, "a_real", a_real);
+    logger.log_var(fileName, "error", error);
+    logger.log_var(fileName, "error_integral",  error_integral);
+    logger.log_var(fileName, "requested_pedal", requested_pedal);
+
+    // Write log
+    logger.write_line(fileName);
 }

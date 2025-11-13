@@ -10,6 +10,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/screen_print.c" "CMakeFiles/basic_agent.dir/log/screen_print.c.obj" "gcc" "CMakeFiles/basic_agent.dir/log/screen_print.c.obj.d"
   "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/primitives.c" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj" "gcc" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj.d"
+  "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.c" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj" "gcc" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj.d"
+  "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.c" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj" "gcc" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj.d"
+  "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.c" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj" "gcc" "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj.d"
   "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/log/logvars.cc" "CMakeFiles/basic_agent.dir/log/logvars.cc.obj" "gcc" "CMakeFiles/basic_agent.dir/log/logvars.cc.obj.d"
   "C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/starting_point.cc" "CMakeFiles/basic_agent.dir/starting_point.cc.obj" "gcc" "CMakeFiles/basic_agent.dir/starting_point.cc.obj.d"
   )
