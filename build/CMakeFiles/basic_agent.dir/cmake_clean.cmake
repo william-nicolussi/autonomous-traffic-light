@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/basic_agent.dir/log/logvars.cc.obj.d"
   "CMakeFiles/basic_agent.dir/log/screen_print.c.obj"
   "CMakeFiles/basic_agent.dir/log/screen_print.c.obj.d"
+  "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj"
+  "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj.d"
   "CMakeFiles/basic_agent.dir/starting_point.cc.obj"
   "CMakeFiles/basic_agent.dir/starting_point.cc.obj.d"
   "libbasic_agent.dll.a"

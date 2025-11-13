@@ -176,6 +176,30 @@ log/screen_print.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/log/screen_print.c.s
 .PHONY : log/screen_print.c.s
 
+matlab/codegen/lib/primitives/primitives.obj: matlab/codegen/lib/primitives/primitives.c.obj
+.PHONY : matlab/codegen/lib/primitives/primitives.obj
+
+# target to build an object file
+matlab/codegen/lib/primitives/primitives.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj
+.PHONY : matlab/codegen/lib/primitives/primitives.c.obj
+
+matlab/codegen/lib/primitives/primitives.i: matlab/codegen/lib/primitives/primitives.c.i
+.PHONY : matlab/codegen/lib/primitives/primitives.i
+
+# target to preprocess a source file
+matlab/codegen/lib/primitives/primitives.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.i
+.PHONY : matlab/codegen/lib/primitives/primitives.c.i
+
+matlab/codegen/lib/primitives/primitives.s: matlab/codegen/lib/primitives/primitives.c.s
+.PHONY : matlab/codegen/lib/primitives/primitives.s
+
+# target to generate assembly for a file
+matlab/codegen/lib/primitives/primitives.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.s
+.PHONY : matlab/codegen/lib/primitives/primitives.c.s
+
 starting_point.obj: starting_point.cc.obj
 .PHONY : starting_point.obj
 
@@ -215,6 +239,9 @@ help:
 	@echo ... log/screen_print.obj
 	@echo ... log/screen_print.i
 	@echo ... log/screen_print.s
+	@echo ... matlab/codegen/lib/primitives/primitives.obj
+	@echo ... matlab/codegen/lib/primitives/primitives.i
+	@echo ... matlab/codegen/lib/primitives/primitives.s
 	@echo ... starting_point.obj
 	@echo ... starting_point.i
 	@echo ... starting_point.s
