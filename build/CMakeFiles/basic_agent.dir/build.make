@@ -116,11 +116,56 @@ CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.s: cmake_f
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.s"
 	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\primitives.c -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\primitives.c.s
 
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj: CMakeFiles/basic_agent.dir/flags.make
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj: CMakeFiles/basic_agent.dir/includes_C.rsp
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetInf.c
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj: CMakeFiles/basic_agent.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj -MF CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetInf.c.obj.d -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetInf.c.obj -c C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetInf.c
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.i"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetInf.c > CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetInf.c.i
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.s"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetInf.c -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetInf.c.s
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj: CMakeFiles/basic_agent.dir/flags.make
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj: CMakeFiles/basic_agent.dir/includes_C.rsp
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rtGetNaN.c
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj: CMakeFiles/basic_agent.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj -MF CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetNaN.c.obj.d -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetNaN.c.obj -c C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetNaN.c
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.i"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetNaN.c > CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetNaN.c.i
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.s"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rtGetNaN.c -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rtGetNaN.c.s
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj: CMakeFiles/basic_agent.dir/flags.make
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj: CMakeFiles/basic_agent.dir/includes_C.rsp
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/matlab/codegen/lib/primitives/rt_nonfinite.c
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj: CMakeFiles/basic_agent.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj -MF CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rt_nonfinite.c.obj.d -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rt_nonfinite.c.obj -c C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rt_nonfinite.c
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.i"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rt_nonfinite.c > CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rt_nonfinite.c.i
+
+CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.s"
+	gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\codegen\lib\primitives\rt_nonfinite.c -o CMakeFiles\basic_agent.dir\matlab\codegen\lib\primitives\rt_nonfinite.c.s
+
 CMakeFiles/basic_agent.dir/starting_point.cc.obj: CMakeFiles/basic_agent.dir/flags.make
 CMakeFiles/basic_agent.dir/starting_point.cc.obj: CMakeFiles/basic_agent.dir/includes_CXX.rsp
 CMakeFiles/basic_agent.dir/starting_point.cc.obj: C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/starting_point.cc
 CMakeFiles/basic_agent.dir/starting_point.cc.obj: CMakeFiles/basic_agent.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/basic_agent.dir/starting_point.cc.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/basic_agent.dir/starting_point.cc.obj"
 	g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/basic_agent.dir/starting_point.cc.obj -MF CMakeFiles\basic_agent.dir\starting_point.cc.obj.d -o CMakeFiles\basic_agent.dir\starting_point.cc.obj -c C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\starting_point.cc
 
 CMakeFiles/basic_agent.dir/starting_point.cc.i: cmake_force
@@ -136,6 +181,9 @@ basic_agent_OBJECTS = \
 "CMakeFiles/basic_agent.dir/log/screen_print.c.obj" \
 "CMakeFiles/basic_agent.dir/log/logvars.cc.obj" \
 "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj" \
+"CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj" \
+"CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj" \
+"CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj" \
 "CMakeFiles/basic_agent.dir/starting_point.cc.obj"
 
 # External object files for target basic_agent
@@ -144,12 +192,15 @@ basic_agent_EXTERNAL_OBJECTS =
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/log/screen_print.c.obj
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/log/logvars.cc.obj
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/primitives.c.obj
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetInf.c.obj
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj
+C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/starting_point.cc.obj
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/build.make
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/linkLibs.rsp
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/objects1.rsp
 C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/bin/basic_agent.exe: CMakeFiles/basic_agent.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\basic_agent.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\basic_agent.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\basic_agent.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

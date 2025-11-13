@@ -1,6 +1,7 @@
 //
 // Created by Gastone Pietro Rosati Papini on 10/08/22.
 //
+// Shortcuts -> compile: f6; run: f7
 
 #include <stdio.h>
 #include <string.h>
@@ -8,7 +9,8 @@
 #include <vector>
 #include <algorithm>
 
-extern "C" {
+extern "C"
+{
 #include "screen_print_c.h"
 }
 #include "screen_print.h"
@@ -19,18 +21,20 @@ extern "C" {
 // #include "primitives.h"
 // --- MATLAB PRIMITIVES INCLUDE ---
 
-#define DEFAULT_SERVER_IP    "127.0.0.1"
-#define SERVER_PORT               30000  // Server port
+#define DEFAULT_SERVER_IP "127.0.0.1"
+#define SERVER_PORT 30000 // Server port
 #define DT 0.05
 
 // Handler for CTRL-C
 #include <signal.h>
 static uint32_t server_run = 1;
-void intHandler(int signal) {
+void intHandler(int signal)
+{
     server_run = 0;
 }
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[])
+{
     logger.enable(true);
 
     // Messages variables
@@ -40,7 +44,7 @@ int main(int argc, const char * argv[]) {
     size_t manoeuvre_msg_size = sizeof(manoeuvre_msg.data_buffer);
     uint32_t message_id = 0;
 
-#if not defined( _MSC_VER ) and not defined( _WIN32 )
+#if not defined(_MSC_VER) and not defined(_WIN32)
     // More portable way of supporting signals on UNIX
     struct sigaction act;
     act.sa_handler = intHandler;
@@ -55,17 +59,19 @@ int main(int argc, const char * argv[]) {
     printLine();
     printTable("Waiting for scenario message...", 0);
     printLine();
-    while (server_run == 1) {
+    while (server_run == 1)
+    {
 
         // Clean the buffer
         memset(scenario_msg.data_buffer, '\0', scenario_msg_size);
 
         // Receive scenario message from the environment
-        if (server_receive_from_client(&server_run, &message_id, &scenario_msg.data_struct) == 0) {
+        if (server_receive_from_client(&server_run, &message_id, &scenario_msg.data_struct) == 0)
+        {
             // Init time
             static auto start = std::chrono::system_clock::now();
-            auto time = std::chrono::system_clock::now()-start;
-            double num_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(time).count()/1000.0;
+            auto time = std::chrono::system_clock::now() - start;
+            double num_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(time).count() / 1000.0;
             printLogTitle(message_id, "received message");
 
             // Data struct
@@ -73,14 +79,39 @@ int main(int argc, const char * argv[]) {
             manoeuvre_msg.data_struct.CycleNumber = in->CycleNumber;
             manoeuvre_msg.data_struct.Status = in->Status;
 
+            static double init_dist = in->TrfLightDist;
+            double dist = init_dist - in->TrfLightDist;
+            double a_real = in->ALgtFild;
+            const double a_max = 5;
+            const double a_min = -5;
+            a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
+
             // Example of using log
             logger.log_var("Example", "cycle", in->CycleNumber);
             logger.log_var("Example", "vel", in->VLgtFild);
+            logger.log_var("Example", "time", in->ECUupTime);
+            logger.log_var("Example", "dist", dist);
 
             // ADD AGENT CODE HERE
+            const double a_req = 0.3;
+            static double v_req = 0;
+            v_req = v_req + a_req * DT;
+
+            // PI implementation
+            const double k_p = 0.5;
+            const double k_i = 0.1;
+            double error = a_req - a_real;
+            static double error_integral = 0;
+            error_integral = error_integral + error * DT;
+            double requested_pedal = error * k_p + error_integral * k_i;
+
+            // Send information to logger
+            logger.log_var("Example", "v_req", v_req);
+            logger.log_var("Example", "a_req", a_req);
+            logger.log_var("Example", "requested_pedal", requested_pedal);
 
             // ADD LOW LEVEL CONTROL CODE HERE
-            manoeuvre_msg.data_struct.RequestedAcc = -0.3;
+            manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
             manoeuvre_msg.data_struct.RequestedSteerWhlAg = 0.0;
 
             // Write log
@@ -92,10 +123,13 @@ int main(int argc, const char * argv[]) {
             printLogVar(message_id, "CycleNumber", in->CycleNumber);
 
             // Send manoeuvre message to the environment
-            if (server_send_to_client(server_run, message_id, &manoeuvre_msg.data_struct) == -1) {
+            if (server_send_to_client(server_run, message_id, &manoeuvre_msg.data_struct) == -1)
+            {
                 perror("error send_message()");
                 exit(EXIT_FAILURE);
-            } else {
+            }
+            else
+            {
                 printLogTitle(message_id, "sent message");
             }
         }

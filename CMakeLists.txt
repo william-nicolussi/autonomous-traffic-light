@@ -21,6 +21,10 @@ link_directories(
 add_executable(basic_agent
         log/screen_print.c
         log/logvars.cc
+		matlab/codegen/lib/primitives/primitives.c
+		matlab/codegen/lib/primitives/rtGetInf.c
+		matlab/codegen/lib/primitives/rtGetNaN.c
+		matlab/codegen/lib/primitives/rt_nonfinite.c
         starting_point.cc
     )
 
