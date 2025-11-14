@@ -3,6 +3,11 @@
 //
 // Shortcuts -> compile: f6; run: f7
 
+
+/*
+File tmwtypes.h da / matlab copiato in /matlab
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -81,34 +86,53 @@ int main(int argc, const char *argv[])
 
             static double init_dist = in->TrfLightDist;
             double dist = init_dist - in->TrfLightDist;
+            double v_real = in->VLgtFild;
             double a_real = in->ALgtFild;
             const double a_max = 5;
             const double a_min = -5;
             a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
 
-            // Example of using log
-            logger.log_var("Example", "cycle", in->CycleNumber);
-            logger.log_var("Example", "vel", in->VLgtFild);
-            logger.log_var("Example", "time", in->ECUupTime);
-            logger.log_var("Example", "dist", dist);
-
             // ADD AGENT CODE HERE
-            const double a_req = 0.3;
+            const double a_req = 1;
             static double v_req = 0;
             v_req = v_req + a_req * DT;
 
             // PI implementation
-            const double k_p = 0.5;
-            const double k_i = 0.1;
+            const double k_p = 0.04;
+            const double k_i = 0.01;
             double error = a_req - a_real;
             static double error_integral = 0;
             error_integral = error_integral + error * DT;
             double requested_pedal = error * k_p + error_integral * k_i;
 
             // Send information to logger
+            logger.log_var("Example", "cycle", in->CycleNumber);
+            logger.log_var("Example", "time", in->ECUupTime);
+            logger.log_var("Example", "dist", dist);
+            logger.log_var("Example", "v_real", v_real);
             logger.log_var("Example", "v_req", v_req);
+            logger.log_var("Example", "a_real", a_real);
             logger.log_var("Example", "a_req", a_req);
+            logger.log_var("Example", "error", error);
+            logger.log_var("Example", "error_integral", error_integral);
             logger.log_var("Example", "requested_pedal", requested_pedal);
+
+
+            /*  -- lezione 14/11 --
+            double coef[6];
+            double final_time, finale_distance final_vel;
+            if (dist < 50)
+            {
+                student_stop_primitive(v_real, a_real, dist, coef, &finale_distance, &final_time);
+            }
+            else
+            {
+                student_pass_primitive(v_real, a_real, dist, 15, 15, 0, 0, coef, &final_vel, &final_time, coef, &final_vel, &final_time) //check se possibile mettere T_min=T_mas=0
+            }
+            //double req_acc = a_opt(DT, vel, acc, dist, 20.0, &finale_distance, &final_time-ECUtime);
+            //double req_vel = v_opt(DT, vel, acc, dist, 20.0, &final_time-ECUtime);
+            double req_acc = coeffs_a_opt(DT, coef);
+            */
 
             // ADD LOW LEVEL CONTROL CODE HERE
             manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
