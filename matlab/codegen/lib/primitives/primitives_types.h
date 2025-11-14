@@ -5,7 +5,7 @@
  *
  * primitives_types.h
  *
- * Code generation for function 'coef_list'
+ * Code generation for function 'a_from_coeffs'
  *
  */
 

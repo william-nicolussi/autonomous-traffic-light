@@ -1,11 +1,40 @@
-%%
+%% Set file
 clear; clc; close all
+basePath = 'C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\log_internal';
 
-%% Plot of real velocity and requested velocity
-Example = readtable('C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\log_internal\Example.csv');
-plot(Example.time, Example.v_req);
-hold on
-plot(Example.time,Example.v_real);
+%% Plot
+
+fileName = 'Values_PI_prof.csv';
+filePath = fullfile(basePath, fileName);
+dataCSV = readtable(filePath);
+sgtitle(fileName, 'Interpreter', 'None');
+
+figure(1);
+abscissa = dataCSV.time;
+
+% --- Distance from traffic light ---
+subplot(3,1,1);
+plot(abscissa, dataCSV.s_req); hold on;
+plot(abscissa, dataCSV.dist);
+ylabel("Distance");
+legend("s\_req","s\_real","Location","best");
+grid on;
+
+% --- Velocity ---
+subplot(3,1,2);
+plot(abscissa, dataCSV.v_req); hold on;
+plot(abscissa, dataCSV.v_real);
+ylabel("Velocity");
+legend("v\_req","v\_real","Location","best");
+grid on;
+
+% --- Acceleration ---
+subplot(3,1,3);
+plot(abscissa, dataCSV.a_req); hold on;
+plot(abscissa, dataCSV.a_real);
+ylabel("Acceleration");
+legend("a\_req","a\_real","Location","best");
+grid on;
 
 %% Draw primitives
 % requested velocity and velocity of the vehicles. Then write the

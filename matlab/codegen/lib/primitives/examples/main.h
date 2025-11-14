@@ -49,11 +49,37 @@ extern "C" {
 /* Function Declarations */
 extern int main(int argc, char **argv);
 
+extern void main_a_from_coeffs(void);
+
+extern void main_a_opt(void);
+
 extern void main_coef_list(void);
+
+extern void main_final_opt_time_pass(void);
+
+extern void main_final_opt_time_stop(void);
+
+extern void main_final_opt_vel_pass(void);
+
+extern void main_j_from_coeffs(void);
+
+extern void main_j_opt(void);
+
+extern void main_s_from_coeffs(void);
+
+extern void main_s_opt(void);
 
 extern void main_student_pass_primitive(void);
 
 extern void main_student_stop_primitive(void);
+
+extern void main_time_min_vel_pass(void);
+
+extern void main_total_cost_var(void);
+
+extern void main_v_from_coeffs(void);
+
+extern void main_v_opt(void);
 
 #ifdef __cplusplus
 }

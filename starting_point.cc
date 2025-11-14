@@ -3,17 +3,14 @@
 //
 // Shortcuts -> compile: f6; run: f7
 
-
-/*
-File tmwtypes.h da / matlab copiato in /matlab
-*/
-
+// ----- #include <> -----
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <vector>
 #include <algorithm>
 
+// ----- #include "" -----
 extern "C"
 {
 #include "screen_print_c.h"
@@ -21,14 +18,17 @@ extern "C"
 #include "screen_print.h"
 #include "server_lib.h"
 #include "logvars.h"
+#include "primitives.h"
 
 // --- MATLAB PRIMITIVES INCLUDE ---
 // #include "primitives.h"
 // --- MATLAB PRIMITIVES INCLUDE ---
 
+// ----- #define -----
 #define DEFAULT_SERVER_IP "127.0.0.1"
 #define SERVER_PORT 30000 // Server port
 #define DT 0.05
+#define CSV_FILE_NAME_PI "Values_PI_prof"
 
 // Handler for CTRL-C
 #include <signal.h>
@@ -38,6 +38,12 @@ void intHandler(int signal)
     server_run = 0;
 }
 
+// ----- PROTOTYPES -----
+static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req,double a_real, double error, double error_integral, double requested_pedal);
+
+
+
+// ----- MAIN -----
 int main(int argc, const char *argv[])
 {
     logger.enable(true);
@@ -89,36 +95,56 @@ int main(int argc, const char *argv[])
             double v_real = in->VLgtFild;
             double a_real = in->ALgtFild;
             const double a_max = 5;
-            const double a_min = -5;
+            const double a_min = -10;
             a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
 
+            /* -- Lezione 14/11 --
+            double req_acc = coueffs_a_opt(DT, coef);
+            double s = coeffs_s_opt(DT, coef);
+            */
+
             // ADD AGENT CODE HERE
-            const double a_req = 1;
+            // TEST 1 [fatto io]
+            double a_req = 1;
+            //double a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-in->ECUupTime);
             static double v_req = 0;
             v_req = v_req + a_req * DT;
+            static double s_req = 0;
+            s_req = s_req + v_req*DT + 1/2*a_req*DT*DT;
+
+            // TEST 2
+            // Test acc and brake: lecture 8/11 online
+            // Poi ha disegnato grafico s[m];vel[m/s] con tracciate vel e Rq vel
+            // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel
+            double t = in->ECUupTime;
+            s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            if(t > 5)
+            {
+                s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 15-t);
+                a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+                v_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+            }
 
             // PI implementation
-            const double k_p = 0.04;
-            const double k_i = 0.01;
+            const double k_p = 0.02;
+            const double k_i = 1;
             double error = a_req - a_real;
             static double error_integral = 0;
             error_integral = error_integral + error * DT;
             double requested_pedal = error * k_p + error_integral * k_i;
+            /* Lui ha messo questo: [k_p=1.0;k_i=0.01;]
+            Test 2: [k_p=0.02;k_i=1;] 8/11 online
+            */
 
             // Send information to logger
-            logger.log_var("Example", "cycle", in->CycleNumber);
-            logger.log_var("Example", "time", in->ECUupTime);
-            logger.log_var("Example", "dist", dist);
-            logger.log_var("Example", "v_real", v_real);
-            logger.log_var("Example", "v_req", v_req);
-            logger.log_var("Example", "a_real", a_real);
-            logger.log_var("Example", "a_req", a_req);
-            logger.log_var("Example", "error", error);
-            logger.log_var("Example", "error_integral", error_integral);
-            logger.log_var("Example", "requested_pedal", requested_pedal);
+            create_csv_PI(in, s_req, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+
+            //logger.log_var("acc_test", "coef0", coef[0]);
 
 
-            /*  -- lezione 14/11 --
+            /*  -- lezione 14/11 -- Test the primitives
             double coef[6];
             double final_time, finale_distance final_vel;
             if (dist < 50)
@@ -137,9 +163,6 @@ int main(int argc, const char *argv[])
             // ADD LOW LEVEL CONTROL CODE HERE
             manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
             manoeuvre_msg.data_struct.RequestedSteerWhlAg = 0.0;
-
-            // Write log
-            logger.write_line("Example");
 
             // Screen print
             printLogVar(message_id, "Time", num_seconds);
@@ -162,4 +185,24 @@ int main(int argc, const char *argv[])
     // Close the server of the agent
     server_agent_close();
     return 0;
+}
+
+// ----- FUNCTIONS -----
+static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double error, double error_integral, double requested_pedal)
+{
+    const char* fileName = CSV_FILE_NAME_PI; //for now leave the define
+    logger.log_var(fileName, "cycle", in->CycleNumber);
+    logger.log_var(fileName, "time",  in->ECUupTime);
+    logger.log_var(fileName, "s_req", s_req);
+    logger.log_var(fileName, "dist", dist);
+    logger.log_var(fileName, "v_req", v_req);
+    logger.log_var(fileName, "v_real", in->VLgtFild);
+    logger.log_var(fileName, "a_req", a_req);
+    logger.log_var(fileName, "a_real", a_real);
+    logger.log_var(fileName, "error", error);
+    logger.log_var(fileName, "error_integral",  error_integral);
+    logger.log_var(fileName, "requested_pedal", requested_pedal);
+
+    // Write log
+    logger.write_line(fileName);
 }

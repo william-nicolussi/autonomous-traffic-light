@@ -5,7 +5,7 @@
  *
  * _coder_primitives_info.c
  *
- * Code generation for function 'coef_list'
+ * Code generation for function 'a_from_coeffs'
  *
  */
 
@@ -22,27 +22,27 @@ static const mxArray *c_emlrtMexFcnResolvedFunctionsI(void)
 {
   const mxArray *nameCaptureInfo;
   const char_T *data[7] = {
-      "789ced58cd6ed34010dea082e0008d40e2d6470009a9aa801b6a7e9c282d45b5130246ae"
-      "63af9b25f6aeeb5da72e120724ae880be25a891b37c413549c38f200"
-      "bc040f8044ec649dc4c24a90619306cf6532fb79fdcdcc2a9fc60b0ab59d0200e01a18da"
-      "dec6d05f1dc5c591bf00a62d891746fe622206f1fadad43e8ebf1d79",
-      "83600603360cb0eec078a7491c8475cce41317020f5262f7a1192116b2a18c1cb83f19ec"
-      "8691539980e22084c2dfdb5d68f4f67d07785d3aced09e0ce27e9ca5"
-      "d4bb36673fb4947e1413f8d3f2b3edfbaa42a14755694f2d41da63c455158c64acd69a0f"
-      "4aaaee338289437caa314fb72c6468363aecb25b8e8eb0eae8ccd63b",
-      "2a65be0931d35c9d52cdf5908318eac3db4e5c4f90b19e1b33eae1b83538335b232ed3d8"
-      "a0f3513ed13acfe320631e9752f3182226f13b361cf37dcbc84752f9"
-      "a6f1bf748e968f0d8608a61a0c5ce23168aabfe9e8c4b91ea4e4bf3e677d493f7efe72e4"
-      "dfc9df234814dfe997f71f44f2715b145fd6ffe5cd14be6202373d45",
-      "a93edad29b4dbf51a9378e1edea977e4ea84fecfe0999507488945bdff2c65ffffaad7d7"
-      "67d4c3f1b1baf4a13d96eb73abd738956f1a17a1d7bca383635d59bd"
-      "66f8f5a9483e6eabaed7bbdeb17b97dc335b3549ea059be5f6a1bfb923e57abdac7aed66"
-      "ace7ca8c7a386e10680df2a3a32fa685e9f4d78c7c301183c4731cff",
-      "773a1d77329467617af2b324569f3fbff9f14a241fb755d7e76a503ef63cd34552fbe845"
-      "4b69187d7cf2bc9cebf382f5990e362fd3fd47984fb47e5ee7e9a5bb"
-      "ff083b2af0fe63bd2c56af5f7e523e8ae4e3b6ea7a2db71fd7d856c7eab7d8939e6fd625"
-      "bb6505955caf9755aff379facff8f2795a0c5f3e4f0f2d9fa7e77bff",
-      "2f032f50f2",
+      "789ced58cd6ed34010dea082e8011a81c4ad8f0022525535dc507eea44fd833a3f0523d7"
+      "b1d7cd2af6aef1ae4d8ac48d2be282b856e286c48147a83871e40178"
+      "186227eb241656820c9b34782e93d9cfeb6f6656f9345e90abede70000b7c1d08e3687fe"
+      "d628ce8ffc35306d713c37f2d7633188d6d7a6f671fcfdc8eb0433d8",
+      "67c3006b368c761ac44658c34c3e7720702125960f8d103191056564c3e3c9e02088ecea"
+      "0414050114fc2e75a1de3bf66ce076e938436b3288fa719950efda9c"
+      "fd5013fa918fe1cf2b2f4a8f9406852e55a423a50c698f114769602463a5d67c5c56348f"
+      "114c6ce25195b99a69225db5d05997ddb73584155b6396d65128f30c",
+      "8899ea6894aa8e8b6cc4900f1fd8513dfd94f5dc9d510fc7cdc199592a7198ca069d0ff3"
+      "09d7791ea729f3b89198c7103188d7b1e098ef474a3e92c8378dffa5"
+      "73343dac3344305561df212e8386f29b8e4e9ceb6942fe1b73d617f7e3e76f86fe83fc33"
+      "8444f15d7cfbf849241fb745f1a5fd5fde4be0cbc770c36d34769f6c",
+      "6bcda6b757adefbd3c2cd43bf2ee84fecfe0999507488845bdff3261ffffaad77766d4c3"
+      "f1b1baf8d01acbf595d56b9cc8378d8bd06bded1c1b1aeac5e33fcf6"
+      "42241fb755d7eb03f795b3438a46ab2649bdfe56e5e4ccdbda9732bd5e56bd7652d6b33e"
+      "a31e8eeb049a83fce8e88b69613afd3d251f8cc520f61cc7ff9d4e47",
+      "9d0ce459989e7c11accfefd4c2ba483e6eabaecfed6271a7fbbaf0d0977d4d474f2bed5a"
+      "b9d02a65fabc607da683cdcb74ff11e413ae5fd5797ae9ee3f828e0a"
+      "bcffd8a888d5eb375f1b9f45f2715b75bd964fda35b6dd31fd167bd6f38cba64b5cc7e35"
+      "d3eb65d5eb6c9efe33be6c9e16c397cdd343cbe6e9f9deff0b21744a",
+      "2e",
       ""};
   nameCaptureInfo = NULL;
   emlrtNameCaptureMxArrayR2016a(&data[0], 7528U, &nameCaptureInfo);
@@ -67,57 +67,275 @@ mxArray *emlrtMexFcnProperties(void)
       "Name",     "NumberOfInputs", "NumberOfOutputs", "ConstantInputs",
       "FullPath", "TimeStamp",      "Constructor",     "Visible"};
   xEntryPoints =
-      emlrtCreateStructMatrix(1, 3, 8, (const char_T **)&epFieldName[0]);
-  xInputs = emlrtCreateLogicalMatrix(1, 6);
-  emlrtSetField(xEntryPoints, 0, "Name", emlrtMxCreateString("coef_list"));
+      emlrtCreateStructMatrix(1, 16, 8, (const char_T **)&epFieldName[0]);
+  xInputs = emlrtCreateLogicalMatrix(1, 2);
+  emlrtSetField(xEntryPoints, 0, "Name", emlrtMxCreateString("a_from_coeffs"));
   emlrtSetField(xEntryPoints, 0, "NumberOfInputs",
-                emlrtMxCreateDoubleScalar(6.0));
+                emlrtMxCreateDoubleScalar(2.0));
   emlrtSetField(xEntryPoints, 0, "NumberOfOutputs",
                 emlrtMxCreateDoubleScalar(1.0));
   emlrtSetField(xEntryPoints, 0, "ConstantInputs", xInputs);
   emlrtSetField(xEntryPoints, 0, "FullPath",
                 emlrtMxCreateString(
                     "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
-                    "light-main\\matlab\\functions_exported\\coef_list.m"));
+                    "light-main\\matlab\\functions_exported\\a_from_coeffs.m"));
   emlrtSetField(xEntryPoints, 0, "TimeStamp",
-                emlrtMxCreateDoubleScalar(739914.74133101851));
+                emlrtMxCreateDoubleScalar(739934.65598379634));
   emlrtSetField(xEntryPoints, 0, "Constructor",
                 emlrtMxCreateLogicalScalar(false));
   emlrtSetField(xEntryPoints, 0, "Visible", emlrtMxCreateLogicalScalar(true));
   xInputs = emlrtCreateLogicalMatrix(1, 7);
-  emlrtSetField(xEntryPoints, 1, "Name",
-                emlrtMxCreateString("student_pass_primitive"));
+  emlrtSetField(xEntryPoints, 1, "Name", emlrtMxCreateString("a_opt"));
   emlrtSetField(xEntryPoints, 1, "NumberOfInputs",
                 emlrtMxCreateDoubleScalar(7.0));
   emlrtSetField(xEntryPoints, 1, "NumberOfOutputs",
-                emlrtMxCreateDoubleScalar(6.0));
+                emlrtMxCreateDoubleScalar(1.0));
   emlrtSetField(xEntryPoints, 1, "ConstantInputs", xInputs);
   emlrtSetField(xEntryPoints, 1, "FullPath",
                 emlrtMxCreateString(
                     "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
-                    "light-main\\matlab\\student_pass_primitive.m"));
+                    "light-main\\matlab\\functions_exported\\a_opt.m"));
   emlrtSetField(xEntryPoints, 1, "TimeStamp",
-                emlrtMxCreateDoubleScalar(739934.54725694447));
+                emlrtMxCreateDoubleScalar(739934.65598379634));
   emlrtSetField(xEntryPoints, 1, "Constructor",
                 emlrtMxCreateLogicalScalar(false));
   emlrtSetField(xEntryPoints, 1, "Visible", emlrtMxCreateLogicalScalar(true));
-  xInputs = emlrtCreateLogicalMatrix(1, 3);
-  emlrtSetField(xEntryPoints, 2, "Name",
-                emlrtMxCreateString("student_stop_primitive"));
+  xInputs = emlrtCreateLogicalMatrix(1, 6);
+  emlrtSetField(xEntryPoints, 2, "Name", emlrtMxCreateString("coef_list"));
   emlrtSetField(xEntryPoints, 2, "NumberOfInputs",
-                emlrtMxCreateDoubleScalar(3.0));
+                emlrtMxCreateDoubleScalar(6.0));
   emlrtSetField(xEntryPoints, 2, "NumberOfOutputs",
-                emlrtMxCreateDoubleScalar(3.0));
+                emlrtMxCreateDoubleScalar(1.0));
   emlrtSetField(xEntryPoints, 2, "ConstantInputs", xInputs);
   emlrtSetField(xEntryPoints, 2, "FullPath",
                 emlrtMxCreateString(
                     "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
-                    "light-main\\matlab\\student_stop_primitive.m"));
+                    "light-main\\matlab\\functions_exported\\coef_list.m"));
   emlrtSetField(xEntryPoints, 2, "TimeStamp",
-                emlrtMxCreateDoubleScalar(739934.53146990738));
+                emlrtMxCreateDoubleScalar(739934.65598379634));
   emlrtSetField(xEntryPoints, 2, "Constructor",
                 emlrtMxCreateLogicalScalar(false));
   emlrtSetField(xEntryPoints, 2, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 4);
+  emlrtSetField(xEntryPoints, 3, "Name",
+                emlrtMxCreateString("final_opt_time_pass"));
+  emlrtSetField(xEntryPoints, 3, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(4.0));
+  emlrtSetField(xEntryPoints, 3, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 3, "ConstantInputs", xInputs);
+  emlrtSetField(
+      xEntryPoints, 3, "FullPath",
+      emlrtMxCreateString(
+          "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_light-"
+          "main\\matlab\\functions_exported\\final_opt_time_pass.m"));
+  emlrtSetField(xEntryPoints, 3, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.53966435185));
+  emlrtSetField(xEntryPoints, 3, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 3, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 3);
+  emlrtSetField(xEntryPoints, 4, "Name",
+                emlrtMxCreateString("final_opt_time_stop"));
+  emlrtSetField(xEntryPoints, 4, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(3.0));
+  emlrtSetField(xEntryPoints, 4, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 4, "ConstantInputs", xInputs);
+  emlrtSetField(
+      xEntryPoints, 4, "FullPath",
+      emlrtMxCreateString(
+          "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_light-"
+          "main\\matlab\\functions_exported\\final_opt_time_stop.m"));
+  emlrtSetField(xEntryPoints, 4, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739914.83157407411));
+  emlrtSetField(xEntryPoints, 4, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 4, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 4);
+  emlrtSetField(xEntryPoints, 5, "Name",
+                emlrtMxCreateString("final_opt_vel_pass"));
+  emlrtSetField(xEntryPoints, 5, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(4.0));
+  emlrtSetField(xEntryPoints, 5, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 5, "ConstantInputs", xInputs);
+  emlrtSetField(
+      xEntryPoints, 5, "FullPath",
+      emlrtMxCreateString(
+          "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_light-"
+          "main\\matlab\\functions_exported\\final_opt_vel_pass.m"));
+  emlrtSetField(xEntryPoints, 5, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.53960648144));
+  emlrtSetField(xEntryPoints, 5, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 5, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 2);
+  emlrtSetField(xEntryPoints, 6, "Name", emlrtMxCreateString("j_from_coeffs"));
+  emlrtSetField(xEntryPoints, 6, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(2.0));
+  emlrtSetField(xEntryPoints, 6, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 6, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 6, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\j_from_coeffs.m"));
+  emlrtSetField(xEntryPoints, 6, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 6, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 6, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 7);
+  emlrtSetField(xEntryPoints, 7, "Name", emlrtMxCreateString("j_opt"));
+  emlrtSetField(xEntryPoints, 7, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(7.0));
+  emlrtSetField(xEntryPoints, 7, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 7, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 7, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\j_opt.m"));
+  emlrtSetField(xEntryPoints, 7, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 7, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 7, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 2);
+  emlrtSetField(xEntryPoints, 8, "Name", emlrtMxCreateString("s_from_coeffs"));
+  emlrtSetField(xEntryPoints, 8, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(2.0));
+  emlrtSetField(xEntryPoints, 8, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 8, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 8, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\s_from_coeffs.m"));
+  emlrtSetField(xEntryPoints, 8, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 8, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 8, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 7);
+  emlrtSetField(xEntryPoints, 9, "Name", emlrtMxCreateString("s_opt"));
+  emlrtSetField(xEntryPoints, 9, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(7.0));
+  emlrtSetField(xEntryPoints, 9, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 9, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 9, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\s_opt.m"));
+  emlrtSetField(xEntryPoints, 9, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 9, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 9, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 7);
+  emlrtSetField(xEntryPoints, 10, "Name",
+                emlrtMxCreateString("student_pass_primitive"));
+  emlrtSetField(xEntryPoints, 10, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(7.0));
+  emlrtSetField(xEntryPoints, 10, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(6.0));
+  emlrtSetField(xEntryPoints, 10, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 10, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\student_pass_primitive.m"));
+  emlrtSetField(xEntryPoints, 10, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.54725694447));
+  emlrtSetField(xEntryPoints, 10, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 10, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 3);
+  emlrtSetField(xEntryPoints, 11, "Name",
+                emlrtMxCreateString("student_stop_primitive"));
+  emlrtSetField(xEntryPoints, 11, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(3.0));
+  emlrtSetField(xEntryPoints, 11, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(3.0));
+  emlrtSetField(xEntryPoints, 11, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 11, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\student_stop_primitive.m"));
+  emlrtSetField(xEntryPoints, 11, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.5599768518));
+  emlrtSetField(xEntryPoints, 11, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 11, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 4);
+  emlrtSetField(xEntryPoints, 12, "Name",
+                emlrtMxCreateString("time_min_vel_pass"));
+  emlrtSetField(xEntryPoints, 12, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(4.0));
+  emlrtSetField(xEntryPoints, 12, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 12, "ConstantInputs", xInputs);
+  emlrtSetField(
+      xEntryPoints, 12, "FullPath",
+      emlrtMxCreateString(
+          "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_light-"
+          "main\\matlab\\functions_exported\\time_min_vel_pass.m"));
+  emlrtSetField(xEntryPoints, 12, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.53973379626));
+  emlrtSetField(xEntryPoints, 12, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 12, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 6);
+  emlrtSetField(xEntryPoints, 13, "Name",
+                emlrtMxCreateString("total_cost_var"));
+  emlrtSetField(xEntryPoints, 13, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(6.0));
+  emlrtSetField(xEntryPoints, 13, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 13, "ConstantInputs", xInputs);
+  emlrtSetField(
+      xEntryPoints, 13, "FullPath",
+      emlrtMxCreateString(
+          "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_light-"
+          "main\\matlab\\functions_exported\\total_cost_var.m"));
+  emlrtSetField(xEntryPoints, 13, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65599537035));
+  emlrtSetField(xEntryPoints, 13, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 13, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 2);
+  emlrtSetField(xEntryPoints, 14, "Name", emlrtMxCreateString("v_from_coeffs"));
+  emlrtSetField(xEntryPoints, 14, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(2.0));
+  emlrtSetField(xEntryPoints, 14, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 14, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 14, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\v_from_coeffs.m"));
+  emlrtSetField(xEntryPoints, 14, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 14, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 14, "Visible", emlrtMxCreateLogicalScalar(true));
+  xInputs = emlrtCreateLogicalMatrix(1, 7);
+  emlrtSetField(xEntryPoints, 15, "Name", emlrtMxCreateString("v_opt"));
+  emlrtSetField(xEntryPoints, 15, "NumberOfInputs",
+                emlrtMxCreateDoubleScalar(7.0));
+  emlrtSetField(xEntryPoints, 15, "NumberOfOutputs",
+                emlrtMxCreateDoubleScalar(1.0));
+  emlrtSetField(xEntryPoints, 15, "ConstantInputs", xInputs);
+  emlrtSetField(xEntryPoints, 15, "FullPath",
+                emlrtMxCreateString(
+                    "C:\\Users\\HP\\Desktop\\UniTn\\IVAD\\autonomous_traffic_"
+                    "light-main\\matlab\\functions_exported\\v_opt.m"));
+  emlrtSetField(xEntryPoints, 15, "TimeStamp",
+                emlrtMxCreateDoubleScalar(739934.65598379634));
+  emlrtSetField(xEntryPoints, 15, "Constructor",
+                emlrtMxCreateLogicalScalar(false));
+  emlrtSetField(xEntryPoints, 15, "Visible", emlrtMxCreateLogicalScalar(true));
   xResult =
       emlrtCreateStructMatrix(1, 1, 9, (const char_T **)&propFieldName[0]);
   emlrtSetField(xResult, 0, "Version",
@@ -125,7 +343,7 @@ mxArray *emlrtMexFcnProperties(void)
   emlrtSetField(xResult, 0, "ResolvedFunctions",
                 (mxArray *)c_emlrtMexFcnResolvedFunctionsI());
   emlrtSetField(xResult, 0, "Checksum",
-                emlrtMxCreateString("HRAalHqYO0FgbfIi6d2BPG"));
+                emlrtMxCreateString("vHiVlWBgDNgX43zaBmInRG"));
   emlrtSetField(xResult, 0, "EntryPoints", xEntryPoints);
   return xResult;
 }
