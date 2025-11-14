@@ -28,7 +28,7 @@ extern "C"
 #define DEFAULT_SERVER_IP "127.0.0.1"
 #define SERVER_PORT 30000 // Server port
 #define DT 0.05
-#define CSV_FILE_NAME_PI "Values_PI_prof"
+#define CSV_FILE_NAME_PI "Values_PI"
 
 // Handler for CTRL-C
 #include <signal.h>
@@ -55,14 +55,14 @@ int main(int argc, const char *argv[])
     size_t manoeuvre_msg_size = sizeof(manoeuvre_msg.data_buffer);
     uint32_t message_id = 0;
 
-#if not defined(_MSC_VER) and not defined(_WIN32)
-    // More portable way of supporting signals on UNIX
-    struct sigaction act;
-    act.sa_handler = intHandler;
-    sigaction(SIGINT, &act, NULL);
-#else
-    signal(SIGINT, intHandler);
-#endif
+    #if not defined(_MSC_VER) and not defined(_WIN32)
+        // More portable way of supporting signals on UNIX
+        struct sigaction act;
+        act.sa_handler = intHandler;
+        sigaction(SIGINT, &act, NULL);
+    #else
+        signal(SIGINT, intHandler);
+    #endif
 
     server_agent_init(DEFAULT_SERVER_IP, SERVER_PORT);
 
@@ -118,18 +118,20 @@ int main(int argc, const char *argv[])
             // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel
             double t = in->ECUupTime;
             s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
-            a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
+            a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             if(t > 5)
             {
-                s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 15-t);
+                s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
+                v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
                 a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
-                v_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
             }
+            static double s_req_cumulative;
+            s_req_cumulative += s_req;
 
             // PI implementation
-            const double k_p = 0.02;
-            const double k_i = 1;
+            const double k_p = 1;
+            const double k_i = 0.1;
             double error = a_req - a_real;
             static double error_integral = 0;
             error_integral = error_integral + error * DT;
@@ -139,7 +141,10 @@ int main(int argc, const char *argv[])
             */
 
             // Send information to logger
-            create_csv_PI(in, s_req, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+            if (t<15)
+            {
+                create_csv_PI(in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+            }
 
             //logger.log_var("acc_test", "coef0", coef[0]);
 
