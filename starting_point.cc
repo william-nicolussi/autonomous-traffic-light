@@ -39,7 +39,7 @@ void intHandler(int signal)
 }
 
 // ----- PROTOTYPES -----
-static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req,double a_real, double error, double error_integral, double requested_pedal);
+static void create_csv_PI(const char*, const input_data_str* in, double s_req, double dist, double v_req, double a_req,double a_real, double error, double error_integral, double requested_pedal);
 
 
 
@@ -92,11 +92,13 @@ int main(int argc, const char *argv[])
 
             static double init_dist = in->TrfLightDist;
             double dist = init_dist - in->TrfLightDist;
+            double s_req=0, v_req=0, a_req=0;
             double v_real = in->VLgtFild;
             double a_real = in->ALgtFild;
             const double a_max = 5;
             const double a_min = -10;
             a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
+            double t = in->ECUupTime;
 
             /* -- Lezione 14/11 --
             double req_acc = coueffs_a_opt(DT, coef);
@@ -104,15 +106,21 @@ int main(int argc, const char *argv[])
             */
 
             // ADD AGENT CODE HERE
-            // TEST 1 [fatto io]
-            double a_req = 1;
-            //double a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-in->ECUupTime);
-            static double v_req = 0;
+            // TEST 1: Constant acceleration
+            /*
+            a_req = 1;
             v_req = v_req + a_req * DT;
-            static double s_req = 0;
             s_req = s_req + v_req*DT + 1/2*a_req*DT*DT;
-
+            */
             // TEST 2
+            a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
+            v_req = v_req + a_req * DT;
+            s_req = s_req + v_req*DT + 0.5*a_req*DT*DT;
+            
+            
+
+            /*
+            // TEST 3
             // Test acc and brake: lecture 8/11 online
             // Poi ha disegnato grafico s[m];vel[m/s] con tracciate vel e Rq vel
             // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel
@@ -128,7 +136,7 @@ int main(int argc, const char *argv[])
             }
             static double s_req_cumulative;
             s_req_cumulative += s_req;
-
+            */
             // PI implementation
             const double k_p = 1;
             const double k_i = 0.1;
@@ -140,11 +148,18 @@ int main(int argc, const char *argv[])
             Test 2: [k_p=0.02;k_i=1;] 8/11 online
             */
 
+            if (t<19.98)
+            {
+                create_csv_PI("Test_2", in, s_req, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+            }
+
+            /*
             // Send information to logger
             if (t<15)
             {
                 create_csv_PI(in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
             }
+            */
 
             //logger.log_var("acc_test", "coef0", coef[0]);
 
@@ -193,9 +208,9 @@ int main(int argc, const char *argv[])
 }
 
 // ----- FUNCTIONS -----
-static void create_csv_PI(const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double error, double error_integral, double requested_pedal)
+static void create_csv_PI(const char* fileName, const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double error, double error_integral, double requested_pedal)
 {
-    const char* fileName = CSV_FILE_NAME_PI; //for now leave the define
+    //const char* fileName = CSV_FILE_NAME_PI; //for now leave the define
     logger.log_var(fileName, "cycle", in->CycleNumber);
     logger.log_var(fileName, "time",  in->ECUupTime);
     logger.log_var(fileName, "s_req", s_req);
@@ -204,6 +219,7 @@ static void create_csv_PI(const input_data_str* in, double s_req, double dist, d
     logger.log_var(fileName, "v_real", in->VLgtFild);
     logger.log_var(fileName, "a_req", a_req);
     logger.log_var(fileName, "a_real", a_real);
+    logger.log_var(fileName, "in->ALgtFild", in->ALgtFild);
     logger.log_var(fileName, "error", error);
     logger.log_var(fileName, "error_integral",  error_integral);
     logger.log_var(fileName, "requested_pedal", requested_pedal);
