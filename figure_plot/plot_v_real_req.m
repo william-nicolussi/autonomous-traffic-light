@@ -3,7 +3,7 @@ clear; clc; close all
 basePath = 'C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\log_internal';
 
 %% Plot: s(t), v(t), a(t)
-fileName = 'Values_PI.csv';
+fileName = 'Test_2.csv';
 filePath = fullfile(basePath, fileName);
 dataCSV = readtable(filePath);
 sgtitle(fileName, 'Interpreter', 'None');
