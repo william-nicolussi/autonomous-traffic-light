@@ -40,7 +40,7 @@ void intHandler(int signal)
 
 // ----- PROTOTYPES -----
 static void create_csv_PI(const char*, const input_data_str* in, double s_req, double dist, double v_req, double a_req,double a_real, double error, double error_integral, double requested_pedal);
-
+static void create_csv_Coeff(const char* fileName, const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double coeff[6]);
 
 
 // ----- MAIN -----
@@ -100,6 +100,8 @@ int main(int argc, const char *argv[])
             a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
             double t = in->ECUupTime;
             static double s_req_cumulative = 0; // to plot s_req
+            double coef[6]; // 6 elements because the matlab function returns a vector of 6
+            double final_time, final_distance, final_vel;
 
             /* -- Lezione 14/11 --
             double req_acc = coueffs_a_opt(DT, coef);
@@ -128,6 +130,7 @@ int main(int argc, const char *argv[])
             /* Test acc and brake: lecture 8/11 online
             // Poi ha disegnato grafico s[m];vel[m/s] con tracciate vel e Rq vel
             // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel*/
+            /*
             s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
@@ -138,6 +141,19 @@ int main(int argc, const char *argv[])
                 a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
             }
             s_req_cumulative += s_req;
+            */
+
+            //TEST 4
+            if (dist < 50)
+            {
+                student_stop_primitive(v_real, a_real, dist, coef, &final_distance, &final_time);
+            }
+            else
+            {
+                student_pass_primitive(v_real, a_real, dist, 15, 15, 0, 0, coef, &final_vel, &final_time, coef, &final_vel, &final_time); //check se possibile mettere T_min=T_mas=0
+            }
+            a_req = a_from_coeffs(DT, coef);
+
             
             // PI implementation
             const double k_p = 1;
@@ -159,10 +175,15 @@ int main(int argc, const char *argv[])
             */
 
             // PLOT TEST 3
+            /*
             if (t<14.98)
             {
                 create_csv_PI("Test_3", in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
             }
+            */
+
+            // PLOT TEST 4
+            create_csv_Coeff("Test_4_Coeff", in, s_req, dist, v_req, a_req, a_real, coef);
 
             //logger.log_var("acc_test", "coef0", coef[0]);
 
@@ -226,6 +247,27 @@ static void create_csv_PI(const char* fileName, const input_data_str* in, double
     logger.log_var(fileName, "error", error);
     logger.log_var(fileName, "error_integral",  error_integral);
     logger.log_var(fileName, "requested_pedal", requested_pedal);
+
+    // Write log
+    logger.write_line(fileName);
+}
+
+static void create_csv_Coeff(const char* fileName, const input_data_str* in, double s_req, double dist, double v_req, double a_req, double a_real, double coeff[6])
+{
+    logger.log_var(fileName, "cycle", in->CycleNumber);
+    logger.log_var(fileName, "time",  in->ECUupTime);
+    logger.log_var(fileName, "s_req", s_req);
+    logger.log_var(fileName, "dist", dist);
+    logger.log_var(fileName, "v_req", v_req);
+    logger.log_var(fileName, "v_real", in->VLgtFild);
+    logger.log_var(fileName, "a_req", a_req);
+    logger.log_var(fileName, "a_real", a_real);
+    char name_coef[5];
+    for(int i=0; i<6; i++)
+    {
+        snprintf(name_coef, sizeof(name_coef), "c(%d)", i);
+        logger.log_var(fileName, name_coef, coeff[0]);
+    }
 
     // Write log
     logger.write_line(fileName);

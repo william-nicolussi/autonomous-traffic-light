@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2024a">
-  <configuration build-checksum="2912398497" file="C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\primitives.prj" location="C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab" name="primitives" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="4174200057" file="C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\primitives.prj" location="C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab" name="primitives" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
       <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
@@ -626,7 +626,7 @@
     <param.AutoInferUnboundedSizeThreshold>2048</param.AutoInferUnboundedSizeThreshold>
     <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
     <param.EnableScreener>true</param.EnableScreener>
-    <param.AnnotationChecksum>3299550545</param.AnnotationChecksum>
+    <param.AnnotationChecksum>39284163</param.AnnotationChecksum>
     <var.LegacyTarget />
     <var.MirrorOnOpen>false</var.MirrorOnOpen>
     <param.FixedPointEnabled>false</param.FixedPointEnabled>
@@ -636,13 +636,13 @@
     <param.hdlParamStorage />
     <var.gc.lastOutputRoot>codegen\lib\primitives</var.gc.lastOutputRoot>
     <var.gc.lastOutputType>C_CODE</var.gc.lastOutputType>
-    <var.gc.preBuildChecksum>1392713097</var.gc.preBuildChecksum>
+    <var.gc.preBuildChecksum>2734815495</var.gc.preBuildChecksum>
     <var.cfi.lastOutputRoot>codegen\mex\a_from_coeffs_mex</var.cfi.lastOutputRoot>
-    <var.cfi.preBuildChecksum>2012975166</var.cfi.preBuildChecksum>
+    <var.cfi.preBuildChecksum>1796657738</var.cfi.preBuildChecksum>
     <var.lastCfiTestSnippet>prototypes</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\coef_list.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_stop.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\time_min_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\total_cost_var.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_pass_primitive.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_stop_primitive.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;2578802501&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
-    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\coef_list.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_stop.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\time_min_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\total_cost_var.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_pass_primitive.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_stop_primitive.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
+    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\coef_list.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_stop.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\min_vel.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\time_min_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\total_cost_var.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_pass_primitive.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_stop_primitive.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;4095578893&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\a_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\coef_list.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_time_stop.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\final_opt_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\j_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\min_vel.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\s_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\time_min_vel_pass.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\total_cost_var.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_from_coeffs.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\functions_exported\v_opt.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_pass_primitive.m&lt;/file&gt;&lt;file&gt;C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\matlab\student_stop_primitive.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
     <param.NoDefaultJIT>false</param.NoDefaultJIT>
     <param.configImportActive>false</param.configImportActive>
@@ -886,52 +886,55 @@
     </unset>
     <fileset.entrypoints>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\a_from_coeffs.m">
-        <Marker>1763140606246</Marker>
+        <Marker>1763567591325</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\a_opt.m">
-        <Marker>1763140603943</Marker>
+        <Marker>1763567586891</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\coef_list.m">
-        <Marker>1763140606691</Marker>
+        <Marker>1763567592121</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\final_opt_time_pass.m">
-        <Marker>1763140608028</Marker>
+        <Marker>1763567595347</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\final_opt_time_stop.m">
-        <Marker>1763140601650</Marker>
+        <Marker>1763567582714</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\final_opt_vel_pass.m">
-        <Marker>1763140605342</Marker>
+        <Marker>1763567589541</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\j_from_coeffs.m">
-        <Marker>1763140602115</Marker>
+        <Marker>1763567583496</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\j_opt.m">
-        <Marker>1763140604404</Marker>
+        <Marker>1763567587731</Marker>
+      </file>
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\min_vel.m">
+        <Marker>1763567592713</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\s_from_coeffs.m">
-        <Marker>1763140604875</Marker>
+        <Marker>1763567588630</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\s_opt.m">
-        <Marker>1763140603498</Marker>
+        <Marker>1763567586076</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\time_min_vel_pass.m">
-        <Marker>1763140605784</Marker>
+        <Marker>1763567590413</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\total_cost_var.m">
-        <Marker>1763140608478</Marker>
+        <Marker>1763567596251</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\v_from_coeffs.m">
-        <Marker>1763140602579</Marker>
+        <Marker>1763567584333</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\v_opt.m">
-        <Marker>1763140607140</Marker>
+        <Marker>1763567593532</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\student_pass_primitive.m">
-        <Marker>1763140603033</Marker>
+        <Marker>1763567585258</Marker>
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\student_stop_primitive.m">
-        <Marker>1763140607582</Marker>
+        <Marker>1763567594455</Marker>
       </file>
     </fileset.entrypoints>
     <fileset.testbench>
@@ -1111,6 +1114,24 @@
           </idpTable>
         </Inputs>
       </file>
+      <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\min_vel.m">
+        <Inputs fileName="min_vel.m" functionName="min_vel">
+          <Input Name="v0" typeId="0" />
+          <Input Name="a0" typeId="0" />
+          <Input Name="sf" typeId="0" />
+          <idpTable>
+            <type typeId="0">
+              <Class>double</Class>
+              <Size>1 x 1</Size>
+              <Value />
+              <InitialValue />
+              <UserDefined>false</UserDefined>
+              <Complex>false</Complex>
+              <Sparse>false</Sparse>
+            </type>
+          </idpTable>
+        </Inputs>
+      </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\s_from_coeffs.m">
         <Inputs fileName="s_from_coeffs.m" functionName="s_from_coeffs">
           <Input Name="t" typeId="0" />
@@ -1161,10 +1182,8 @@
       </file>
       <file custom-data-expanded="false" value="${PROJECT_ROOT}\functions_exported\time_min_vel_pass.m">
         <Inputs fileName="time_min_vel_pass.m" functionName="time_min_vel_pass">
-          <Input Name="v0" typeId="0" />
           <Input Name="a0" typeId="0" />
           <Input Name="sf" typeId="0" />
-          <Input Name="v_min" typeId="0" />
           <idpTable>
             <type typeId="0">
               <Class>double</Class>

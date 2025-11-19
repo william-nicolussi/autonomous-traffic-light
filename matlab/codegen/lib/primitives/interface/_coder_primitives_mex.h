@@ -54,6 +54,9 @@ void unsafe_j_from_coeffs_mexFunction(int32_T nlhs, mxArray *plhs[1],
 void unsafe_j_opt_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
                               const mxArray *prhs[7]);
 
+void unsafe_min_vel_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
+                                const mxArray *prhs[3]);
+
 void unsafe_s_from_coeffs_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                       int32_T nrhs, const mxArray *prhs[2]);
 
@@ -69,7 +72,7 @@ void unsafe_student_stop_primitive_mexFunction(int32_T nlhs, mxArray *plhs[3],
                                                const mxArray *prhs[3]);
 
 void unsafe_time_min_vel_pass_mexFunction(int32_T nlhs, mxArray *plhs[1],
-                                          int32_T nrhs, const mxArray *prhs[4]);
+                                          int32_T nrhs, const mxArray *prhs[2]);
 
 void unsafe_total_cost_var_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                        int32_T nrhs, const mxArray *prhs[6]);

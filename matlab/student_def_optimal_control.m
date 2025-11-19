@@ -28,7 +28,6 @@ syms s(t) v(t) a(t) u(t) l1(t) l2(t) l3(t);
 ode1 = diff(s,t) == v;        % ds/dt = v
 ode2 = diff(v,t) == a;        % dv/dt = a
 ode3 = diff(a,t) == u;        % da/dt = u
-% - Use "diff()" function to derive the function (e.g. diff(s) == v)
 
 %% Define the Lagrangian and the Hamiltonian.
 % Lagrangian (minimum jerk): L = u(t)^2
@@ -58,7 +57,6 @@ opt_u = solve(subs(du,u(t),opt_u)==0,opt_u);        % opt_u = -l3/2
 
 %% Write the second optimality condition.
 % Second Optimality Condition
-
 Dl1 = diff(l1,t) == -functionalDerivative(H,s);  % dl1/dt = 0
 Dl2 = diff(l2,t) == -functionalDerivative(H,v);  % dl2/dt = -l1
 Dl3 = diff(l3,t) == -functionalDerivative(H,a);  % dl3/dt = -l2

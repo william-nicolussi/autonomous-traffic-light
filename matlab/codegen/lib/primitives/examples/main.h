@@ -65,6 +65,8 @@ extern void main_j_from_coeffs(void);
 
 extern void main_j_opt(void);
 
+extern void main_min_vel(void);
+
 extern void main_s_from_coeffs(void);
 
 extern void main_s_opt(void);

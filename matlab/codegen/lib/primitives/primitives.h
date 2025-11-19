@@ -41,6 +41,8 @@ extern double j_from_coeffs(double t, const double in2[6]);
 extern double j_opt(double t, double v0, double a0, double sf, double vf,
                     double af, double T);
 
+extern double min_vel(double v0, double a0, double sf);
+
 extern void primitives_initialize(void);
 
 extern void primitives_terminate(void);
@@ -59,7 +61,7 @@ extern void student_pass_primitive(double v0, double a0, double sf,
 extern void student_stop_primitive(double v0, double a0, double sf,
                                    double coefs[6], double *maxsf, double *tf);
 
-extern double time_min_vel_pass(double v0, double a0, double sf, double v_min);
+extern double time_min_vel_pass(double a0, double sf);
 
 extern double total_cost_var(double v0, double a0, double sf, double vf,
                              double af, double T);
