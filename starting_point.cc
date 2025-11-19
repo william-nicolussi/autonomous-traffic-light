@@ -215,6 +215,7 @@ static void create_csv_PI(const char* fileName, const input_data_str* in, double
     logger.log_var(fileName, "cycle", in->CycleNumber);
     logger.log_var(fileName, "time",  in->ECUupTime);
     logger.log_var(fileName, "s_req", s_req);
+    logger.log_var(fileName, "in->TrfLightDist", in->TrfLightDist);
     logger.log_var(fileName, "dist", dist);
     logger.log_var(fileName, "v_req", v_req);
     logger.log_var(fileName, "v_real", in->VLgtFild);
