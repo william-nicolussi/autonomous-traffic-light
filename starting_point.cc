@@ -99,6 +99,7 @@ int main(int argc, const char *argv[])
             const double a_min = -10;
             a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration
             double t = in->ECUupTime;
+            static double s_req_cumulative = 0; // to plot s_req
 
             /* -- Lezione 14/11 --
             double req_acc = coueffs_a_opt(DT, coef);
@@ -114,9 +115,9 @@ int main(int argc, const char *argv[])
             */
             // TEST 2
             a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
-            v_req = v_req + a_req * DT;
-            s_req = s_req + v_req*DT + 0.5*a_req*DT*DT;
-            
+            v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
+            s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
+            s_req_cumulative += s_req;
             
 
             /*
@@ -150,7 +151,7 @@ int main(int argc, const char *argv[])
 
             if (t<19.98)
             {
-                create_csv_PI("Test_2", in, s_req, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+                create_csv_PI("Test_2", in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
             }
 
             /*
@@ -214,12 +215,12 @@ static void create_csv_PI(const char* fileName, const input_data_str* in, double
     logger.log_var(fileName, "cycle", in->CycleNumber);
     logger.log_var(fileName, "time",  in->ECUupTime);
     logger.log_var(fileName, "s_req", s_req);
+    logger.log_var(fileName, "in->TrfLightDist", in->TrfLightDist);
     logger.log_var(fileName, "dist", dist);
     logger.log_var(fileName, "v_req", v_req);
     logger.log_var(fileName, "v_real", in->VLgtFild);
     logger.log_var(fileName, "a_req", a_req);
     logger.log_var(fileName, "a_real", a_real);
-    logger.log_var(fileName, "in->ALgtFild", in->ALgtFild);
     logger.log_var(fileName, "error", error);
     logger.log_var(fileName, "error_integral",  error_integral);
     logger.log_var(fileName, "requested_pedal", requested_pedal);
