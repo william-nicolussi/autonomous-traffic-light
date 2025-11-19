@@ -113,19 +113,21 @@ int main(int argc, const char *argv[])
             v_req = v_req + a_req * DT;
             s_req = s_req + v_req*DT + 1/2*a_req*DT*DT;
             */
+
             // TEST 2
+            /* In this case we surpass the traffic light because we have a_req<<a_min */
+            /*
             a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
             v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
             s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 20-t);
             s_req_cumulative += s_req;
+            */
             
 
-            /*
             // TEST 3
-            // Test acc and brake: lecture 8/11 online
+            /* Test acc and brake: lecture 8/11 online
             // Poi ha disegnato grafico s[m];vel[m/s] con tracciate vel e Rq vel
-            // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel
-            double t = in->ECUupTime;
+            // e anche grafico t[s];vel[m/s] con tracciate vel e Rq vel*/
             s_req = s_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
             a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 25, 0, 10-t);
@@ -135,9 +137,8 @@ int main(int argc, const char *argv[])
                 v_req = v_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
                 a_req = a_opt(DT, v_real, a_real, in->TrfLightDist, 0, 0, 15-t);
             }
-            static double s_req_cumulative;
             s_req_cumulative += s_req;
-            */
+            
             // PI implementation
             const double k_p = 1;
             const double k_i = 0.1;
@@ -149,18 +150,19 @@ int main(int argc, const char *argv[])
             Test 2: [k_p=0.02;k_i=1;] 8/11 online
             */
 
+            // PLOT TEST 2
+            /*
             if (t<19.98)
             {
                 create_csv_PI("Test_2", in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
             }
-
-            /*
-            // Send information to logger
-            if (t<15)
-            {
-                create_csv_PI(in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
-            }
             */
+
+            // PLOT TEST 3
+            if (t<14.98)
+            {
+                create_csv_PI("Test_3", in, s_req_cumulative, dist, v_req, a_req, a_real, error, error_integral, requested_pedal);
+            }
 
             //logger.log_var("acc_test", "coef0", coef[0]);
 
