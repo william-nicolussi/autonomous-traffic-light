@@ -26,7 +26,8 @@ a_from_coeffs(1.0, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
 j_from_coeffs(1.0, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
 
 total_cost_var(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
-time_min_vel_pass(1.0, -2.0, 3.0, 4.0);
+time_min_vel_pass(1.0, -2.0);
+min_vel(1.0, -2.0, 3.0);
 
 final_opt_time_pass(1.0, 2.0, 3.0, 4.0);
 final_opt_time_stop(1.0, 2.0, 3.0);

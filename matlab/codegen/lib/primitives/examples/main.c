@@ -77,6 +77,7 @@ You can call entry-point functions multiple times. */
   main_final_opt_vel_pass();
   main_j_from_coeffs();
   main_j_opt();
+  main_min_vel();
   main_s_from_coeffs();
   main_s_opt();
   main_student_pass_primitive();
@@ -168,6 +169,15 @@ void main_j_opt(void)
   t_tmp = j_opt(t_tmp, t_tmp, t_tmp, t_tmp, t_tmp, t_tmp, t_tmp);
 }
 
+void main_min_vel(void)
+{
+  double v0_tmp;
+  /* Initialize function 'min_vel' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'min_vel'. */
+  v0_tmp = min_vel(v0_tmp, v0_tmp, v0_tmp);
+}
+
 void main_s_from_coeffs(void)
 {
   double dv[6];
@@ -218,11 +228,11 @@ void main_student_stop_primitive(void)
 
 void main_time_min_vel_pass(void)
 {
-  double v0_tmp;
+  double a0_tmp;
   /* Initialize function 'time_min_vel_pass' input arguments. */
-  v0_tmp = argInit_real_T();
+  a0_tmp = argInit_real_T();
   /* Call the entry-point 'time_min_vel_pass'. */
-  v0_tmp = time_min_vel_pass(v0_tmp, v0_tmp, v0_tmp, v0_tmp);
+  a0_tmp = time_min_vel_pass(a0_tmp, a0_tmp);
 }
 
 void main_total_cost_var(void)

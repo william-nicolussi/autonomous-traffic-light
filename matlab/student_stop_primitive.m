@@ -26,7 +26,7 @@
 %% Stopping Primitive
 
 function [coefs,maxsf,tf] = student_stop_primitive(v0,a0,sf)
-    if v0<=0 || sf==0  % --- Early exits ---
+    if v0<=0 || sf==0  % If negative velocity or null final position, return all 0
         maxsf = 0;
         tf = 0.;
         coefs=[0,0,0,0,0,0];

@@ -345,6 +345,27 @@ void j_opt_api(const mxArray *const prhs[7], const mxArray **plhs)
   *plhs = emlrt_marshallOut(t);
 }
 
+void min_vel_api(const mxArray *const prhs[3], const mxArray **plhs)
+{
+  emlrtStack st = {
+      NULL, /* site */
+      NULL, /* tls */
+      NULL  /* prev */
+  };
+  real_T a0;
+  real_T sf;
+  real_T v0;
+  st.tls = emlrtRootTLSGlobal;
+  /* Marshall function inputs */
+  v0 = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "v0");
+  a0 = emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "a0");
+  sf = emlrt_marshallIn(&st, emlrtAliasP(prhs[2]), "sf");
+  /* Invoke the target function */
+  v0 = min_vel(v0, a0, sf);
+  /* Marshall function outputs */
+  *plhs = emlrt_marshallOut(v0);
+}
+
 void primitives_atexit(void)
 {
   emlrtStack st = {
@@ -516,7 +537,7 @@ void student_stop_primitive_api(const mxArray *const prhs[3], int32_T nlhs,
   }
 }
 
-void time_min_vel_pass_api(const mxArray *const prhs[4], const mxArray **plhs)
+void time_min_vel_pass_api(const mxArray *const prhs[2], const mxArray **plhs)
 {
   emlrtStack st = {
       NULL, /* site */
@@ -525,18 +546,14 @@ void time_min_vel_pass_api(const mxArray *const prhs[4], const mxArray **plhs)
   };
   real_T a0;
   real_T sf;
-  real_T v0;
-  real_T v_min;
   st.tls = emlrtRootTLSGlobal;
   /* Marshall function inputs */
-  v0 = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "v0");
-  a0 = emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "a0");
-  sf = emlrt_marshallIn(&st, emlrtAliasP(prhs[2]), "sf");
-  v_min = emlrt_marshallIn(&st, emlrtAliasP(prhs[3]), "v_min");
+  a0 = emlrt_marshallIn(&st, emlrtAliasP(prhs[0]), "a0");
+  sf = emlrt_marshallIn(&st, emlrtAliasP(prhs[1]), "sf");
   /* Invoke the target function */
-  v0 = time_min_vel_pass(v0, a0, sf, v_min);
+  a0 = time_min_vel_pass(a0, sf);
   /* Marshall function outputs */
-  *plhs = emlrt_marshallOut(v0);
+  *plhs = emlrt_marshallOut(a0);
 }
 
 void total_cost_var_api(const mxArray *const prhs[6], const mxArray **plhs)

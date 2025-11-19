@@ -28,7 +28,6 @@ syms s(t) v(t) a(t) u(t) l1(t) l2(t) l3(t);
 ode1 = diff(s,t) == v;        % ds/dt = v
 ode2 = diff(v,t) == a;        % dv/dt = a
 ode3 = diff(a,t) == u;        % da/dt = u
-% - Use "diff()" function to derive the function (e.g. diff(s) == v)
 
 %% Define the Lagrangian and the Hamiltonian.
 % Lagrangian (minimum jerk): L = u(t)^2
@@ -58,7 +57,6 @@ opt_u = solve(subs(du,u(t),opt_u)==0,opt_u);        % opt_u = -l3/2
 
 %% Write the second optimality condition.
 % Second Optimality Condition
-
 Dl1 = diff(l1,t) == -functionalDerivative(H,s);  % dl1/dt = 0
 Dl2 = diff(l2,t) == -functionalDerivative(H,v);  % dl2/dt = -l1
 Dl3 = diff(l3,t) == -functionalDerivative(H,a);  % dl3/dt = -l2
@@ -112,10 +110,10 @@ disp(['Solution saved into: ' exportFolder]);
 %% Create the matlab function for the solution using the coeffs
 c = sym('c',[1 6]);
 
-coeffs_s_opt = c(1)*t + (1/2)*c(2)*t.^2 + (1/6)*c(3)*t.^3 + (1/24)*c(4)*t.^4 + (1/120)*c(5)*t.^5;
-coeffs_v_opt = c(1) + c(2)*t + (1/2)*c(3)*t.^2 + (1/6)*c(4)*t.^3 + (1/24)*c(5)*t.^4;
-coeffs_a_opt = c(2) + c(3)*t + (1/2)*c(4)*t.^2 + (1/6)*c(5)*t.^3;
-coeffs_j_opt = c(3) + c(4)*t + (1/2)*c(5)*t.^2;
+coeffs_s_opt = c(1)*t + (1/2)*c(2)*t^2 + (1/6)*c(3)*t^3 + (1/24)*c(4)*t^4 + (1/120)*c(5)*t^5;
+coeffs_v_opt = diff(coeffs_s_opt, t);
+coeffs_a_opt = diff(coeffs_v_opt, t);
+coeffs_j_opt = diff(coeffs_a_opt, t);
 
 coeffs_s_opt_fun = matlabFunction(coeffs_s_opt,'Vars',{t, c},'File', fullfile(exportFolder,'s_from_coeffs.m'));
 coeffs_v_opt_fun = matlabFunction(coeffs_v_opt,'Vars',{t, c},'File', fullfile(exportFolder,'v_from_coeffs.m'));

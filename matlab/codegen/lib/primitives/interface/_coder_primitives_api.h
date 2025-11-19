@@ -64,6 +64,10 @@ real_T j_opt(real_T t, real_T v0, real_T a0, real_T sf, real_T vf, real_T af,
 
 void j_opt_api(const mxArray *const prhs[7], const mxArray **plhs);
 
+real_T min_vel(real_T v0, real_T a0, real_T sf);
+
+void min_vel_api(const mxArray *const prhs[3], const mxArray **plhs);
+
 void primitives_atexit(void);
 
 void primitives_initialize(void);
@@ -97,9 +101,9 @@ void student_stop_primitive(real_T v0, real_T a0, real_T sf, real_T coefs[6],
 void student_stop_primitive_api(const mxArray *const prhs[3], int32_T nlhs,
                                 const mxArray *plhs[3]);
 
-real_T time_min_vel_pass(real_T v0, real_T a0, real_T sf, real_T v_min);
+real_T time_min_vel_pass(real_T a0, real_T sf);
 
-void time_min_vel_pass_api(const mxArray *const prhs[4], const mxArray **plhs);
+void time_min_vel_pass_api(const mxArray *const prhs[2], const mxArray **plhs);
 
 real_T total_cost_var(real_T v0, real_T a0, real_T sf, real_T vf, real_T af,
                       real_T T);
