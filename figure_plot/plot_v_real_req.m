@@ -35,7 +35,31 @@ ylabel("Acceleration");
 legend("a\_req","a\_real","Location","best");
 grid on;
 
-%% Plot: Only Velocity
+%% Plot: v(s), a(s)
+fileName = 'Test_3.csv';
+filePath = fullfile(basePath, fileName);
+dataCSV = readtable(filePath);
+sgtitle(fileName, 'Interpreter', 'None');
+
+figure(1);
+abscissa = dataCSV.dist;
+
+% --- Velocity ---
+subplot(2,1,1);
+plot(abscissa, dataCSV.v_req); hold on;
+plot(abscissa, dataCSV.v_real);
+ylabel("Velocity");
+legend("v\_req","v\_real","Location","best");
+grid on;
+
+% --- Acceleration ---
+subplot(2,1,2);
+plot(abscissa, dataCSV.a_req); hold on;
+plot(abscissa, dataCSV.a_real);
+ylabel("Acceleration");
+legend("a\_req","a\_real","Location","best");
+grid on;
+%% Plot: v(t)
 fileName = 'Values_PI.csv';
 filePath = fullfile(basePath, fileName);
 dataCSV = readtable(filePath);
@@ -76,3 +100,10 @@ grid on;
 
 %taking the coefficient you can plot the primitives.
 % 
+
+T = % vettore dei tempi generato
+
+coefs = acctest2 %tire fuori un vettore con i coefficient
+coef_v_opt = 
+plot(coeff_v_opt, )
+% poi bisogna fare T++

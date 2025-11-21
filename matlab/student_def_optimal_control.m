@@ -110,10 +110,10 @@ disp(['Solution saved into: ' exportFolder]);
 %% Create the matlab function for the solution using the coeffs
 c = sym('c',[1 6]);
 
-coeffs_s_opt = c(1)*t + (1/2)*c(2)*t.^2 + (1/6)*c(3)*t.^3 + (1/24)*c(4)*t.^4 + (1/120)*c(5)*t.^5;
-coeffs_v_opt = c(1) + c(2)*t + (1/2)*c(3)*t.^2 + (1/6)*c(4)*t.^3 + (1/24)*c(5)*t.^4;
-coeffs_a_opt = c(2) + c(3)*t + (1/2)*c(4)*t.^2 + (1/6)*c(5)*t.^3;
-coeffs_j_opt = c(3) + c(4)*t + (1/2)*c(5)*t.^2;
+coeffs_s_opt = c(1)*t + (1/2)*c(2)*t^2 + (1/6)*c(3)*t^3 + (1/24)*c(4)*t^4 + (1/120)*c(5)*t^5;
+coeffs_v_opt = diff(coeffs_s_opt, t);
+coeffs_a_opt = diff(coeffs_v_opt, t);
+coeffs_j_opt = diff(coeffs_a_opt, t);
 
 coeffs_s_opt_fun = matlabFunction(coeffs_s_opt,'Vars',{t, c},'File', fullfile(exportFolder,'s_from_coeffs.m'));
 coeffs_v_opt_fun = matlabFunction(coeffs_v_opt,'Vars',{t, c},'File', fullfile(exportFolder,'v_from_coeffs.m'));
