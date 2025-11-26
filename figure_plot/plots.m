@@ -1,11 +1,15 @@
 %% Set file
 clear; clc; close all
-basePath = 'C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\log_internal';
+
+projPath  = fileparts(pwd);
+csvPath = fullfile(projPath, "bin\log_internal");
+matlabPath = fullfile(projPath, 'matlab\functions_exported');
+addpath(matlabPath);
 
 %% Plot: s(t), v(t), a(t)
 fileName = 'Test_4_Coeff.csv';
-filePath = fullfile(basePath, fileName);
-dataCSV = readtable(filePath);
+filePath = fullfile(csvPath, fileName);
+dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 sgtitle(fileName, 'Interpreter', 'None');
 
 figure(1);
@@ -37,8 +41,8 @@ grid on;
 
 %% Plot: v(s), a(s)
 fileName = 'Test_3.csv';
-filePath = fullfile(basePath, fileName);
-dataCSV = readtable(filePath);
+filePath = fullfile(csvPath, fileName);
+dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 sgtitle(fileName, 'Interpreter', 'None');
 
 figure(1);
@@ -60,9 +64,9 @@ ylabel("Acceleration");
 legend("a\_req","a\_real","Location","best");
 grid on;
 %% Plot: v(t)
-fileName = 'Values_PI.csv';
-filePath = fullfile(basePath, fileName);
-dataCSV = readtable(filePath);
+fileName = 'Test_4_Coeff.csv';
+filePath = fullfile(csvPath, fileName);
+dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
 figure(2);
 abscissa = dataCSV.dist;
@@ -78,8 +82,8 @@ grid on;
 fileName = 'Values_PI.csv';
 abscissa = dataCSV.time;
 
-filePath = fullfile(basePath, fileName);
-dataCSV = readtable(filePath);
+filePath = fullfile(csvPath, fileName);
+dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
 figure(3);
 title(fileName, 'Interpreter', 'None');
@@ -101,9 +105,29 @@ grid on;
 %taking the coefficient you can plot the primitives.
 % 
 
-T = % vettore dei tempi generato
+fileName = 'Test_4_Coeff.csv';
+filePath = fullfile(csvPath, fileName);
+dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
-coefs = acctest2 %tire fuori un vettore con i coefficient
-coef_v_opt = 
-plot(coeff_v_opt, )
-% poi bisogna fare T++
+% drag and drop the csv, con column delimiters: comma, semicolon.
+% poi esce in consolle uiopen('C:\Users\HP\Desktop\UniTn\IVAD\autonomous_traffic_light-main\bin\log_internal\Test_4_Coeff.csv',1)
+
+cycle_init = 9;
+t_init = dataCSV.time(cycle_init);
+t_fin = dataCSV.final_time(cycle_init);
+
+% select only the time in [t_init, t_fin]
+idx = (dataCSV.time >= t_init) & (dataCSV.time <= t_fin);
+t_vec = dataCSV.time(idx);
+
+coef_all = [ dataCSV.c0(cycle_init), dataCSV.c1(cycle_init), dataCSV.c2(cycle_init), dataCSV.c3(cycle_init), dataCSV.c4(cycle_init), dataCSV.c5(cycle_init)];
+coeffs = coef_all(2:6);
+v_primitive = v_from_coeffs(t_vec,coef_all);
+
+abscissa = dataCSV.time;
+title(fileName, 'Interpreter', 'None');
+plot(abscissa, dataCSV.v_req); hold on;
+plot(abscissa, dataCSV.v_real); hold on;
+plot(t_vec, v_primitive, Color="green");
+legend("v\_req","v\_real","v\_primitive","Location","best");
+grid on;
