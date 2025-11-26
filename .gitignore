@@ -2,3 +2,4 @@ bin
 compilazione
 .vscode
 README.md
+*.asv
