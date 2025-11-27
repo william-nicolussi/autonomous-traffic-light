@@ -21,3 +21,6 @@ function [coeffs_j0, sf_j0, tf_j0] = student_pass_primitive_j0( v0, a0, sf, vf_m
         end
     end
 end
+
+% sf_j0 (?)
+% tf_j0 (?)
