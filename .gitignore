@@ -5,3 +5,4 @@ README.md
 *.asv
 cmake-build-debug
 .idea
+.clang-format
