@@ -95,8 +95,8 @@ int main(int argc, const char *argv[])
             double v_real = in->VLgtFild;
             double a_real = in->ALgtFild;
             const double a_max = 5;
-            const double a_min = -10;
-            a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration -> forse questo è sbagliato
+            const double a_min = -5;
+            //a_real = fmin(fmax(a_real, a_min), a_max); // saturate acceleration -> forse questo è sbagliato
             double t = in->ECUupTime;
             static double s_req_cumulative = 0; // to plot s_req
             double coef[6]; // 6 elements because the matlab function returns a vector of 6
@@ -159,20 +159,19 @@ int main(int argc, const char *argv[])
             s_req = s_from_coeffs(DT, coef);
             v_req = v_from_coeffs(DT, coef);
             // a_req = a_from_coeffs(DT, coef);
-            static double a_req_old = a_real;
-            a_req = a_req_old + 0.5*DT*(j_from_coeffs(0,coef)+j_from_coeffs(DT,coef));
+            static double a_req_old = 0.0; //= a_real; (?)
+            double j_req = 0.5*DT*(j_from_coeffs(0.0,coef)+j_from_coeffs(DT,coef));
+            a_req = a_req_old + j_req;
             a_req = fmin(fmax(a_req, a_min), a_max);
             a_req_old = a_req;
             s_req_cumulative += s_req;
 
             // Lezione 20/11 -> plot the primitives in matlab
             double s = init_dist - dist;
-            /* Lui ha un file con time, acc, req_acc, vel, req_vel, e poi i coefficienti. */
-
             
             // PI implementation
-            const double k_p = 0.1;
-            const double k_i = 0.01;
+            const double k_p = 0.15;
+            const double k_i = 0.15;
             double error = a_req - a_real;
             static double error_integral = 0;
             error_integral = error_integral + error * DT;
