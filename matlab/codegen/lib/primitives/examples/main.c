@@ -72,18 +72,26 @@ You can call entry-point functions multiple times. */
   main_a_from_coeffs();
   main_a_opt();
   main_coef_list();
+  main_final_opt_pos_j0();
+  main_final_opt_time_j0();
+  main_final_opt_time_j0_1();
+  main_final_opt_time_j0_2();
   main_final_opt_time_pass();
   main_final_opt_time_stop();
+  main_final_opt_time_stop_j0();
+  main_final_opt_vel_j0();
   main_final_opt_vel_pass();
   main_j_from_coeffs();
   main_j_opt();
   main_min_vel();
+  main_pass_primitive();
+  main_pass_primitive_j0();
   main_s_from_coeffs();
   main_s_opt();
-  main_student_pass_primitive();
-  main_student_stop_primitive();
+  main_stop_primitive();
+  main_stop_primitive_j0();
   main_time_min_vel_pass();
-  main_total_cost_var();
+  main_total_cost();
   main_v_from_coeffs();
   main_v_opt();
   /* Terminate the application.
@@ -114,12 +122,49 @@ void main_a_opt(void)
 
 void main_coef_list(void)
 {
-  double coef_list_var[6];
+  double m[6];
   double v0_tmp;
   /* Initialize function 'coef_list' input arguments. */
   v0_tmp = argInit_real_T();
   /* Call the entry-point 'coef_list'. */
-  coef_list(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, coef_list_var);
+  coef_list(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, m);
+}
+
+void main_final_opt_pos_j0(void)
+{
+  double v0_tmp;
+  /* Initialize function 'final_opt_pos_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_pos_j0'. */
+  v0_tmp = final_opt_pos_j0(v0_tmp, v0_tmp, v0_tmp);
+}
+
+void main_final_opt_time_j0(void)
+{
+  double tf_j0_opt_all[2];
+  double v0_tmp;
+  /* Initialize function 'final_opt_time_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_time_j0'. */
+  final_opt_time_j0(v0_tmp, v0_tmp, v0_tmp, tf_j0_opt_all);
+}
+
+void main_final_opt_time_j0_1(void)
+{
+  double v0_tmp;
+  /* Initialize function 'final_opt_time_j0_1' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_time_j0_1'. */
+  v0_tmp = final_opt_time_j0_1(v0_tmp, v0_tmp, v0_tmp);
+}
+
+void main_final_opt_time_j0_2(void)
+{
+  double v0_tmp;
+  /* Initialize function 'final_opt_time_j0_2' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_time_j0_2'. */
+  v0_tmp = final_opt_time_j0_2(v0_tmp, v0_tmp, v0_tmp);
 }
 
 void main_final_opt_time_pass(void)
@@ -138,6 +183,24 @@ void main_final_opt_time_stop(void)
   v0_tmp = argInit_real_T();
   /* Call the entry-point 'final_opt_time_stop'. */
   v0_tmp = final_opt_time_stop(v0_tmp, v0_tmp, v0_tmp);
+}
+
+void main_final_opt_time_stop_j0(void)
+{
+  double v0_tmp;
+  /* Initialize function 'final_opt_time_stop_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_time_stop_j0'. */
+  v0_tmp = final_opt_time_stop_j0(v0_tmp, v0_tmp);
+}
+
+void main_final_opt_vel_j0(void)
+{
+  double v0_tmp;
+  /* Initialize function 'final_opt_vel_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'final_opt_vel_j0'. */
+  v0_tmp = final_opt_vel_j0(v0_tmp, v0_tmp, v0_tmp, v0_tmp);
 }
 
 void main_final_opt_vel_pass(void)
@@ -178,6 +241,34 @@ void main_min_vel(void)
   v0_tmp = min_vel(v0_tmp, v0_tmp, v0_tmp);
 }
 
+void main_pass_primitive(void)
+{
+  double m1[6];
+  double m2[6];
+  double T1;
+  double T2;
+  double v0_tmp;
+  double v1;
+  double v2;
+  /* Initialize function 'pass_primitive' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'pass_primitive'. */
+  pass_primitive(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, m1,
+                 &v1, &T1, m2, &v2, &T2);
+}
+
+void main_pass_primitive_j0(void)
+{
+  double m[6];
+  double sf_j0;
+  double tf_j0;
+  double v0_tmp;
+  /* Initialize function 'pass_primitive_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'pass_primitive_j0'. */
+  pass_primitive_j0(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, m, &sf_j0, &tf_j0);
+}
+
 void main_s_from_coeffs(void)
 {
   double dv[6];
@@ -198,32 +289,28 @@ void main_s_opt(void)
   t_tmp = s_opt(t_tmp, t_tmp, t_tmp, t_tmp, t_tmp, t_tmp, t_tmp);
 }
 
-void main_student_pass_primitive(void)
+void main_stop_primitive(void)
 {
-  double coeffsT1[6];
-  double coeffsT2[6];
-  double T1;
-  double T2;
-  double v0_tmp;
-  double v1;
-  double v2;
-  /* Initialize function 'student_pass_primitive' input arguments. */
-  v0_tmp = argInit_real_T();
-  /* Call the entry-point 'student_pass_primitive'. */
-  student_pass_primitive(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp,
-                         coeffsT2, &v2, &T2, coeffsT1, &v1, &T1);
-}
-
-void main_student_stop_primitive(void)
-{
-  double coefs[6];
-  double maxsf;
+  double m[6];
+  double s_max;
   double tf;
   double v0_tmp;
-  /* Initialize function 'student_stop_primitive' input arguments. */
+  /* Initialize function 'stop_primitive' input arguments. */
   v0_tmp = argInit_real_T();
-  /* Call the entry-point 'student_stop_primitive'. */
-  student_stop_primitive(v0_tmp, v0_tmp, v0_tmp, coefs, &maxsf, &tf);
+  /* Call the entry-point 'stop_primitive'. */
+  stop_primitive(v0_tmp, v0_tmp, v0_tmp, m, &s_max, &tf);
+}
+
+void main_stop_primitive_j0(void)
+{
+  double m[6];
+  double sf_j0;
+  double tf_j0;
+  double v0_tmp;
+  /* Initialize function 'stop_primitive_j0' input arguments. */
+  v0_tmp = argInit_real_T();
+  /* Call the entry-point 'stop_primitive_j0'. */
+  stop_primitive_j0(v0_tmp, v0_tmp, m, &sf_j0, &tf_j0);
 }
 
 void main_time_min_vel_pass(void)
@@ -235,13 +322,13 @@ void main_time_min_vel_pass(void)
   a0_tmp = time_min_vel_pass(a0_tmp, a0_tmp);
 }
 
-void main_total_cost_var(void)
+void main_total_cost(void)
 {
   double v0_tmp;
-  /* Initialize function 'total_cost_var' input arguments. */
+  /* Initialize function 'total_cost' input arguments. */
   v0_tmp = argInit_real_T();
-  /* Call the entry-point 'total_cost_var'. */
-  v0_tmp = total_cost_var(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp);
+  /* Call the entry-point 'total_cost'. */
+  v0_tmp = total_cost(v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp, v0_tmp);
 }
 
 void main_v_from_coeffs(void)

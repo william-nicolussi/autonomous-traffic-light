@@ -110,7 +110,7 @@ disp(['Solution saved into: ' exportFolder]);
 %% Create the matlab function for the solution using the coeffs
 c = sym('c',[1 6]);
 
-coeffs_s_opt = c(1)*t + (1/2)*c(2)*t^2 + (1/6)*c(3)*t^3 + (1/24)*c(4)*t^4 + (1/120)*c(5)*t^5;
+coeffs_s_opt = c(1) + c(2)*t + (1/2)*c(3)*t^2 + (1/6)*c(4)*t^3 + (1/24)*c(5)*t^4 + (1/120)*c(6)*t^5;
 coeffs_v_opt = diff(coeffs_s_opt, t);
 coeffs_a_opt = diff(coeffs_v_opt, t);
 coeffs_j_opt = diff(coeffs_a_opt, t);
@@ -124,20 +124,19 @@ disp(['Coeffs saved into: ' exportFolder]);
 
 %% Export the coefficent list in a matlab function
 % the coeffs are moltiplied by [1,2,6,24,120] to obtain the value of c1, c2, c3, c4, c5
-coef_list_var = [0,coeffs(sol_opt.s,t) .* [1,2,6,24,120]];
-coef_list_fun = matlabFunction(coef_list_var,'Vars',[v0,a0,sf,vf,af,T],'File',fullfile(exportFolder,'coef_list.m'));
+m = [0, coeffs(sol_opt.s,t) .* [1,2,6,24,120]];
+coef_list_fun = matlabFunction(m,'Vars',[v0,a0,sf,vf,af,T],'File',fullfile(exportFolder,'coef_list.m'));
 % - Use the matlabFunction function to generate a matlab function using a symbolic function 
 disp(['Coefs list saved into: ' exportFolder]);
 
 %% Export the total cost in a matlab function 
-total_cost_var = simplify(int(sol_opt.j^2,t,0,T));
-total_cost_fun = matlabFunction(total_cost_var,'Vars',[v0,a0,sf,vf,af,T],'File', fullfile(exportFolder,'total_cost_var.m'));
+J = simplify(int(sol_opt.j^2,t,0,T));
+total_cost_fun = matlabFunction(J,'Vars',[v0,a0,sf,vf,af,T],'File', fullfile(exportFolder,'total_cost.m'));
 % - Use the matlabFunction function to generate a matlab function using a
 %   symbolic function
 disp(['Total cost saved into: ' exportFolder]);
 
 %% Inspect solutions 
-
 T_max  = 4.;
 t_list = linspace(0,T_max,100);
 
