@@ -130,8 +130,8 @@ coef_list_fun = matlabFunction(m,'Vars',[v0,a0,sf,vf,af,T],'File',fullfile(expor
 disp(['Coefs list saved into: ' exportFolder]);
 
 %% Export the total cost in a matlab function 
-total_cost_var = simplify(int(sol_opt.j^2,t,0,T));
-total_cost_fun = matlabFunction(total_cost_var,'Vars',[v0,a0,sf,vf,af,T],'File', fullfile(exportFolder,'total_cost_var.m'));
+J = simplify(int(sol_opt.j^2,t,0,T));
+total_cost_fun = matlabFunction(J,'Vars',[v0,a0,sf,vf,af,T],'File', fullfile(exportFolder,'total_cost.m'));
 % - Use the matlabFunction function to generate a matlab function using a
 %   symbolic function
 disp(['Total cost saved into: ' exportFolder]);
