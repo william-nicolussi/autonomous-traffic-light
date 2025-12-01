@@ -138,7 +138,8 @@ int main(int argc, const char *argv[])
             a_req = fmin(fmax(a_req, a_min), a_max);
             // a_req = fmin(fmax(a0_bar+longGain*(DT*(jT1+jT0)*0.5),a_min), a_max);
             a0_bar = a_req;
-            double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
+            //double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
+            double v_req = v_from_coeffs(DT, m_star);
             static double s_req = 0.0;
             s_req += s_from_coeffs(DT, m_star);
 
