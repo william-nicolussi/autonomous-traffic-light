@@ -10,9 +10,12 @@
 % end
 % addpath(exportFolder);
 
+%%
+clear; clc; close all
+
 %% prototypes
-student_pass_primitive(5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
-student_stop_primitive(5.0,6.0,7.0);
+pass_primitive(5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
+stop_primitive(5.0,6.0,7.0);
 coef_list(5.0, 6.0, 7.0, 8.0, 9.0, 10.0);
 
 s_opt(2.0, 3.0, 4.0, 5.0, 7.0, 8.0, 9.0);
@@ -25,10 +28,20 @@ v_from_coeffs(1.0, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
 a_from_coeffs(1.0, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
 j_from_coeffs(1.0, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]);
 
-total_cost_var(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+total_cost(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
 time_min_vel_pass(1.0, -2.0);
 min_vel(1.0, -2.0, 3.0);
 
 final_opt_time_pass(1.0, 2.0, 3.0, 4.0);
 final_opt_time_stop(1.0, 2.0, 3.0);
 final_opt_vel_pass(1.0, -2.0, 3.0, 4.0);
+
+final_opt_pos_j0(1.0, 2.0, 3.0);
+final_opt_time_j0(1.0, 2.0, 3.0);
+final_opt_time_j0_1(1.0, 2.0, 3.0);
+final_opt_time_j0_2(1.0, 2.0, 3.0);
+final_opt_time_stop_j0(1.0, 2.0);
+final_opt_vel_j0(1.0, 2.0, 3.0, 4.0);
+
+pass_primitive_j0(1.0, 2.0, 3.0, 4.0, 5.0);
+stop_primitive_j0(1.0, 2.0);
