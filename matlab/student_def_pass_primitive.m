@@ -43,7 +43,7 @@ disp(['Final opt velocity to pass saved to: ' exportFolder]);
 
 %% Determine the time to reach the minimum velocity and final velocity
 T_star_all = solve(diff(vf_sol,tf)==0,tf);
-T_star = T_star_all(1);
+T_star = simplify(T_star_all(1));
 disp('Time to reach the minimum velocity T* = ');
 pretty(T_star);
 
