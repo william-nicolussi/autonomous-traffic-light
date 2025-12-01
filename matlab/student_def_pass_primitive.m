@@ -18,7 +18,7 @@ addpath(exportFolder);
 
 %% Determine the optimal final velocity to pass
 syms v0 a0 sf vf tf;
-J = total_cost_var(v0, a0, sf, vf, 0, tf);
+J = total_cost(v0, a0, sf, vf, 0, tf);
 dJvf = diff(J, vf);
 vf_sol = solve(dJvf==0, vf);
 disp('Optimal passing velocity vf* = ');
