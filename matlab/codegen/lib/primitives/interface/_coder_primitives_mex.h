@@ -36,13 +36,34 @@ void unsafe_a_opt_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
 void unsafe_coef_list_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
                                   const mxArray *prhs[6]);
 
+void unsafe_final_opt_pos_j0_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                         int32_T nrhs, const mxArray *prhs[3]);
+
+void unsafe_final_opt_time_j0_1_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                            int32_T nrhs,
+                                            const mxArray *prhs[3]);
+
+void unsafe_final_opt_time_j0_2_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                            int32_T nrhs,
+                                            const mxArray *prhs[3]);
+
+void unsafe_final_opt_time_j0_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                          int32_T nrhs, const mxArray *prhs[3]);
+
 void unsafe_final_opt_time_pass_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                             int32_T nrhs,
                                             const mxArray *prhs[4]);
 
+void unsafe_final_opt_time_stop_j0_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                               int32_T nrhs,
+                                               const mxArray *prhs[2]);
+
 void unsafe_final_opt_time_stop_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                             int32_T nrhs,
                                             const mxArray *prhs[3]);
+
+void unsafe_final_opt_vel_j0_mexFunction(int32_T nlhs, mxArray *plhs[1],
+                                         int32_T nrhs, const mxArray *prhs[4]);
 
 void unsafe_final_opt_vel_pass_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                            int32_T nrhs,
@@ -57,25 +78,29 @@ void unsafe_j_opt_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
 void unsafe_min_vel_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
                                 const mxArray *prhs[3]);
 
+void unsafe_pass_primitive_j0_mexFunction(int32_T nlhs, mxArray *plhs[3],
+                                          int32_T nrhs, const mxArray *prhs[5]);
+
+void unsafe_pass_primitive_mexFunction(int32_T nlhs, mxArray *plhs[6],
+                                       int32_T nrhs, const mxArray *prhs[7]);
+
 void unsafe_s_from_coeffs_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                       int32_T nrhs, const mxArray *prhs[2]);
 
 void unsafe_s_opt_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
                               const mxArray *prhs[7]);
 
-void unsafe_student_pass_primitive_mexFunction(int32_T nlhs, mxArray *plhs[6],
-                                               int32_T nrhs,
-                                               const mxArray *prhs[7]);
+void unsafe_stop_primitive_j0_mexFunction(int32_T nlhs, mxArray *plhs[3],
+                                          int32_T nrhs, const mxArray *prhs[2]);
 
-void unsafe_student_stop_primitive_mexFunction(int32_T nlhs, mxArray *plhs[3],
-                                               int32_T nrhs,
-                                               const mxArray *prhs[3]);
+void unsafe_stop_primitive_mexFunction(int32_T nlhs, mxArray *plhs[3],
+                                       int32_T nrhs, const mxArray *prhs[3]);
 
 void unsafe_time_min_vel_pass_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                           int32_T nrhs, const mxArray *prhs[2]);
 
-void unsafe_total_cost_var_mexFunction(int32_T nlhs, mxArray *plhs[1],
-                                       int32_T nrhs, const mxArray *prhs[6]);
+void unsafe_total_cost_mexFunction(int32_T nlhs, mxArray *plhs[1], int32_T nrhs,
+                                   const mxArray *prhs[6]);
 
 void unsafe_v_from_coeffs_mexFunction(int32_T nlhs, mxArray *plhs[1],
                                       int32_T nrhs, const mxArray *prhs[2]);

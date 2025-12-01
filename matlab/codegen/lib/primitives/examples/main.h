@@ -55,9 +55,21 @@ extern void main_a_opt(void);
 
 extern void main_coef_list(void);
 
+extern void main_final_opt_pos_j0(void);
+
+extern void main_final_opt_time_j0(void);
+
+extern void main_final_opt_time_j0_1(void);
+
+extern void main_final_opt_time_j0_2(void);
+
 extern void main_final_opt_time_pass(void);
 
 extern void main_final_opt_time_stop(void);
+
+extern void main_final_opt_time_stop_j0(void);
+
+extern void main_final_opt_vel_j0(void);
 
 extern void main_final_opt_vel_pass(void);
 
@@ -67,17 +79,21 @@ extern void main_j_opt(void);
 
 extern void main_min_vel(void);
 
+extern void main_pass_primitive(void);
+
+extern void main_pass_primitive_j0(void);
+
 extern void main_s_from_coeffs(void);
 
 extern void main_s_opt(void);
 
-extern void main_student_pass_primitive(void);
+extern void main_stop_primitive(void);
 
-extern void main_student_stop_primitive(void);
+extern void main_stop_primitive_j0(void);
 
 extern void main_time_min_vel_pass(void);
 
-extern void main_total_cost_var(void);
+extern void main_total_cost(void);
 
 extern void main_v_from_coeffs(void);
 
