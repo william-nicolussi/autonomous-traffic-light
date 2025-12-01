@@ -26,8 +26,8 @@ final_opt_pos_j0_fun = matlabFunction(sf_j0_opt,'Vars',[v0, a0, tf],'File', full
 
 %% Determine the optimal time to stop with j0=0
 opt_time_eq = final_opt_time_stop(v0, a0, final_opt_pos_j0(v0, a0, tf)) == tf;
-sf_j0_opt_all = simplify(solve(opt_time_eq, tf));
-sf_j0_opt = sf_j0_opt_all(2);
+Tsf_j0_opt_all = simplify(solve(opt_time_eq, tf));
+Tsf_j0_opt = Tsf_j0_opt_all(2);
 
 %% Export the solution
-final_opt_time_stop_j0_fun = matlabFunction(sf_j0_opt,'Vars',[v0, a0],'File', fullfile(exportFolder,'final_opt_time_stop_j0.m'));
+final_opt_time_stop_j0_fun = matlabFunction(Tsf_j0_opt,'Vars',[v0, a0],'File', fullfile(exportFolder,'final_opt_time_stop_j0.m'));

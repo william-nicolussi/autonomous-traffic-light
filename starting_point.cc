@@ -2,6 +2,7 @@
 // Created by Gastone Pietro Rosati Papini on 10/08/22.
 //
 // Shortcuts -> compile: f6; run: f7
+// Indentation -> alt+shift+f;
 
 // ----- #include <> -----
 #include <algorithm>
@@ -24,6 +25,9 @@ extern "C"
 #define DEFAULT_SERVER_IP "127.0.0.1" // IP Address
 #define SERVER_PORT 30000             // Server port
 #define DT 0.05                       // Time step
+#define GREEN_TL 1                    // State corresponding to green  traffic light
+#define YELLOW_TL 2                   // State corresponding to yellow  traffic light
+#define RED_TL 3                      // State corresponding to red  traffic light
 
 // Handler for CTRL-C
 #include <signal.h>
@@ -31,6 +35,7 @@ static uint32_t server_run = 1;
 void intHandler(int signal) { server_run = 0; }
 
 // ----- PROTOTYPES -----
+void copy_m(double m1[6], double m2[6]);
 
 // ----- MAIN -----
 int main(int argc, const char *argv[])
@@ -80,40 +85,70 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.Status = in->Status;
 
             // ----- LONGITUDINAL CONTROL -----
-            double v0 = in->VLgtFild; // actual longitudinal velocity
-            double a0 = in->ALgtFild; // actual longitudinal acceleration
-            double m_star[6];         // primitives
+            double v0 = in->VLgtFild;       // actual longitudinal velocity
+            double a0 = in->ALgtFild;       // actual longitudinal acceleration
+            double m_star[6], m1[6], m2[6]; // primitives
 
             // others to add in longitudinal control
 
+            // ----- TEST LOGIC (only to check if primitives work) -----
             static double init_dist = in->TrfLightDist;
-            double dist = init_dist - in->TrfLightDist;
+            double sf = in->TrfLightDist;
+            double vr = in->RequestedCruisingSpeed;
+            double dist = init_dist - sf;
+            double minTime, maxTime;
             double final_time, final_distance, final_vel;
+            double v1, T1, v2, T2;
             if (dist > 50)
             {
-                student_stop_primitive(v0, a0, in->TrfLightDist, m_star, &final_distance, &final_time);
+                stop_primitive(v0, a0, sf, m1, &v1, &T1); // v1=maxsf lecture 29/11 online
             }
             else
             {
-                student_pass_primitive(v0, a0, in->TrfLightDist, 15.0, 15.0, 0.0, 0.0, m_star, &final_vel, &final_time, m_star, &final_vel, &final_time); // check se possibile mettere T_min=T_mas=0
+                pass_primitive(v0, a0, sf, 15.0, 15.0, 0.0, 0.0, m1, &v1, &T1, m2, &v2, &T2);
             }
 
+            copy_m(m_star, m1); // m_star=m1
+            double bestv = v1;
+            double bests = sf;
+            double bestT = T1;
+
+            final_time = bestT;
+            final_distance = bests;
+            final_vel = bestv;
+
+            static double ECUtimeOLD = 0.0;
+            ECUtimeOLD = in->ECUupTime;
+            double longGain = 20.0;
+            double j0 = m_star[3];
+            double s0 = m_star[4];
+            double cr0 = m_star[5];
+            double t0ffs = 0.0;
+            double jT0 = j0 + t0ffs * s0 + 0.5 * t0ffs * t0ffs * cr0;
+            double jT1 = j0 + (DT + t0ffs) * s0 + 0.5 * (DT + t0ffs) * (DT + t0ffs) * cr0;
+
+            // ----- LOGIC FOR TRAFFIC LIGHT -----
+
             // ----- TRAPEZOIDAL JERK -----
-            static double a0_bar = 0.0; //=a0; (?)
-            const double a_min = -3;
-            const double a_max = 3;
+            static double a0_bar = 0.0; //=a0 or 0.0; (?)
+            const double a_min = -5.0;
+            const double a_max = 5.0;
             double j_req = 0.5 * DT * (j_from_coeffs(0.0, m_star) + j_from_coeffs(DT, m_star));
             double a_req = a0_bar + j_req;
             a_req = fmin(fmax(a_req, a_min), a_max);
+            // a_req = fmin(fmax(a0_bar+longGain*(DT*(jT1+jT0)*0.5),a_min), a_max);
             a0_bar = a_req;
+            //double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
             double v_req = v_from_coeffs(DT, m_star);
+            static double s_req = 0.0;
+            s_req += s_from_coeffs(DT, m_star);
 
             // Lezione 20/11 -> plot the primitives in matlab
             double s = init_dist - dist;
 
             // ----- PI IMPLEMENTATION -----
-            const double k_p = 0.15;
-            const double k_i = 0.15;
+            const double k_p = 0.02;
+            const double k_i = 0.15; // 1.0;
             double error = a_req - a0;
             static double error_integral = 0.0;
             error_integral = error_integral + error * DT;
@@ -127,6 +162,7 @@ int main(int argc, const char *argv[])
             // Log_vars for csv
             logger.log_var(fileName, "cycle", in->CycleNumber);
             logger.log_var(fileName, "time", in->ECUupTime);
+            logger.log_var(fileName, "s_req", s_req);
             logger.log_var(fileName, "dist", dist);
             logger.log_var(fileName, "in->TrfLightDist", in->TrfLightDist);
             logger.log_var(fileName, "v_req", v_req);
@@ -150,8 +186,7 @@ int main(int argc, const char *argv[])
             printLogVar(message_id, "CycleNumber", in->CycleNumber);
 
             // Send manoeuvre message to the environment
-            if (server_send_to_client(server_run, message_id,
-                                      &manoeuvre_msg.data_struct) == -1)
+            if (server_send_to_client(server_run, message_id, &manoeuvre_msg.data_struct) == -1)
             {
                 perror("error send_message()");
                 exit(EXIT_FAILURE);
@@ -166,4 +201,13 @@ int main(int argc, const char *argv[])
     // Close the server of the agent
     server_agent_close();
     return 0;
+}
+
+// ----- OTHER FUNCTIONS -----
+void copy_m(double m1[6], double m2[6])
+{
+    for (int i = 0; i < 6; i++)
+    {
+        m1[i] = m2[i];
+    }
 }
