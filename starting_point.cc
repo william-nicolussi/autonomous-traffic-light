@@ -36,6 +36,8 @@ void intHandler(int signal) { server_run = 0; }
 
 // ----- PROTOTYPES -----
 void copy_m(double m1[6], double m2[6]);
+bool isAllZero(double m[6]);
+void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], double *v1, double *T1);
 
 // ----- MAIN -----
 int main(int argc, const char *argv[])
@@ -85,48 +87,135 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.Status = in->Status;
 
             // ----- LONGITUDINAL CONTROL -----
-            double v0 = in->VLgtFild;       // actual longitudinal velocity
-            double a0 = in->ALgtFild;       // actual longitudinal acceleration
-            double m_star[6], m1[6], m2[6]; // primitives
-
+            double v0 = in->VLgtFild;                // actual longitudinal velocity
+            double a0 = in->ALgtFild;                // actual longitudinal acceleration
+            double m_star[6], m1[6], m2[6];          // primitives
+            double lookahead = fmax(50.0, v0 * 5.0); // lookahead distance
+            const double v_min = 3.0, v_max = 15.0;  // vel min & max to pass the traffic light
+            const double x_s = 5.0;                  // safety space before traffic light
+            const double x_in = 10.0;                // length of the intersection
+            double v_r = in->RequestedCruisingSpeed; // req cruising speed of the vehicle
+            const double T_s = x_s / v_min;          // time to travel the safety space
+            const double T_in = x_in / v_min;        // time to safety space
+            static double x_tr = 0;                  // distance to the traffic light
+            static double x_stop = 0;                // distance to the stop the vehicle
+            double v1, T1, v2, T2;
+            double T_green, T_red;
+            double x_stop_max, T_stop;
+            double sf_j0, tf_stop_j0;
+            const char *messageDebug;
             // others to add in longitudinal control
+
+            if (in->NrTrfLights != 0) // if there is a traffic light
+            {
+                x_tr = in->TrfLightDist;
+                x_stop = in->TrfLightDist - (x_s / 2.0); // stop before the TL
+                if (x_stop < 0)
+                {
+                    x_stop = 0;
+                }
+            }
+            if (in->NrTrfLights == 0 || x_tr >= lookahead) // if there is no TL or is very far -> FreeFlow
+            {
+                // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
+                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
+                messageDebug = "if (in->NrTrfLights==0 || x_tr>=lookahead)";
+            }
+            else // if TL is near
+            {
+                switch (in->TrfLightCurrState) // set times according to the color of TL
+                {
+                case GREEN_TL:
+                    T_green = 0.0;
+                    T_red = in->TrfLightFirstTimeToChange - T_in;
+                    break;
+                case YELLOW_TL:
+                    T_green = in->TrfLightSecondTimeToChange + T_s;
+                    T_red = in->TrfLightThirdTimeToChange - T_in;
+                    break;
+                case RED_TL:
+                    T_green = in->TrfLightFirstTimeToChange + T_s;
+                    T_red = in->TrfLightSecondTimeToChange - T_in;
+                    break;
+                }
+
+                if (in->TrfLightCurrState == GREEN_TL && in->TrfLightDist <= x_s) // if TL green and we are very closed to TL
+                {
+                    // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
+                    free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
+                    messageDebug = "if (in->TrfLightCurrState==GREEN_TL && in->TrfLightDist<=x_s)";
+                }
+                else
+                {
+                    pass_primitive(v0, a0, x_tr, v_min, v_max, T_green, T_red, m1, &v1, &T1, m2, &v2, &T2);
+                    if (isAllZero(m1) && isAllZero(m2))
+                    {
+                        stop_primitive(v0, a0, x_stop, m_star, &x_stop_max, &T_stop);
+                        messageDebug = "if (isAllZero(m1) && isAllZero(m2))";
+                    }
+                    else
+                    {
+                        if ((m1[3] < 0 && m2[3] > 0) || (m1[3] > 0 && m2[3] < 0))
+                        {
+                            pass_primitive_j0(v0, a0, x_tr, v_min, v_max, m_star, &sf_j0, &tf_stop_j0);
+                            messageDebug = "if ((m1[3]<0 && m2[3]>0) || (m1[3]>0 && m2[3]<0))";
+                        }
+                        else
+                        {
+                            if (abs(m1[3]) < abs(m2[3]))
+                            {
+                                copy_m(m_star, m1);
+                                messageDebug = "if (abs(m1[3]) < abs(m2[3]))";
+                            }
+                            else
+                            {
+                                copy_m(m_star, m2);
+                                messageDebug = "else";
+                            }
+                        }
+                    }
+                }
+            }
 
             // ----- TEST LOGIC (only to check if primitives work) -----
             static double init_dist = in->TrfLightDist;
             double sf = in->TrfLightDist;
-            double vr = in->RequestedCruisingSpeed;
             double dist = init_dist - sf;
-            double minTime, maxTime;
+
+            // double vr = in->RequestedCruisingSpeed;
+            // double minTime, maxTime;
             double final_time, final_distance, final_vel;
-            double v1, T1, v2, T2;
-            if (dist > 50)
-            {
-                stop_primitive(v0, a0, sf, m1, &v1, &T1); // v1=maxsf lecture 29/11 online
-            }
-            else
-            {
-                pass_primitive(v0, a0, sf, 15.0, 15.0, 0.0, 0.0, m1, &v1, &T1, m2, &v2, &T2);
-            }
+            /*
+                        if (dist > 50)
+                        {
+                            stop_primitive(v0, a0, sf, m1, &v1, &T1); // v1=maxsf lecture 29/11 online
+                        }
+                        else
+                        {
+                            pass_primitive(v0, a0, sf, 15.0, 15.0, 0.0, 0.0, m1, &v1, &T1, m2, &v2, &T2);
+                        }
 
-            copy_m(m_star, m1); // m_star=m1
-            double bestv = v1;
-            double bests = sf;
-            double bestT = T1;
+                        copy_m(m_star, m1); // m_star=m1
+                        double bestv = v1;
+                        double bests = sf;
+                        double bestT = T1;
 
-            final_time = bestT;
-            final_distance = bests;
-            final_vel = bestv;
+                        final_time = bestT;
+                        final_distance = bests;
+                        final_vel = bestv;
 
-            static double ECUtimeOLD = 0.0;
-            ECUtimeOLD = in->ECUupTime;
-            double longGain = 20.0;
-            double j0 = m_star[3];
-            double s0 = m_star[4];
-            double cr0 = m_star[5];
-            double t0ffs = 0.0;
-            double jT0 = j0 + t0ffs * s0 + 0.5 * t0ffs * t0ffs * cr0;
-            double jT1 = j0 + (DT + t0ffs) * s0 + 0.5 * (DT + t0ffs) * (DT + t0ffs) * cr0;
+                        static double ECUtimeOLD = 0.0;
+                        ECUtimeOLD = in->ECUupTime;
+                        double longGain = 20.0;
 
+                        // trapezoidal check -> unused for now
+                        double j0 = m_star[3];
+                        double s0 = m_star[4];
+                        double cr0 = m_star[5];
+                        double t0ffs = 0.0;
+                        double jT0 = j0 + t0ffs * s0 + 0.5 * t0ffs * t0ffs * cr0;
+                        double jT1 = j0 + (DT + t0ffs) * s0 + 0.5 * (DT + t0ffs) * (DT + t0ffs) * cr0;
+            */
             // ----- LOGIC FOR TRAFFIC LIGHT -----
 
             // ----- TRAPEZOIDAL JERK -----
@@ -138,7 +227,7 @@ int main(int argc, const char *argv[])
             a_req = fmin(fmax(a_req, a_min), a_max);
             // a_req = fmin(fmax(a0_bar+longGain*(DT*(jT1+jT0)*0.5),a_min), a_max);
             a0_bar = a_req;
-            //double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
+            // double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
             double v_req = v_from_coeffs(DT, m_star);
             static double s_req = 0.0;
             s_req += s_from_coeffs(DT, m_star);
@@ -153,23 +242,39 @@ int main(int argc, const char *argv[])
             static double error_integral = 0.0;
             error_integral = error_integral + error * DT;
             double requested_pedal = error * k_p + error_integral * k_i;
+            if (v0 < 0.15 && a0_bar < 0.0 && j_req > 0.0) // Reset the error_integral
+            {
+                a0_bar = 0.0;
+                error_integral = 0.0;
+            }
+
+            // ----- SEND COMMANDS -----
             manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
             manoeuvre_msg.data_struct.RequestedSteerWhlAg = 0.0;
 
             // ----- CSV FILE & PRINT -----
-            const char *fileName = "Test";
+            const char *fileName = "Longitudinal_control";
 
             // Log_vars for csv
+            logger.log_var(fileName, "messageDebug", messageDebug);
             logger.log_var(fileName, "cycle", in->CycleNumber);
             logger.log_var(fileName, "time", in->ECUupTime);
-            logger.log_var(fileName, "s_req", s_req);
             logger.log_var(fileName, "dist", dist);
-            logger.log_var(fileName, "in->TrfLightDist", in->TrfLightDist);
-            logger.log_var(fileName, "v_req", v_req);
+            logger.log_var(fileName, "x_tr", x_tr);
+            logger.log_var(fileName, "x_stop", x_stop);
             logger.log_var(fileName, "v0", in->VLgtFild);
-            logger.log_var(fileName, "a_req", a_req);
             logger.log_var(fileName, "a0", a0);
-            logger.log_var(fileName, "final_time", final_time);
+            logger.log_var(fileName, "a_req", a_req);
+            logger.log_var(fileName, "lookahead", lookahead);
+            logger.log_var(fileName, "error_integral", error_integral);
+            logger.log_var(fileName, "v_r", v_r);
+            logger.log_var(fileName, "in->TrfLightCurrState", in->TrfLightCurrState);
+            logger.log_var(fileName, "T_green", T_green);
+            logger.log_var(fileName, "T_red", T_red);
+            logger.log_var(fileName, "isAllZero(m1)", isAllZero(m1));
+            logger.log_var(fileName, "isAllZero(m2)", isAllZero(m2));
+            logger.log_var(fileName, "m1[3]", m1[3]);
+            logger.log_var(fileName, "m2[3]", m2[3]);
             logger.log_var(fileName, "c0", m_star[0]);
             logger.log_var(fileName, "c1", m_star[1]);
             logger.log_var(fileName, "c2", m_star[2]);
@@ -210,4 +315,21 @@ void copy_m(double m1[6], double m2[6])
     {
         m1[i] = m2[i];
     }
+}
+
+bool isAllZero(double m[6])
+{
+    for (int i = 0; i < 6; i++)
+    {
+        if (m[i] != 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], double *v1, double *T1)
+{
+    pass_primitive(v0, a0, x_f, v_r, v_r, 0.0, 0.0, m_star, v1, T1, m_star, v1, T1); // FreeFlow
 }
