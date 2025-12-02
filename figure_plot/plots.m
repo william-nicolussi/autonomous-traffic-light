@@ -78,9 +78,6 @@ figure; hold on;
 % plot v_req; v_real
 abscissa = dataCSV.time;
 title(fileName, 'Interpreter', 'None');
-plot(abscissa, dataCSV.v_req);
-plot(abscissa, dataCSV.v0);
-
 for cycle = cycle_first : cycle_step : cycle_last
     t_init = dataCSV.time(cycle);
     t_fin = dataCSV.final_time(cycle);
@@ -91,18 +88,25 @@ for cycle = cycle_first : cycle_step : cycle_last
     
     coef_all = [ dataCSV.c0(cycle), dataCSV.c1(cycle), dataCSV.c2(cycle), dataCSV.c3(cycle), dataCSV.c4(cycle), dataCSV.c5(cycle)];
     v_primitive = v_from_coeffs(t_vec-t_init, coef_all);
-    plot(t_vec, v_primitive, Color="green");
+    % If-else necessary to plot the legend
+    if cycle==cycle_first
+        line_prim = plot(t_vec, v_primitive, Color='Green', LineWidth = 0.4);
+    else
+        plot(t_vec, v_primitive, Color='Green', LineWidth = 0.4);
+    end
     fprintf("cycle=%d   t_init=%.6f   t_fin=%.6f\n   c1=%.6f\n", cycle, t_init, t_fin, dataCSV.c1(cycle));
 end
-ylim([-1,50]);
+line_v0 = plot(abscissa, dataCSV.v0, Color='Red', LineWidth=1.5);
+line_v_req = plot(abscissa, dataCSV.v_req, Color='Blue', LineWidth=1.5, LineStyle="--");
+ylim([-1,20]);
 
 xlabel("Time"); ylabel("Velocity");
-legend("v\_req","v0","v\_primitive","Location","best");
+legend([line_v_req, line_v0, line_prim], {"v\_req","v0","v\_primitive"}, "Location", "best");
 grid on; hold off;
 
 %% Plot: a(t) with primitives
 
-fileName = 'Test_4_Coeff.csv';
+fileName = 'Test.csv';
 filePath = fullfile(csvPath, fileName);
 dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
@@ -112,28 +116,33 @@ cycle_last =  max(dataCSV.cycle); % plot until this cycle
 
 figure; hold on;
 
-% plot v_req; v_real
+% plot a_req; a_real
 abscissa = dataCSV.time;
 title(fileName, 'Interpreter', 'None');
-plot(abscissa, dataCSV.a_req);
-plot(abscissa, dataCSV.a_real);
-
 for cycle = cycle_first : cycle_step : cycle_last
     t_init = dataCSV.time(cycle);
     t_fin = dataCSV.final_time(cycle);
     
     % select only the time in [t_init, t_fin]
-    idx = (dataCSV.time >= t_init) & (dataCSV.time <= t_fin);
+    idx = (dataCSV.time >= t_init) & (dataCSV.time <= (t_fin+t_init));
     t_vec = dataCSV.time(idx);
     
     coef_all = [ dataCSV.c0(cycle), dataCSV.c1(cycle), dataCSV.c2(cycle), dataCSV.c3(cycle), dataCSV.c4(cycle), dataCSV.c5(cycle)];
-    a_primitive = a_from_coeffs(t_vec,coef_all);
-    plot(t_vec, a_primitive, Color="green");
+    a_primitive = a_from_coeffs(t_vec-t_init, coef_all);
+    % If-else necessary to plot the legend
+    if cycle==cycle_first
+        line_prim = plot(t_vec, a_primitive, Color='Green', LineWidth = 0.4);
+    else
+        plot(t_vec, a_primitive, Color='Green', LineWidth = 0.4);
+    end
     fprintf("cycle=%d   t_init=%.6f   t_fin=%.6f\n   c1=%.6f\n", cycle, t_init, t_fin, dataCSV.c1(cycle));
 end
+line_a0 = plot(abscissa, dataCSV.v0, Color='Red', LineWidth=1.5);
+line_a_req = plot(abscissa, dataCSV.a_req, Color='Blue', LineWidth=1.5, LineStyle="--");
+ylim([-1,20]);
 
-xlabel("Time"); ylabel("Acceleration");
-legend("a\_req","a\_real","a\_primitive","Location","best");
+xlabel("Time"); ylabel("Velocity");
+legend([line_a_req, line_a0, line_prim], {"a\_req","a0","a\_primitive"}, "Location", "best");
 grid on; hold off;
 
 %% Draw primitives velocity
