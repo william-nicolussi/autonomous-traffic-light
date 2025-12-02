@@ -67,8 +67,7 @@ bool interceptObstacle(node n1, node n2, obstacle obs)
             }
         }
     }
-
-    if (doubleEqualsThreshold(A.y, B.y, TH)) // orizontal segment
+    else if (doubleEqualsThreshold(A.y, B.y, TH)) // orizontal segment
     {
         if (v1.y >= A.y && A.y >= v4.y) // case A.y in [v4.y, v1.y]
         {
@@ -80,9 +79,70 @@ bool interceptObstacle(node n1, node n2, obstacle obs)
             }
         }
     }
+    else
+    {
+        if (A.x > B.x) // impose A is the most in the left
+        {
+            point Temp = A;
+            A = B;
+            B = Temp;
+        }
+        double m = (A.y - B.y) / (A.x - B.x);
+        double q = A.y - m * A.x;
+        double func;
+        int over = 0, under = 0;
 
-    double m = (A.y - B.y) / (A.x - B.x);
-    double q = A.y - m * A.x;
+        if (m > 0)
+        {
+            if (A.x < v1.x && v1.x < B.x)
+            {
+                func = m * v1.x + q;
+                if (func > v1.y)
+                {
+                    over++;
+                }
+                else
+                {
+                    under++;
+                }
+                func = m * v4.x + q;
+                if (func > v4.y)
+                {
+                    over++;
+                }
+                else
+                {
+                    under++;
+                }
+            }
+        }
+        else if (m<0)
+        {
+          if (A.x < v2.x && v2.x < B.x)
+            {
+                func = m * v2.x + q;
+                if (func > v2.y)
+                {
+                    over++;
+                }
+                else
+                {
+                    under++;
+                }
+                func = m * v3.x + q;
+                if (func > v3.y)
+                {
+                    over++;
+                }
+                else
+                {
+                    under++;
+                }
+            }
+        }
+
+        
+    }
 }
 
 bool pointInsideObstacle(point P, point v1, point v4)
