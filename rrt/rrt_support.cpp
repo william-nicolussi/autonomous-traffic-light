@@ -55,13 +55,12 @@ bool segmentIntersectsObstacle(node n1, node n2, obstacle obs)
         return true;
     }
 
-    // check point B (new point) is on the road
-    if (B.y > TOP_ROAD)
+    // check point B (new point) is on the roadway (carreggiata)
+    if (B.y > TOP_ROADWAY)
     {
         return true;
     }
-
-    if (B.y < BOTTOM_ROAD)
+    if (B.y < BOTTOM_ROADWAY)
     {
         return true;
     }
@@ -227,7 +226,12 @@ node extend(node random, node closest)
     node ext;
     const double EPS = 1e-9;
 
-    if (distance > EPS) // (distance != 0)
+    if (distance <= min_distance)
+    {
+        ext.p.x = random.p.x;
+        ext.p.y = random.p.y;
+    }
+    else
     {
         /* FORMULAS ->
                 x = x1+(x2-x1)*(smax/dist)
@@ -235,12 +239,30 @@ node extend(node random, node closest)
         ext.p.x = closest.p.x + fabs(random.p.x - closest.p.x) * min_distance / distance; // search only to the right
         ext.p.y = closest.p.y + (random.p.y - closest.p.y) * min_distance / distance;
     }
-    else
-    {
-        ext = closest;
-    }
 
     return ext;
+}
+
+// -- return the note in the ball with center new_node with the minumum cost --
+node getLeastCostNodeInBall(node new_node, node closest, std::vector<node> &nodevec)
+{
+    node minCostNode = closest;
+    double minTotalCost = closest.cost + getDistance(closest, new_node);
+    double distance, totalCost;
+    for (node nd : nodevec)
+    {
+        distance = getDistance(nd, new_node);
+        if (distance <= R_NEAR)
+        {
+            totalCost = nd.cost + distance;
+            if (totalCost < minTotalCost)
+            {
+                minTotalCost = totalCost;
+                minCostNode = nd;
+            }
+        }
+    }
+    return minCostNode;
 }
 
 /* ------------------------- */
