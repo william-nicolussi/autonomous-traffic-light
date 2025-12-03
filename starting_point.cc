@@ -18,6 +18,7 @@ extern "C"
 }
 #include "logvars.h"
 #include "primitives.h"
+#include "rrt_star.h"
 #include "screen_print.h"
 #include "server_lib.h"
 
@@ -42,6 +43,9 @@ void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], d
 // ----- MAIN -----
 int main(int argc, const char *argv[])
 {
+    FILE *fileDebug = fopen("debugMain.txt", "w"); // fileDebug for debug purposes
+    fprintf(fileDebug, "main START\n");
+
     logger.enable(true);
 
     // Messages variables
@@ -66,6 +70,9 @@ int main(int argc, const char *argv[])
     printLine();
     printTable("Waiting for scenario message...", 0);
     printLine();
+
+    bool firstCycle = true;
+
     while (server_run == 1)
     {
 
@@ -86,19 +93,82 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.CycleNumber = in->CycleNumber;
             manoeuvre_msg.data_struct.Status = in->Status;
 
+            // ----- TRAJECTORY -----
+            // Trajectory is otside the while because is calculated just once
+            // Starting and goal points definition
+
+            if (firstCycle)
+            {
+                fprintf(fileDebug, "\nfirstCycle START\n");
+                firstCycle = false;
+
+                // Def of start and end nodes
+                const double X0 = 0., Y0 = in->LatOffsLineL, Xf = 180.0, Yf = 0.0;
+                node start, goal;
+                start.p.x = X0 * 10;
+                start.p.y = Y0 * 10;
+                goal.p.x = Xf * 10;
+                goal.p.y = Yf * 10;
+
+                // Def obstacles -> the cones
+                std::vector<obstacle> obstacle_list;
+                for (int i = 0; i < in->NrObjs; i++)
+                {
+                    obstacle obs;
+
+                    obs.x = in->ObjX[i] * 10;
+                    obs.y = in->ObjY[i] * 10;
+                    obs.lenght = in->ObjLen[i] * 10;
+                    obs.width = in->ObjWidth[i] * 10;
+
+                    obstacle_list.push_back(obs);
+                    fprintf(fileDebug, "obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.x, obs.y, obs.lenght, obs.lenght);
+                }
+
+                // Definisco il vettore dei punti che definiscono il path da seguire
+                std::vector<node> path_to_follow;
+                rrt_star(start, goal, obstacle_list, path_to_follow);
+
+                // ----- LATERAL CONTROL -----
+                double LatPosL = in->LatOffsLineL; // lateral offset from left line
+                logger.log_var("Lateral", "YawRateFild", in->YawRateFild);
+                logger.log_var("Lateral", "SteerWhlAg", in->SteerWhlAg);
+                logger.log_var("Lateral", "VehicleLen", in->VehicleLen);
+                logger.log_var("Lateral", "VehicleWidth", in->VehicleWidth);
+                logger.log_var("Lateral", "AutomationLevel", in->AutomationLevel);
+                logger.log_var("Lateral", "CurrentLane", in->CurrentLane);
+                logger.log_var("Lateral", "NrObjs", in->NrObjs);
+                logger.log_var("Lateral", "LaneWidth", in->LaneWidth);
+                logger.log_var("Lateral", "LatOffsLineR", in->LatOffsLineR);
+                logger.log_var("Lateral", "LatOffsLineL", in->LatOffsLineL);
+                logger.log_var("Lateral", "LaneHeading", in->LaneHeading);
+                logger.log_var("Lateral", "LaneCrvt", in->LaneCrvt);
+                for (int i = 0; i < obstacle_list.size(); ++i)
+                {
+                    logger.log_var("Lateral", ("objX[" + std::to_string(i) + "]").c_str(), obstacle_list[i].x);
+                    logger.log_var("Lateral", ("objY[" + std::to_string(i) + "]").c_str(), obstacle_list[i].y);
+                }
+                logger.write_line("Lateral");
+
+                fprintf(fileDebug, "firstCycle END\n\n");
+            }
+
             // ----- LONGITUDINAL CONTROL -----
-            double v0 = in->VLgtFild;                // actual longitudinal velocity
-            double a0 = in->ALgtFild;                // actual longitudinal acceleration
-            double m_star[6], m1[6], m2[6];          // primitives
-            double lookahead = fmax(50.0, v0 * 5.0); // lookahead distance
-            const double v_min = 3.0, v_max = 15.0;  // vel min & max to pass the traffic light
-            const double x_s = 5.0;                  // safety space before traffic light
-            const double x_in = 10.0;                // length of the intersection
-            double v_r = in->RequestedCruisingSpeed; // req cruising speed of the vehicle
-            const double T_s = x_s / v_min;          // time to travel the safety space
-            const double T_in = x_in / v_min;        // time to safety space
-            static double x_tr = 0;                  // distance to the traffic light
-            static double x_stop = 0;                // distance to the stop the vehicle
+            static double init_dist = in->TrfLightDist; // initial distance to the traffic light
+            double sf = in->TrfLightDist;               // distance to the traffic light
+            double dist = init_dist - sf;               // distance traveled
+            double v0 = in->VLgtFild;                   // actual longitudinal velocity
+            double a0 = in->ALgtFild;                   // actual longitudinal acceleration
+            double m_star[6], m1[6], m2[6];             // primitives
+            double lookahead = fmax(50.0, v0 * 5.0);    // lookahead distance
+            const double v_min = 3.0, v_max = 15.0;     // vel min & max to pass the traffic light
+            const double x_s = 5.0;                     // safety space before traffic light
+            const double x_in = 10.0;                   // length of the intersection
+            double v_r = in->RequestedCruisingSpeed;    // req cruising speed of the vehicle
+            const double T_s = x_s / v_min;             // time to travel the safety space
+            const double T_in = x_in / v_min;           // time to safety space
+            static double x_tr = 0;                     // distance to the traffic light
+            static double x_stop = 0;                   // distance to the stop the vehicle
             double v1, T1, v2, T2;
             double T_green, T_red;
             double x_stop_max, T_stop;
@@ -106,10 +176,11 @@ int main(int argc, const char *argv[])
             const char *messageDebug;
             // others to add in longitudinal control
 
+            // ----- LOGIC FOR TRAFFIC LIGHT -----
             if (in->NrTrfLights != 0) // if there is a traffic light
             {
-                x_tr = in->TrfLightDist;
-                x_stop = in->TrfLightDist - (x_s / 2.0); // stop before the TL
+                x_tr = sf;
+                x_stop = sf - (x_s / 2.0); // stop before the TL
                 if (x_stop < 0)
                 {
                     x_stop = 0;
@@ -120,6 +191,11 @@ int main(int argc, const char *argv[])
                 // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
                 free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
                 messageDebug = "if (in->NrTrfLights==0 || x_tr>=lookahead)";
+            }
+            else if (sf < 0) // ADDED -> if we passed the TL and it turns red do not stop
+            {
+                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
+                messageDebug = "else if (sf<0)";
             }
             else // if TL is near
             {
@@ -139,7 +215,7 @@ int main(int argc, const char *argv[])
                     break;
                 }
 
-                if (in->TrfLightCurrState == GREEN_TL && in->TrfLightDist <= x_s) // if TL green and we are very closed to TL
+                if (in->TrfLightCurrState == GREEN_TL && sf <= x_s) // if TL green and we are very closed to TL
                 {
                     // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
                     free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
@@ -177,46 +253,9 @@ int main(int argc, const char *argv[])
                 }
             }
 
-            // ----- TEST LOGIC (only to check if primitives work) -----
-            static double init_dist = in->TrfLightDist;
-            double sf = in->TrfLightDist;
-            double dist = init_dist - sf;
-
             // double vr = in->RequestedCruisingSpeed;
             // double minTime, maxTime;
             double final_time, final_distance, final_vel;
-            /*
-                        if (dist > 50)
-                        {
-                            stop_primitive(v0, a0, sf, m1, &v1, &T1); // v1=maxsf lecture 29/11 online
-                        }
-                        else
-                        {
-                            pass_primitive(v0, a0, sf, 15.0, 15.0, 0.0, 0.0, m1, &v1, &T1, m2, &v2, &T2);
-                        }
-
-                        copy_m(m_star, m1); // m_star=m1
-                        double bestv = v1;
-                        double bests = sf;
-                        double bestT = T1;
-
-                        final_time = bestT;
-                        final_distance = bests;
-                        final_vel = bestv;
-
-                        static double ECUtimeOLD = 0.0;
-                        ECUtimeOLD = in->ECUupTime;
-                        double longGain = 20.0;
-
-                        // trapezoidal check -> unused for now
-                        double j0 = m_star[3];
-                        double s0 = m_star[4];
-                        double cr0 = m_star[5];
-                        double t0ffs = 0.0;
-                        double jT0 = j0 + t0ffs * s0 + 0.5 * t0ffs * t0ffs * cr0;
-                        double jT1 = j0 + (DT + t0ffs) * s0 + 0.5 * (DT + t0ffs) * (DT + t0ffs) * cr0;
-            */
-            // ----- LOGIC FOR TRAFFIC LIGHT -----
 
             // ----- TRAPEZOIDAL JERK -----
             static double a0_bar = 0.0; //=a0 or 0.0; (?)
@@ -302,6 +341,9 @@ int main(int argc, const char *argv[])
             }
         }
     }
+
+    fprintf(fileDebug, "main FINISHED");
+    fclose(fileDebug);
 
     // Close the server of the agent
     server_agent_close();

@@ -2,17 +2,32 @@
 
 #include "rrt_support.h"
 #include <cmath>
+#include <cstdio>
 
 // -- return true if the segment of two nodes intersects ANY obstacle --
-bool isObstacle(node start_node, node end_node, std::vector<obstacle> &obstacles)
+bool isObstacle(node &start_node, node &end_node, std::vector<obstacle> &obstacles)
 {
+    FILE *fileDebug = fopen("../rrt/debugIsObstacle.txt", "a"); // file for debug purposes
+    fprintf(fileDebug, "isObstacleDebug START\n");
+    int numberObstacles = 0;
+
+    fprintf(fileDebug, "start_node.x=%f; start_node.y=%f\n", start_node.p.x, start_node.p.y);
+    fprintf(fileDebug, "end_node.x=%f; end_node.y=%f\n", end_node.p.x, end_node.p.y);
+
     for (obstacle obs : obstacles) // check collision with each obstacle
     {
+        numberObstacles++;
+        fprintf(fileDebug, "numerObstacles = %d\n", numberObstacles);
+        fprintf(fileDebug, "obs.x=%f; obs.y=%f\n", obs.x, obs.y);
         if (segmentIntersectsObstacle(start_node, end_node, obs))
         {
+            fprintf(fileDebug, "isObstacleDebug FINISHED TRUE\n\n");
+            fclose(fileDebug);
             return true;
         }
     }
+    fprintf(fileDebug, "isObstacleDebug FINISHED FALSE\n\n");
+    fclose(fileDebug);
     return false;
 }
 
@@ -50,21 +65,39 @@ bool segmentIntersectsObstacle(node n1, node n2, obstacle obs)
     v4.x = cx + L_half + x_offset;
     v4.y = cy - W_half - y_offset;
 
+    FILE *fileDebug = fopen("../rrt/print_obstacles.txt", "a"); // file for debug purposes
+    fprintf(fileDebug, "print_obstacles START\n");
+    fprintf(fileDebug, "v1.x=%f, v1.y=%f\n", v1.x, v1.y);
+    fprintf(fileDebug, "v2.x=%f, v2.y=%f\n", v2.x, v2.y);
+    fprintf(fileDebug, "v3.x=%f, v3.y=%f\n", v3.x, v3.y);
+    fprintf(fileDebug, "v4.x=%f, v4.y=%f\n", v4.x, v4.y);
+
     if (segmentIntersectsRect(A, B, v1, v2, v3, v4)) // if segment AB intercept rectangle v1...v4
     {
+        fprintf(fileDebug, "return true\t\tsegmentIntersectsRect(A, B, v1, v2, v3, v4)");
+        fprintf(fileDebug, "print_obstacles FINISHED\n\n");
+        fclose(fileDebug);
         return true;
     }
 
-    // check point B (new point) is on the road
-    if (B.y > TOP_ROAD)
+    // check point B (new point) is on the roadway (carreggiata)
+    if (B.y > TOP_ROADWAY)
     {
+        fprintf(fileDebug, "return true\t\tB.y > TOP_ROADWAY\n");
+        fprintf(fileDebug, "print_obstacles FINISHED\n\n");
+        fclose(fileDebug);
         return true;
     }
-
-    if (B.y < BOTTOM_ROAD)
+    if (B.y < BOTTOM_ROADWAY)
     {
+        fprintf(fileDebug, "return true\t\tB.y < BOTTOM_ROADWAY\n");
+        fprintf(fileDebug, "print_obstacles FINISHED\n\n");
+        fclose(fileDebug);
         return true;
     }
+    fprintf(fileDebug, "return false\n");
+    fprintf(fileDebug, "print_obstacles FINISHED\n\n");
+    fclose(fileDebug);
     return false;
 }
 
@@ -227,7 +260,12 @@ node extend(node random, node closest)
     node ext;
     const double EPS = 1e-9;
 
-    if (distance > EPS) // (distance != 0)
+    if (distance <= min_distance)
+    {
+        ext.p.x = random.p.x;
+        ext.p.y = random.p.y;
+    }
+    else
     {
         /* FORMULAS ->
                 x = x1+(x2-x1)*(smax/dist)
@@ -235,12 +273,66 @@ node extend(node random, node closest)
         ext.p.x = closest.p.x + fabs(random.p.x - closest.p.x) * min_distance / distance; // search only to the right
         ext.p.y = closest.p.y + (random.p.y - closest.p.y) * min_distance / distance;
     }
-    else
-    {
-        ext = closest;
-    }
 
     return ext;
+}
+
+// -- return the note in the ball with center new_node with the minumum cost --
+node getLeastCostNodeInBall(node new_node, node closest, std::vector<node> &nodevec)
+{
+    node minCostNode = closest;
+    double minTotalCost = closest.cost + getDistance(closest, new_node);
+    double distance, totalCost;
+    for (node nd : nodevec)
+    {
+        distance = getDistance(nd, new_node);
+        if (distance <= R_NEAR)
+        {
+            totalCost = nd.cost + distance;
+            if (totalCost < minTotalCost)
+            {
+                minTotalCost = totalCost;
+                minCostNode = nd;
+            }
+        }
+    }
+    return minCostNode;
+}
+
+void csvObstacle(std::vector<obstacle> &obstacles)
+{
+    FILE *fileObstacle = fopen("../rrt/obstacles.csv", "w");
+    fprintf(fileObstacle, "v1_x, v1_y, v2_x, v2_y, v3_x, v3_y, v4_x, v4_y;\n");
+
+    for (obstacle obs : obstacles)
+    {
+        const double x_offset = X_OFFSET;
+        const double y_offset = Y_OFFSET;
+
+        double cx = obs.x;     // x of the CENTER of the obstacle
+        double cy = obs.y;     // y of the CENTER of the obstacle
+        double L = obs.lenght; // lenght of the obstacle
+        double W = obs.width;  // width of the obstacle
+
+        double L_half = L / 2.0;
+        double W_half = W / 2.0;
+
+        // vertexes defining the rectangle representing the obstacle
+        // v1 --- v2
+        // |      |
+        // v3 --- v4
+        point v1, v2, v3, v4;
+        v1.x = cx - L_half - x_offset;
+        v1.y = cy + W_half + y_offset;
+        v2.x = cx + L_half + x_offset;
+        v2.y = cy + W_half + y_offset;
+        v3.x = cx - L_half - x_offset;
+        v3.y = cy - W_half - y_offset;
+        v4.x = cx + L_half + x_offset;
+        v4.y = cy - W_half - y_offset;
+        fprintf(fileObstacle, "%f, %f, %f, %f, %f, %f, %f, %f;\n", v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+    }
+    fclose(fileObstacle);
 }
 
 /* ------------------------- */
