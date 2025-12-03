@@ -12,6 +12,7 @@ include_directories(
         matlab/codegen/lib/primitives/
         lib
         log
+        rrt
 )
 
 link_directories(
