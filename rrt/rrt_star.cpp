@@ -2,6 +2,7 @@
 
 #include "rrt_star.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -24,6 +25,7 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
     int number_of_nodes = 0;
     std::vector<node> all_nodes;
     all_nodes.reserve(MAX_ITER + 1); // avoid execution stops due to too many iterations
+    double distance;
 
     // set starting point
     node root = start;
@@ -32,10 +34,11 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
     root.parent_index = -1;
     all_nodes.push_back(root);
 
-    // bool goal_found = false;
-    // int goal_index = -1;
+    bool goal_found = false;
+    int best_goal_index = -1;
+    double best_goal_cost;
 
-    for (int iter = 1; iter < MAX_ITER; iter++)
+    for (int iter = 0; iter < MAX_ITER; iter++)
     {
         // get random node
         node random;
@@ -48,14 +51,67 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
                     new node with distance <= s_max
                     if distance <= s_max, then return random */
         node extended = extend(random, closest);
+        node bestParent = getLeastCostNodeInBall(extended, closest, all_nodes);
 
-        if (!isObstacle(closest, extended, obstacles))
+        if (!isObstacle(bestParent, extended, obstacles))
         {
             number_of_nodes++;
-            extended.parent_index = closest.index;
+            extended.parent_index = bestParent.index;
             extended.index = number_of_nodes;
-            extended.cost = closest.cost + getDistance(closest, extended);
+            extended.cost = bestParent.cost + getDistance(bestParent, extended);
             all_nodes.push_back(extended);
+
+            /* REWIRING ->
+                        try upgrade nodes in ball using extended as new parent */
+            for (node &nd : all_nodes)
+            {
+                if (nd.index != extended.index) // avoid self rewiring
+                {
+                    distance = getDistance(extended, nd);
+
+                    if (distance <= R_NEAR)
+                    {
+                        double cost_through_extended = extended.cost + distance;
+
+                        if (cost_through_extended < nd.cost) // new cost is better than before
+                        {
+                            if (!isObstacle(extended, nd, obstacles)) // check rewired arc is collision-free
+                            {
+                                nd.parent_index = extended.index;
+                                nd.cost = cost_through_extended;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // GOAL CHECK: extended è abbastanza vicino al goal?
+            // GOAL CHECK: extended è abbastanza vicino al goal?
+            double dist_to_goal = getDistance(extended, goal);
+
+            if (dist_to_goal <= GOAL_THRESHOLD)
+            {
+                if (!goal_found || extended.cost < best_goal_cost)
+                {
+                    goal_found = true;
+                    best_goal_cost = extended.cost;
+                    best_goal_index = extended.index;
+
+                    path_car.clear();
+
+                    int idx = best_goal_index;
+
+                    // costruiamo il path al contrario: goal -> ... -> root
+                    while (idx != -1)
+                    {
+                        path_car.push_back(all_nodes[idx]);
+                        idx = all_nodes[idx].parent_index;
+                    }
+
+                    // ora path_car è [goal, ..., root], quindi invertiamo
+                    std::reverse(path_car.begin(), path_car.end());
+                }
+            }
         }
     }
 }
