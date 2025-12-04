@@ -43,6 +43,9 @@ void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], d
 // ----- MAIN -----
 int main(int argc, const char *argv[])
 {
+    FILE *fileDebug = fopen("debugMain.txt", "w"); // fileDebug for debug purposes
+    fprintf(fileDebug, "main START\n");
+
     logger.enable(true);
 
     // Messages variables
@@ -96,6 +99,7 @@ int main(int argc, const char *argv[])
 
             if (firstCycle)
             {
+                fprintf(fileDebug, "\nfirstCycle START\n");
                 firstCycle = false;
 
                 // Def of start and end nodes
@@ -118,6 +122,7 @@ int main(int argc, const char *argv[])
                     obs.width = in->ObjWidth[i] * 10;
 
                     obstacle_list.push_back(obs);
+                    fprintf(fileDebug, "obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.x, obs.y, obs.lenght, obs.lenght);
                 }
 
                 // Definisco il vettore dei punti che definiscono il path da seguire
@@ -144,6 +149,8 @@ int main(int argc, const char *argv[])
                     logger.log_var("Lateral", ("objY[" + std::to_string(i) + "]").c_str(), obstacle_list[i].y);
                 }
                 logger.write_line("Lateral");
+
+                fprintf(fileDebug, "firstCycle END\n\n");
             }
 
             // ----- LONGITUDINAL CONTROL -----
@@ -334,6 +341,9 @@ int main(int argc, const char *argv[])
             }
         }
     }
+
+    fprintf(fileDebug, "main FINISHED");
+    fclose(fileDebug);
 
     // Close the server of the agent
     server_agent_close();
