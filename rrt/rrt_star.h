@@ -5,6 +5,6 @@
 #include <vector>
 
 // FUNZIONE ALGORITMO RRT
-void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car);
+int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car);
 
 #endif

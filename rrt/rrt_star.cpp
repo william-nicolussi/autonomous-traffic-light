@@ -11,7 +11,7 @@
 #include <limits>
 #include <random>
 
-#define MAX_ITER 1000              // max n. of iterations
+#define MAX_ITER 20000              // max n. of iterations
 #define GOAL_THRESHOLD min_distance // = 10.0 -> threshold to be near the goal
 
 double getRand01() // random in [0,1]
@@ -21,17 +21,25 @@ double getRand01() // random in [0,1]
     return dist(rng);
 }
 
-void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car)
+int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car)
 {
     csvObstacle(obstacles);
     FILE *fileTree = fopen("../rrt/tree.csv", "w");
     fprintf(fileTree, "x, y, cost, index, parent_index;\n");
+    FILE *filePath = fopen("../rrt/paths.csv", "w");
+    fprintf(filePath, "path_nbr, x, y, cost, index, parent_index;\n");
+    FILE *fileEndNode = fopen("../rrt/endNode.csv", "w");
+    fprintf(fileEndNode, "x, y, GOAL_THRESHOLD;\n");
+    fprintf(fileEndNode, "%f, %f, %f;\n", goal.p.x, goal.p.y, GOAL_THRESHOLD);
+    fclose(fileEndNode);
 
+#ifdef DEBUG
     FILE *fileDebug = fopen("../rrt/debugRTT_star.txt", "w"); // file for debug purposes
     fprintf(fileDebug, "rrt_star START\n");
+#endif
 
-    logger.enable(true);
     int number_of_nodes = 0;
+    int numberSolutions = 0;
     std::vector<node> all_nodes;
     all_nodes.reserve(MAX_ITER + 1); // avoid execution stops due to too many iterations
     double distance;
@@ -50,11 +58,13 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
 
     for (int iter = 0; iter < MAX_ITER; iter++)
     {
+#ifdef DEBUG
         fprintf(fileDebug, "iter=%d:\n", iter);
+#endif
         // get random node
         node random;
-        random.p.x = getRand01() * 1800.0; // 0 ... 180m * 10 // random.p.x = rand() % 1800;
-        random.p.y = getRand01() * 40.0;   // random.p.y = rand() % 40;
+        random.p.x = getRand01() * 180.0;                                          // 0 ... 180m * 10 // random.p.x = rand() % 1800;
+        random.p.y = getRand01() * (TOP_ROADWAY - BOTTOM_ROADWAY) + BOTTOM_ROADWAY; // random.p.y = rand() % 40;
 
         node closest = getClosestNode(all_nodes, random);
 
@@ -64,15 +74,18 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
         node extended = extend(random, closest);
         node bestParent = getLeastCostNodeInBall(extended, closest, all_nodes);
 
-        // print nodes in the log
+#ifdef DEBUG
         fprintf(fileDebug, "random.x=%f, random.y=%f\n", random.p.x, random.p.y);
         fprintf(fileDebug, "closest.x=%f, closest.y=%f\n", closest.p.x, closest.p.y);
         fprintf(fileDebug, "extended.x=%f, extended.y=%f\n", extended.p.x, extended.p.y);
         fprintf(fileDebug, "bestParent.x=%f, bestParent.y=%f\n", bestParent.p.x, bestParent.p.y);
+#endif
 
         if (!isObstacle(bestParent, extended, obstacles))
         {
+#ifdef DEBUG
             fprintf(fileDebug, "ENTERED\tif(!isObstacle(bestParent, extended, obstacles))\n");
+#endif
             number_of_nodes++;
             extended.parent_index = bestParent.index;
             extended.index = number_of_nodes;
@@ -104,16 +117,16 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
             }
             fprintf(fileTree, "%f, %f, %f, %d, %d;\n", extended.p.x, extended.p.y, extended.cost, extended.index, extended.parent_index);
 
-            // GOAL CHECK: extended è abbastanza vicino al goal?
-            // GOAL CHECK: extended è abbastanza vicino al goal?
+            // GOAL CHECK: did we reach (a small ball) containing the goal?
             double dist_to_goal = getDistance(extended, goal);
-            static int numberSolutions = 0;
 
             if (dist_to_goal <= GOAL_THRESHOLD)
             {
                 if (!goal_found || extended.cost < best_goal_cost)
                 {
+#ifdef DEBUG
                     fprintf(fileDebug, "(!goal_found || extended.cost < best_goal_cost)");
+#endif
                     numberSolutions++;
                     goal_found = true;
                     best_goal_cost = extended.cost;
@@ -123,30 +136,35 @@ void rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vect
 
                     int idx = best_goal_index;
 
-                    // costruiamo il path al contrario: goal -> ... -> root
+                    /* BUILD THE PATH
+                        -> add the nodes of the path in the vector,
+                        then reverse the vector in order to have path_car=[goal, ..., root]*/
                     while (idx != -1)
                     {
                         path_car.push_back(all_nodes[idx]);
                         idx = all_nodes[idx].parent_index;
                     }
-
-                    // ora path_car è [goal, ..., root], quindi invertiamo
                     std::reverse(path_car.begin(), path_car.end());
 
                     /* salva path_car ->
                         per il momento un file per ogni path, più avanti un unico file con numberSolutions */
                     for (int i = 0; i < path_car.size(); i++)
                     {
-                        logger.log_var(("path_car" + std::to_string(numberSolutions)).c_str(), "x", path_car[i].p.x);
-                        logger.log_var(("path_car" + std::to_string(numberSolutions)).c_str(), "y", path_car[i].p.y);
+                        fprintf(filePath, "%d, %f, %f, %f, %d, %d;\n", numberSolutions, path_car[i].p.x, path_car[i].p.y, path_car[i].cost, path_car[i].index, path_car[i].parent_index);
+#ifdef DEBUG
                         fprintf(fileDebug, "path_car%d: x=%f y=%f\n", numberSolutions, path_car[i].p.x, path_car[i].p.y);
+#endif
                     }
-                    logger.write_line(("path_car" + std::to_string(numberSolutions)).c_str());
                 }
             }
         }
     }
+#ifdef DEBUG
     fprintf(fileDebug, "rrt_star FINISHED");
     fclose(fileDebug);
+#endif
+    fclose(filePath);
     fclose(fileTree);
+
+    return numberSolutions;
 }
