@@ -28,6 +28,8 @@ add_executable(basic_agent
         matlab/codegen/lib/primitives/rtGetNaN.c
         matlab/codegen/lib/primitives/rt_nonfinite.c
         starting_point.cc
+        rrt/rrt_star.cpp
+        rrt/rrt_support.cpp
 )
 
 
