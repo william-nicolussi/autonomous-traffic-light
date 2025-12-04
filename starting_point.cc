@@ -105,10 +105,10 @@ int main(int argc, const char *argv[])
                 // Def of start and end nodes
                 const double X0 = 0., Y0 = in->LatOffsLineL, Xf = 180.0, Yf = 0.0;
                 node start, goal;
-                start.p.x = X0 * 10;
-                start.p.y = Y0 * 10;
-                goal.p.x = Xf * 10;
-                goal.p.y = Yf * 10;
+                start.p.x = X0;
+                start.p.y = Y0;
+                goal.p.x = Xf;
+                goal.p.y = Yf;
 
                 // Def obstacles -> the cones
                 std::vector<obstacle> obstacle_list;
@@ -116,10 +116,10 @@ int main(int argc, const char *argv[])
                 {
                     obstacle obs;
 
-                    obs.x = in->ObjX[i] * 10;
-                    obs.y = in->ObjY[i] * 10;
-                    obs.lenght = in->ObjLen[i] * 10;
-                    obs.width = in->ObjWidth[i] * 10;
+                    obs.x = in->ObjX[i];
+                    obs.y = in->ObjY[i];
+                    obs.lenght = in->ObjLen[i];
+                    obs.width = in->ObjWidth[i];
 
                     obstacle_list.push_back(obs);
                     fprintf(fileDebug, "obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.x, obs.y, obs.lenght, obs.lenght);
@@ -127,7 +127,8 @@ int main(int argc, const char *argv[])
 
                 // Definisco il vettore dei punti che definiscono il path da seguire
                 std::vector<node> path_to_follow;
-                rrt_star(start, goal, obstacle_list, path_to_follow);
+                int numberSolutions = rrt_star(start, goal, obstacle_list, path_to_follow);
+                fprintf(fileDebug, "rrt_star found %d solution(s)\n", numberSolutions);
 
                 // ----- LATERAL CONTROL -----
                 double LatPosL = in->LatOffsLineL; // lateral offset from left line
