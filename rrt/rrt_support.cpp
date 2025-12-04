@@ -4,35 +4,44 @@
 #include <cmath>
 #include <cstdio>
 
+// #define DEBUG
+
 // -- return true if the segment of two nodes intersects ANY obstacle --
 bool isObstacle(node &start_node, node &end_node, std::vector<obstacle> &obstacles)
 {
+#ifdef DEBUG
     FILE *fileDebug = fopen("../rrt/debugIsObstacle.txt", "a"); // file for debug purposes
     fprintf(fileDebug, "isObstacleDebug START\n");
     int numberObstacles = 0;
-
     fprintf(fileDebug, "start_node.x=%f; start_node.y=%f\n", start_node.p.x, start_node.p.y);
     fprintf(fileDebug, "end_node.x=%f; end_node.y=%f\n", end_node.p.x, end_node.p.y);
+#endif
 
     for (obstacle obs : obstacles) // check collision with each obstacle
     {
+#ifdef DEBUG
         numberObstacles++;
         fprintf(fileDebug, "numerObstacles = %d\n", numberObstacles);
         fprintf(fileDebug, "obs.x=%f; obs.y=%f\n", obs.x, obs.y);
+#endif
         if (segmentIntersectsObstacle(start_node, end_node, obs))
         {
+#ifdef DEBUG
             fprintf(fileDebug, "isObstacleDebug FINISHED TRUE\n\n");
             fclose(fileDebug);
+#endif
             return true;
         }
     }
+#ifdef DEBUG
     fprintf(fileDebug, "isObstacleDebug FINISHED FALSE\n\n");
     fclose(fileDebug);
+#endif
     return false;
 }
 
 // -- return true if point intersects ONE obstacle --
-bool segmentIntersectsObstacle(node n1, node n2, obstacle obs)
+bool segmentIntersectsObstacle(node &n1, node &n2, obstacle &obs)
 {
     point A, B;
     A.x = n1.p.x;
@@ -65,39 +74,49 @@ bool segmentIntersectsObstacle(node n1, node n2, obstacle obs)
     v4.x = cx + L_half + x_offset;
     v4.y = cy - W_half - y_offset;
 
+#ifdef DEBUG
     FILE *fileDebug = fopen("../rrt/print_obstacles.txt", "a"); // file for debug purposes
     fprintf(fileDebug, "print_obstacles START\n");
     fprintf(fileDebug, "v1.x=%f, v1.y=%f\n", v1.x, v1.y);
     fprintf(fileDebug, "v2.x=%f, v2.y=%f\n", v2.x, v2.y);
     fprintf(fileDebug, "v3.x=%f, v3.y=%f\n", v3.x, v3.y);
     fprintf(fileDebug, "v4.x=%f, v4.y=%f\n", v4.x, v4.y);
+#endif
 
     if (segmentIntersectsRect(A, B, v1, v2, v3, v4)) // if segment AB intercept rectangle v1...v4
     {
+#ifdef DEBUG
         fprintf(fileDebug, "return true\t\tsegmentIntersectsRect(A, B, v1, v2, v3, v4)");
         fprintf(fileDebug, "print_obstacles FINISHED\n\n");
         fclose(fileDebug);
+#endif
         return true;
     }
 
     // check point B (new point) is on the roadway (carreggiata)
     if (B.y > TOP_ROADWAY)
     {
+#ifdef DEBUG
         fprintf(fileDebug, "return true\t\tB.y > TOP_ROADWAY\n");
         fprintf(fileDebug, "print_obstacles FINISHED\n\n");
         fclose(fileDebug);
+#endif
         return true;
     }
     if (B.y < BOTTOM_ROADWAY)
     {
+#ifdef DEBUG
         fprintf(fileDebug, "return true\t\tB.y < BOTTOM_ROADWAY\n");
         fprintf(fileDebug, "print_obstacles FINISHED\n\n");
         fclose(fileDebug);
+#endif
         return true;
     }
+#ifdef DEBUG
     fprintf(fileDebug, "return false\n");
     fprintf(fileDebug, "print_obstacles FINISHED\n\n");
     fclose(fileDebug);
+#endif
     return false;
 }
 
@@ -192,7 +211,7 @@ int orientation(point P, point Q, point R)
 }
 
 // -- return distance between two nodes --
-double getDistance(node random, node closest)
+double getDistance(node &random, node &closest)
 {
     double x1 = random.p.x;
     double y1 = random.p.y;
@@ -201,37 +220,8 @@ double getDistance(node random, node closest)
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-/* ------------------------- */
-double getMin(double n1, double n2)
-{
-    double min;
-    if (n1 < n2)
-    {
-        min = n1;
-    }
-    else
-    {
-        min = n2;
-    }
-    return min;
-}
-
-double getMax(double n1, double n2)
-{
-    double max;
-    if (n1 > n2)
-    {
-        max = n1;
-    }
-    else
-    {
-        max = n2;
-    }
-    return max;
-}
-
 // -- get closest node to x_new --
-node getClosestNode(std::vector<node> &nodevec, node x_new)
+node getClosestNode(std::vector<node> &nodevec, node &x_new)
 {
     node closestNode = nodevec[0];
     double minDistance = getDistance(x_new, nodevec[0]);
@@ -251,7 +241,7 @@ node getClosestNode(std::vector<node> &nodevec, node x_new)
 }
 
 // -- extend the closest node to a random node --
-node extend(node random, node closest)
+node extend(node &random, node &closest)
 {
     // pick the closest node to the random one and extend it in order to built the tree
     // min_distance is the minimum lenght of the branch
@@ -278,7 +268,7 @@ node extend(node random, node closest)
 }
 
 // -- return the note in the ball with center new_node with the minumum cost --
-node getLeastCostNodeInBall(node new_node, node closest, std::vector<node> &nodevec)
+node getLeastCostNodeInBall(node &new_node, node &closest, std::vector<node> &nodevec)
 {
     node minCostNode = closest;
     double minTotalCost = closest.cost + getDistance(closest, new_node);
@@ -301,7 +291,10 @@ node getLeastCostNodeInBall(node new_node, node closest, std::vector<node> &node
 
 void csvObstacle(std::vector<obstacle> &obstacles)
 {
+    /* Obstacle is a ractangle with vertexes ob1, ob2, ob3, ob4.
+    Enlarged obstacle (using OFFSETS) has v1, v2, v3, v4*/
     FILE *fileObstacle = fopen("../rrt/obstacles.csv", "w");
+    fprintf(fileObstacle, "ob1_x, ob1_y, ob2_x, ob2_y, ob3_x, ob3_y, ob4_x, ob4_y, ");
     fprintf(fileObstacle, "v1_x, v1_y, v2_x, v2_y, v3_x, v3_y, v4_x, v4_y;\n");
 
     for (obstacle obs : obstacles)
@@ -317,51 +310,27 @@ void csvObstacle(std::vector<obstacle> &obstacles)
         double L_half = L / 2.0;
         double W_half = W / 2.0;
 
-        // vertexes defining the rectangle representing the obstacle
-        // v1 --- v2
-        // |      |
-        // v3 --- v4
+        point ob1, ob2, ob3, ob4;
+        ob1.x = cx - L_half;
+        ob1.y = cy + W_half;
+        ob2.x = cx + L_half;
+        ob2.y = cy + W_half;
+        ob3.x = cx - L_half;
+        ob3.y = cy - W_half;
+        ob4.x = cx + L_half;
+        ob4.y = cy - W_half;
+        fprintf(fileObstacle, "%f, %f, %f, %f, %f, %f, %f, %f, ", ob1.x, ob1.y, ob2.x, ob2.y, ob3.x, ob3.y, ob4.x, ob4.y);
+
         point v1, v2, v3, v4;
-        v1.x = cx - L_half - x_offset;
-        v1.y = cy + W_half + y_offset;
-        v2.x = cx + L_half + x_offset;
-        v2.y = cy + W_half + y_offset;
-        v3.x = cx - L_half - x_offset;
-        v3.y = cy - W_half - y_offset;
-        v4.x = cx + L_half + x_offset;
-        v4.y = cy - W_half - y_offset;
+        v1.x = ob1.x - x_offset;
+        v1.y = ob1.y + y_offset;
+        v2.x = ob2.x + x_offset;
+        v2.y = ob2.y + y_offset;
+        v3.x = ob3.x - x_offset;
+        v3.y = ob3.y - y_offset;
+        v4.x = ob4.x + x_offset;
+        v4.y = ob4.y - y_offset;
         fprintf(fileObstacle, "%f, %f, %f, %f, %f, %f, %f, %f;\n", v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
     }
     fclose(fileObstacle);
 }
-
-/* ------------------------- */
-double path_cost(std::vector<node> &nodevec, std::vector<node> &nodevec_par, int num_node, std::vector<node> &path)
-{
-    int i = num_node;
-    double cost = 0.0;
-    path.push_back(nodevec[i]);
-
-    while (i != 0)
-    {
-        node last = nodevec[i];         // Vettore nodi
-        node last_par = nodevec_par[i]; // Vettore parent dei nodi
-
-        path.push_back(last_par);
-
-        cost += getDistance(last, last_par);
-
-        // A partire dall'ultimo punto del vettore, continuo a seguire il parent fino a che non raggiungo il punto di partenza, calcolando il costo come distanza percorsa.
-
-        for (int j = 0; j < i; j++)
-        {
-            if ((nodevec[j].p.x == last_par.p.x) && (nodevec[j].p.y == last_par.p.y))
-            {
-                i = j;
-            }
-        }
-    }
-
-    return cost;
-}
-/* ------------------------- */
