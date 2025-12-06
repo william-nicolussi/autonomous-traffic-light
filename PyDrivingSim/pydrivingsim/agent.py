@@ -9,7 +9,7 @@ from math import *
 import agent.agent_interfaces_connector as agent_lib
 from agent.interfaces_python_data_structs import input_data_str, output_data_str
 
-from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin
+from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin, Graph, Rock
 
 
 c = agent_lib.AgentConnector()
@@ -58,6 +58,13 @@ class Agent():
         self.ALgtFild = 0
         self.YawRateFild = 0
         self.SteerWhlAg = 0
+        
+        # find Graph in the world
+        for obj in World().obj_list:
+            if isinstance(obj, Graph):
+                self.graph = obj
+                break
+
 
     def compute(self):
         self.num_of_step += 1
@@ -151,6 +158,18 @@ class Agent():
                 s.ObjWidth[objId] = obj.size
                 objId = objId + 1
                 
+            # Code for sending RockObstacle information
+            if type(obj) is Rock:
+                s.ObjID[objId] = 3
+                delta_x = obj.pos[0] - v.state[0]
+                delta_y = obj.pos[1] - v.state[1]
+                s.ObjX[objId] = delta_x * cos(v.state[2]) + delta_y * sin(v.state[2])
+                s.ObjY[objId] = - delta_x * sin(v.state[2]) + delta_y * cos(v.state[2])
+                s.ObjVel[objId] = 0
+                s.ObjLen[objId] = obj.len
+                s.ObjWidth[objId] = obj.width
+                objId = objId + 1
+                
             # Code for sending target information
             if type(obj) is Target:
                 s.ObjID[objId] = 5
@@ -201,6 +220,22 @@ class Agent():
 
         #self.action = (0.01, 0.01)
         self.action = (m.RequestedAcc,m.RequestedSteerWhlAg)
+        
+        # --- UPDATE GRAPH FROM RRT PATH (after receiving manoeuvre_msg) ---
+        if hasattr(self, "graph") and self.graph is not None:
+            if m.NTrajectoryPoints > 0:
+                # print("Received points: " + str(m.NTrajectoryPoints))
+                points_world = []
+                for i in range(m.NTrajectoryPoints):
+                    xr = m.TrajectoryPointIX[i]
+                    yr = m.TrajectoryPointIY[i] - 1 #remove starting position of the vehicle
+
+                    # print("xr: " + str(xr))
+                    # print("yr: " + str(yr))
+                    points_world.append((xr, yr))
+
+                self.graph.set_points_world(points_world)
+
 
     def terminate(self):
         World().loop = 0
