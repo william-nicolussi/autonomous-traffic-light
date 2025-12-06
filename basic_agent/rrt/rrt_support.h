@@ -32,8 +32,8 @@ typedef struct
 /* ----- CONSTANTS ----- */
 #define X_OFFSET 0.5       // 35.0
 #define Y_OFFSET 0.5       // 4.5
-#define TOP_ROADWAY 2     // 35.0   // cone.set_pos((1.0,2)) -> +20 è il massimo della strada
-#define BOTTOM_ROADWAY -2 // 5.0 // cone.set_pos((1.0,-2)) -> -20 il minimo y
+#define TOP_ROADWAY 3 //2     // 35.0   // cone.set_pos((1.0,2)) -> +20 è il massimo della strada
+#define BOTTOM_ROADWAY -1 //-2 // 5.0 // cone.set_pos((1.0,-2)) -> -20 il minimo y
 #define POINTS_COLLINEARS 0
 #define POINTS_CLOCKWISE 1
 #define POINTS_ANTICLOCKWISE 2

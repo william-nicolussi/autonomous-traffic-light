@@ -372,7 +372,7 @@ void pass_primitive(double v0, double a0, double sf, double v_min, double v_max,
   } else {
     *T2 = time_min_vel_pass(a0, sf);
     v_star = min_vel(v0, a0, sf);
-    if ((v_star < v_min) && (v_min < v_max)) {
+    if ((v_star < v_min) && (v_min <= v_max)) {
       *T2 = final_opt_time_pass(v0, a0, sf, v_min);
       *T1 = final_opt_time_pass(v0, a0, sf, v_max);
     } else if ((v_min < v_star) && (v_star < v_max)) {

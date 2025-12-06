@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 project(basic_agent_ST)
 
 set(CMAKE_CXX_STANDARD 11)
-# If you are on mac x86
-#set(CMAKE_OSX_ARCHITECTURES x86_64)
 
 include(lib/basic.cmake)
 
@@ -13,10 +11,16 @@ include_directories(
         lib
         log
         rrt
+        ${CMAKE_SOURCE_DIR}/../Clothoids/src
+        ${CMAKE_SOURCE_DIR}/../Clothoids/lib/include
+        ${CMAKE_SOURCE_DIR}/../Clothoids/lib3rd/include
 )
+
 
 link_directories(
         lib
+	${CMAKE_SOURCE_DIR}/../Clothoids/lib/dll
+	${CMAKE_SOURCE_DIR}/../Clothoids/lib3rd/dll
 )
 
 # ------------------------------- basic agent ------------------------------------
@@ -34,6 +38,11 @@ add_executable(basic_agent
 
 
 target_link_libraries(basic_agent agent_lib ${lib_ws32})
+target_link_libraries(basic_agent libClothoids_linux.so ${lib_ws32})
+target_link_libraries(basic_agent libquarticRootsFlocke_linux.so ${lib_ws32})
+target_link_libraries(basic_agent libUtils_linux.so ${lib_ws32})
+target_link_libraries(basic_agent ${CMAKE_DL_LIBS})
+
 
 target_compile_options(basic_agent
         PUBLIC -DNOT_INLINED -DSERVER

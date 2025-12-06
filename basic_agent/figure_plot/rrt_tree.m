@@ -142,7 +142,6 @@ for i = 1:height(obs)
 
     vx = [obs.v1_x(i) obs.v2_x(i) obs.v4_x(i) obs.v3_x(i) obs.v1_x(i)]; 
     vy = [obs.v1_y(i) obs.v2_y(i) obs.v4_y(i) obs.v3_y(i) obs.v1_y(i)];
-
     plot(vx, vy, 'r-', 'LineWidth', 1.5);
     fill(vx, vy, [0.8 0.2 0.2], 'FaceAlpha', 0.3);
 end

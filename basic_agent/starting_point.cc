@@ -21,6 +21,8 @@ extern "C"
 #include "rrt_star.h"
 #include "screen_print.h"
 #include "server_lib.h"
+#include "Clothoids.hh"
+using namespace G2lib;
 
 // ----- #define -----
 #define DEFAULT_SERVER_IP "127.0.0.1" // IP Address
@@ -29,8 +31,11 @@ extern "C"
 #define GREEN_TL 1                    // State corresponding to green  traffic light
 #define YELLOW_TL 2                   // State corresponding to yellow  traffic light
 #define RED_TL 3                      // State corresponding to red  traffic light
-#define ID_OBJ_TRAFFIC_CONE 1
-#define ID_OBJ_TARGET 5
+#define ID_OBJ_TRAFFIC_CONE 1         // ID of Traffic Cone coming fron PyDrivingSim
+#define ID_OBJ_ROCK 3                 // ID of the rock coming fron PyDrivingSim
+#define ID_OBJ_TARGET 5               // ID of the Target coming fron PyDrivingSim
+#define MAX_TRAJ_POINTS 20            // Send this number of point to PyDrivingSim
+#define TH_NODE_REACHED 0.5           // Distance to consider a node reached
 
 // Handler for CTRL-C
 #include <signal.h>
@@ -41,6 +46,7 @@ void intHandler(int signal) { server_run = 0; }
 void copy_m(double m1[6], double m2[6]);
 bool isAllZero(double m[6]);
 void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], double *v1, double *T1);
+bool positionReached(const node &nd, double x_veh, double y_veh);
 
 // ----- MAIN -----
 int main(int argc, const char *argv[])
@@ -74,6 +80,10 @@ int main(int argc, const char *argv[])
     printLine();
 
     bool firstCycle = true;
+    node startNode, goalNode;
+    std::vector<node> path_to_follow; // rrt* fills this
+    int idxNodeToReach = 0, nextIdxToReach = MAX_TRAJ_POINTS;
+    std::vector<obstacle> obstacle_list;
 
     while (server_run == 1)
     {
@@ -96,8 +106,7 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.Status = in->Status;
 
             // ----- TRAJECTORY -----
-            // Trajectory is otside the while because is calculated just once
-            // Starting and goal points definition
+            // Trajectory is outside the while because is calculated just once
 
             if (firstCycle)
             {
@@ -108,19 +117,19 @@ int main(int argc, const char *argv[])
                     -> all positions are given w.r.t. the car, so its starting position is (0, 0) ->
                     -> note in the simulator starting position of the car is (0, -1) ->
                     -> if you put Y0=-1., then the coordinates of obj are wrong (bc simulator returns coordinates wrt the car).
-                */ 
-                const double X0 = 0., Y0 = 0.; //in->LatOffsLineL;
-                node start, goal;
-                start.p.x = X0;
-                start.p.y = Y0;
+                */
+                const double X0 = 0., Y0 = 0.; // in->LatOffsLineL;
+
+                startNode.p.x = X0;
+                startNode.p.y = Y0;
 
                 // Def obstacles -> the cones
-                std::vector<obstacle> obstacle_list;
                 for (int i = 0; i < in->NrObjs; i++)
                 {
                     switch (in->ObjID[i])
                     {
                     case ID_OBJ_TRAFFIC_CONE:
+                    case ID_OBJ_ROCK:
                         obstacle obs;
                         obs.ID = in->ObjID[i];
                         obs.x = in->ObjX[i];
@@ -128,20 +137,19 @@ int main(int argc, const char *argv[])
                         obs.lenght = in->ObjLen[i];
                         obs.width = in->ObjWidth[i];
                         obstacle_list.push_back(obs);
-                        fprintf(fileDebug, "obs.ID=%d; obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.ID, obs.x, obs.y, obs.lenght, obs.lenght);
+                        fprintf(fileDebug, "\tobs.ID=%d; obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.ID, obs.x, obs.y, obs.lenght, obs.lenght);
                         break;
                     case ID_OBJ_TARGET:
-                        goal.p.x = in->ObjX[i];
-                        goal.p.y = in->ObjY[i];
-                        fprintf(fileDebug, "goal.x=%f; goal.y=%f\n",goal.p.x, goal.p.y);
+                        goalNode.p.x = in->ObjX[i];
+                        goalNode.p.y = in->ObjY[i];
+                        fprintf(fileDebug, "\tgoal.x=%f; goal.y=%f\n", goalNode.p.x, goalNode.p.y);
                         break;
                     }
                 }
 
-                // Definisco il vettore dei punti che definiscono il path da seguire
-                std::vector<node> path_to_follow;
-                int numberSolutions = rrt_star(start, goal, obstacle_list, path_to_follow);
-                fprintf(fileDebug, "rrt_star found %d solution(s)\n", numberSolutions);
+                // Define path_to_follow
+                int numberSolutions = rrt_star(startNode, goalNode, obstacle_list, path_to_follow);
+                fprintf(fileDebug, "\trrt_star found %d solution(s)\n", numberSolutions);
 
                 // ----- LATERAL CONTROL -----
                 double LatPosL = in->LatOffsLineL; // lateral offset from left line
@@ -167,10 +175,11 @@ int main(int argc, const char *argv[])
                 fprintf(fileDebug, "firstCycle END\n\n");
             }
 
+            // fprintf(fileDebug, "\ncycle %d; time = %f\n", in->CycleNumber, in->ECUupTime);
+
             // ----- LONGITUDINAL CONTROL -----
             static double init_dist = in->TrfLightDist; // initial distance to the traffic light
-            double sf = in->TrfLightDist;               // distance to the traffic light
-            double dist = init_dist - sf;               // distance traveled
+            double s0 = init_dist - in->TrfLightDist;   // distance traveled
             double v0 = in->VLgtFild;                   // actual longitudinal velocity
             double a0 = in->ALgtFild;                   // actual longitudinal acceleration
             double m_star[6], m1[6], m2[6];             // primitives
@@ -187,14 +196,15 @@ int main(int argc, const char *argv[])
             double T_green, T_red;
             double x_stop_max, T_stop;
             double sf_j0, tf_stop_j0;
+            double final_time;
             const char *messageDebug;
             // others to add in longitudinal control
 
             // ----- LOGIC FOR TRAFFIC LIGHT -----
             if (in->NrTrfLights != 0) // if there is a traffic light
             {
-                x_tr = sf;
-                x_stop = sf - (x_s / 2.0); // stop before the TL
+                x_tr = in->TrfLightDist;
+                x_stop = x_tr - (x_s / 2.0); // stop before the TL
                 if (x_stop < 0)
                 {
                     x_stop = 0;
@@ -203,13 +213,13 @@ int main(int argc, const char *argv[])
             if (in->NrTrfLights == 0 || x_tr >= lookahead) // if there is no TL or is very far -> FreeFlow
             {
                 // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
-                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
+                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &final_time);
                 messageDebug = "if (in->NrTrfLights==0 || x_tr>=lookahead)";
             }
-            else if (sf < 0) // ADDED -> if we passed the TL and it turns red do not stop
+            else if (in->TrfLightDist + x_in < 0) // ADDED -> if we passed the intersection and it turns red do not stop
             {
-                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
-                messageDebug = "else if (sf<0)";
+                free_flow(v0, a0, lookahead, v_r, m_star, &v1, &final_time);
+                messageDebug = "else if (in->TrfLightDist<0)";
             }
             else // if TL is near
             {
@@ -229,10 +239,10 @@ int main(int argc, const char *argv[])
                     break;
                 }
 
-                if (in->TrfLightCurrState == GREEN_TL && sf <= x_s) // if TL green and we are very closed to TL
+                if (in->TrfLightCurrState == GREEN_TL && in->TrfLightDist <= x_s) // if TL green and we are very close to TL
                 {
                     // pass_primitive(v0, a0, lookahead, v_r, v_r, 0.0, 0.0, m_star, &v1, &T1, m_star, &v2, &T2); // FreeFlow
-                    free_flow(v0, a0, lookahead, v_r, m_star, &v1, &T1);
+                    free_flow(v0, a0, lookahead, v_r, m_star, &v1, &final_time);
                     messageDebug = "if (in->TrfLightCurrState==GREEN_TL && in->TrfLightDist<=x_s)";
                 }
                 else
@@ -240,14 +250,14 @@ int main(int argc, const char *argv[])
                     pass_primitive(v0, a0, x_tr, v_min, v_max, T_green, T_red, m1, &v1, &T1, m2, &v2, &T2);
                     if (isAllZero(m1) && isAllZero(m2))
                     {
-                        stop_primitive(v0, a0, x_stop, m_star, &x_stop_max, &T_stop);
+                        stop_primitive(v0, a0, x_stop, m_star, &x_stop_max, &final_time);
                         messageDebug = "if (isAllZero(m1) && isAllZero(m2))";
                     }
                     else
                     {
                         if ((m1[3] < 0 && m2[3] > 0) || (m1[3] > 0 && m2[3] < 0))
                         {
-                            pass_primitive_j0(v0, a0, x_tr, v_min, v_max, m_star, &sf_j0, &tf_stop_j0);
+                            pass_primitive_j0(v0, a0, x_tr, v_min, v_max, m_star, &sf_j0, &final_time);
                             messageDebug = "if ((m1[3]<0 && m2[3]>0) || (m1[3]>0 && m2[3]<0))";
                         }
                         else
@@ -255,11 +265,13 @@ int main(int argc, const char *argv[])
                             if (abs(m1[3]) < abs(m2[3]))
                             {
                                 copy_m(m_star, m1);
+                                final_time = T1;
                                 messageDebug = "if (abs(m1[3]) < abs(m2[3]))";
                             }
                             else
                             {
                                 copy_m(m_star, m2);
+                                final_time = T2;
                                 messageDebug = "else";
                             }
                         }
@@ -269,7 +281,6 @@ int main(int argc, const char *argv[])
 
             // double vr = in->RequestedCruisingSpeed;
             // double minTime, maxTime;
-            double final_time, final_distance, final_vel;
 
             // ----- TRAPEZOIDAL JERK -----
             static double a0_bar = 0.0; //=a0 or 0.0; (?)
@@ -285,12 +296,9 @@ int main(int argc, const char *argv[])
             static double s_req = 0.0;
             s_req += s_from_coeffs(DT, m_star);
 
-            // Lezione 20/11 -> plot the primitives in matlab
-            double s = init_dist - dist;
-
             // ----- PI IMPLEMENTATION -----
-            const double k_p = 0.02;
-            const double k_i = 0.15; // 1.0;
+            const double k_p = 0.022; // 0.02;
+            const double k_i = 0.19;  // 0.15; // 1.0;
             double error = a_req - a0;
             static double error_integral = 0.0;
             error_integral = error_integral + error * DT;
@@ -302,6 +310,36 @@ int main(int argc, const char *argv[])
             }
 
             // ----- SEND COMMANDS -----
+
+            // Send path_to_follow to PyDrivingSim
+            static int idxToCheck = 0;
+            if (nextIdxToReach != idxNodeToReach)
+            {
+                if (positionReached(path_to_follow[idxToCheck], s0, 0.0)) // in->LatOffsLineL))
+                {
+                    // send data only if there are any that haven't been sent
+                    fprintf(fileDebug, "Sending from path_to_follow[%d] to path_to_follow[%d]\n", idxNodeToReach, nextIdxToReach);
+                    int nmbrOfPoints = nextIdxToReach - idxNodeToReach;
+                    manoeuvre_msg.data_struct.NTrajectoryPoints = nmbrOfPoints;
+                    for (int i = 0; i < nmbrOfPoints; i++)
+                    {
+                        manoeuvre_msg.data_struct.TrajectoryPointIX[i] = path_to_follow[i + idxNodeToReach].p.x;
+                        manoeuvre_msg.data_struct.TrajectoryPointIY[i] = path_to_follow[i + idxNodeToReach].p.y;
+                    }
+                    idxToCheck = idxNodeToReach + (nextIdxToReach - idxNodeToReach) * 0.75;
+                    idxNodeToReach = nextIdxToReach;
+                    nextIdxToReach += MAX_TRAJ_POINTS;
+                    if (nextIdxToReach > path_to_follow.size())
+                    {
+                        nextIdxToReach = path_to_follow.size();
+                    }
+                }
+                else
+                {
+                    manoeuvre_msg.data_struct.NTrajectoryPoints = 0;
+                }
+            }
+
             manoeuvre_msg.data_struct.RequestedAcc = requested_pedal;
             manoeuvre_msg.data_struct.RequestedSteerWhlAg = 0.0;
 
@@ -312,22 +350,24 @@ int main(int argc, const char *argv[])
             logger.log_var(fileName, "messageDebug", messageDebug);
             logger.log_var(fileName, "cycle", in->CycleNumber);
             logger.log_var(fileName, "time", in->ECUupTime);
-            logger.log_var(fileName, "dist", dist);
+            logger.log_var(fileName, "s0", s0);
+            logger.log_var(fileName, "s_req", s_req);
             logger.log_var(fileName, "x_tr", x_tr);
             logger.log_var(fileName, "x_stop", x_stop);
             logger.log_var(fileName, "v0", in->VLgtFild);
+            logger.log_var(fileName, "v_req", v_req);
             logger.log_var(fileName, "a0", a0);
             logger.log_var(fileName, "a_req", a_req);
+            logger.log_var(fileName, "k_p", k_p);
+            logger.log_var(fileName, "k_i", k_i);
             logger.log_var(fileName, "lookahead", lookahead);
             logger.log_var(fileName, "error_integral", error_integral);
-            logger.log_var(fileName, "v_r", v_r);
-            logger.log_var(fileName, "in->TrfLightCurrState", in->TrfLightCurrState);
+            logger.log_var(fileName, "TL_state", in->TrfLightCurrState);
             logger.log_var(fileName, "T_green", T_green);
             logger.log_var(fileName, "T_red", T_red);
-            logger.log_var(fileName, "isAllZero(m1)", isAllZero(m1));
-            logger.log_var(fileName, "isAllZero(m2)", isAllZero(m2));
             logger.log_var(fileName, "m1[3]", m1[3]);
             logger.log_var(fileName, "m2[3]", m2[3]);
+            logger.log_var(fileName, "final_time", final_time);
             logger.log_var(fileName, "c0", m_star[0]);
             logger.log_var(fileName, "c1", m_star[1]);
             logger.log_var(fileName, "c2", m_star[2]);
@@ -388,4 +428,18 @@ bool isAllZero(double m[6])
 void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], double *v1, double *T1)
 {
     pass_primitive(v0, a0, x_f, v_r, v_r, 0.0, 0.0, m_star, v1, T1, m_star, v1, T1); // FreeFlow
+}
+
+// ----- !!!! check only distance on X !!!!! -----
+bool positionReached(const node &nd, double x_veh, double y_veh)
+{
+    double dx = x_veh - nd.p.x;
+    double dy = y_veh - nd.p.y;
+    double d2 = dx * dx;
+    // double d2 = dx * dx + dy * dy; // distance^2
+    if (d2 <= TH_NODE_REACHED * TH_NODE_REACHED)
+    {
+        return true;
+    }
+    return false;
 }

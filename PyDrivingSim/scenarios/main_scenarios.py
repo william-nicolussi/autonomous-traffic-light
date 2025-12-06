@@ -1,5 +1,5 @@
 
-from pydrivingsim import TrafficLight, Target, TrafficCone, SuggestedSpeedSignal, GraphicObject, Vehicle, Agent, Coin
+from pydrivingsim import TrafficLight, Target, TrafficCone, SuggestedSpeedSignal, GraphicObject, Vehicle, Agent, Coin, Graph, Rock
 
 class OnlyVehicle():
     def __init__(self):
@@ -82,6 +82,13 @@ class GetTheCoins():
         coin.set_pos((160,-1))
         coin = Coin()
         coin.set_pos((182,-1))
+        
+class ObstacleRocks():
+    def __init__(self):
+        rock = Rock()
+        rock.set_pos_size((70, 1), 1.0, 2.0)
+        rock = Rock()
+        rock.set_pos_size((40, -2), 3.0, 4.0)
 
 
 class BasicSpeedLimit():
@@ -94,3 +101,10 @@ class BasicSpeedLimit():
         signal.set_pos((96, 4))
         super = GraphicObject("imgs/pictures/superstrada.png", 5)
         super.set_pos((100,6))
+        
+# draw path into m.m.TrajectoryPointIX
+class DrawPath():
+    def __init__(self):
+        # Creare un oggetto Graph registra il path nel mondo.
+        # All'inizio è vuoto; l'Agent lo riempirà.
+        self.graph = Graph()

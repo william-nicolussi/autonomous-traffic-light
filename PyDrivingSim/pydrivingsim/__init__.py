@@ -13,5 +13,9 @@ from pydrivingsim.target import Target
 from pydrivingsim.suggestedspeedsignal import SuggestedSpeedSignal
 from pydrivingsim.graphicobject import GraphicObject
 
+# My additions
+from pydrivingsim.graph import Graph
+from pydrivingsim.rock import Rock
+
 # The Agent
 from pydrivingsim.agent import Agent

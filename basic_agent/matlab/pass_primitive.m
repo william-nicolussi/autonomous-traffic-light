@@ -14,7 +14,7 @@ function [m1, v1, T1, m2, v2, T2] = pass_primitive(v0, a0, sf, v_min, v_max, T_m
     else
         T_star = time_min_vel_pass(a0, sf);
         v_star = min_vel(v0, a0, sf);
-        if (v_star < v_min) && (v_min < v_max)
+        if (v_star < v_min) && (v_min <= v_max)
             Tv_min = final_opt_time_pass(v0, a0, sf, v_min);
             Tv_max = final_opt_time_pass(v0, a0, sf, v_max);
         elseif (v_min < v_star) && (v_star < v_max)
