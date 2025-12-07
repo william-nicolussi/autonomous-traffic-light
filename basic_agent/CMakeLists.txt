@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(basic_agent_ST)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17) # C++11 -> C++17
 
 include(lib/basic.cmake)
 
@@ -19,8 +19,8 @@ include_directories(
 
 link_directories(
         lib
-	${CMAKE_SOURCE_DIR}/../Clothoids/lib/dll
-	${CMAKE_SOURCE_DIR}/../Clothoids/lib3rd/dll
+	${CMAKE_SOURCE_DIR}/../Clothoids/lib/lib
+	${CMAKE_SOURCE_DIR}/../Clothoids/lib3rd/lib
 )
 
 # ------------------------------- basic agent ------------------------------------
@@ -34,15 +34,18 @@ add_executable(basic_agent
         starting_point.cc
         rrt/rrt_star.cpp
         rrt/rrt_support.cpp
+        rrt/rrt_clothoid.cpp
 )
 
-
-target_link_libraries(basic_agent agent_lib ${lib_ws32})
-target_link_libraries(basic_agent libClothoids_linux.so ${lib_ws32})
-target_link_libraries(basic_agent libquarticRootsFlocke_linux.so ${lib_ws32})
-target_link_libraries(basic_agent libUtils_linux.so ${lib_ws32})
-target_link_libraries(basic_agent ${CMAKE_DL_LIBS})
-
+target_link_libraries(basic_agent agent_lib ${lib_ws32} ${CMAKE_DL_LIBS})
+target_link_libraries(basic_agent
+    agent_lib
+    Clothoids_mingw
+    quarticRootsFlocke_mingw
+    UtilsLite_mingw
+    ${lib_ws32}
+    ${CMAKE_DL_LIBS}
+)
 
 target_compile_options(basic_agent
         PUBLIC -DNOT_INLINED -DSERVER

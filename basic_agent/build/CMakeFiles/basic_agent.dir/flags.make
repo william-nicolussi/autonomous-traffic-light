@@ -13,5 +13,5 @@ CXX_DEFINES = -DLOG_INTERNAL
 
 CXX_INCLUDES = @CMakeFiles/basic_agent.dir/includes_CXX.rsp
 
-CXX_FLAGS = -std=gnu++11   -O2 -DNOT_INLINED -DSERVER
+CXX_FLAGS = -std=gnu++17   -O2 -DNOT_INLINED -DSERVER
 

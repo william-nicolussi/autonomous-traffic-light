@@ -16,12 +16,14 @@ extern "C"
 {
 #include "screen_print_c.h"
 }
+#include "Clothoids.hh"
 #include "logvars.h"
 #include "primitives.h"
 #include "rrt_star.h"
 #include "screen_print.h"
 #include "server_lib.h"
-#include "Clothoids.hh"
+
+using namespace std;
 using namespace G2lib;
 
 // ----- #define -----
@@ -81,9 +83,10 @@ int main(int argc, const char *argv[])
 
     bool firstCycle = true;
     node startNode, goalNode;
-    std::vector<node> path_to_follow; // rrt* fills this
+    vector<node> path_to_follow; // rrt* fills this
     int idxNodeToReach = 0, nextIdxToReach = MAX_TRAJ_POINTS;
-    std::vector<obstacle> obstacle_list;
+    vector<obstacle> obstacle_list;
+    ClothoidList path_clothoid("RRT_trajectory");
 
     while (server_run == 1)
     {
@@ -95,9 +98,9 @@ int main(int argc, const char *argv[])
         if (server_receive_from_client(&server_run, &message_id, &scenario_msg.data_struct) == 0)
         {
             // Init time
-            static auto start = std::chrono::system_clock::now();
-            auto time = std::chrono::system_clock::now() - start;
-            double num_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(time).count() / 1000.0;
+            static auto start = chrono::system_clock::now();
+            auto time = chrono::system_clock::now() - start;
+            double num_seconds = chrono::duration_cast<chrono::milliseconds>(time).count() / 1000.0;
             printLogTitle(message_id, "received message");
 
             // Data struct
@@ -151,6 +154,24 @@ int main(int argc, const char *argv[])
                 int numberSolutions = rrt_star(startNode, goalNode, obstacle_list, path_to_follow);
                 fprintf(fileDebug, "\trrt_star found %d solution(s)\n", numberSolutions);
 
+                // Fill path_clothoid
+                for (int i = 0; i < path_to_follow.size() - 1; i++)
+                {
+                    G2lib::ClothoidCurve this_clothoid("segment_" + to_string(i));
+                    double x1 = path_to_follow[i].p.x;
+                    double x2 = path_to_follow[i + 1].p.x;
+                    double y1 = path_to_follow[i].p.y;
+                    double y2 = path_to_follow[i + 1].p.y;
+                    this_clothoid.build_G1(x1, y1, 0., x2, y2, 0.);
+
+                    G2lib::PolyLine this_poly("poly_" + to_string(i));
+                    real_type tol = 1.0;
+                    this_poly.build(this_clothoid, tol);
+                    /*void 	build (ClothoidCurve const &C, real_type tol)
+                    but there is also void 	build (ClothoidList const &CL, real_type tol)*/
+                    path_clothoid.push_back(this_clothoid);
+                }
+
                 // ----- LATERAL CONTROL -----
                 double LatPosL = in->LatOffsLineL; // lateral offset from left line
                 logger.log_var("Lateral", "YawRateFild", in->YawRateFild);
@@ -167,8 +188,8 @@ int main(int argc, const char *argv[])
                 logger.log_var("Lateral", "LaneCrvt", in->LaneCrvt);
                 for (int i = 0; i < obstacle_list.size(); ++i)
                 {
-                    logger.log_var("Lateral", ("objX[" + std::to_string(i) + "]").c_str(), obstacle_list[i].x);
-                    logger.log_var("Lateral", ("objY[" + std::to_string(i) + "]").c_str(), obstacle_list[i].y);
+                    logger.log_var("Lateral", ("objX[" + to_string(i) + "]").c_str(), obstacle_list[i].x);
+                    logger.log_var("Lateral", ("objY[" + to_string(i) + "]").c_str(), obstacle_list[i].y);
                 }
                 logger.write_line("Lateral");
 

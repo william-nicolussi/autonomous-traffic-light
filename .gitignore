@@ -1,9 +1,11 @@
-bin
-compilazione
+.idea
 .vscode
+bin
+build
+cmake-build-debug
+compilazione
 README.md
 *.asv
 cmake-build-debug
-.idea
 .clang-format
 Clothoids
