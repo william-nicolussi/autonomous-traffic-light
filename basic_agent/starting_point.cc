@@ -16,9 +16,10 @@ extern "C"
 {
 #include "screen_print_c.h"
 }
-#include "Clothoids.hh"
+// #include "Clothoids.hh"
 #include "logvars.h"
 #include "primitives.h"
+#include "rrt_clothoid.h"
 #include "rrt_star.h"
 #include "screen_print.h"
 #include "server_lib.h"
@@ -125,6 +126,7 @@ int main(int argc, const char *argv[])
 
                 startNode.p.x = X0;
                 startNode.p.y = Y0;
+                double initialYaw = in->YawRateFild;
 
                 // Def obstacles -> the cones
                 for (int i = 0; i < in->NrObjs; i++)
@@ -153,50 +155,40 @@ int main(int argc, const char *argv[])
                 // Define path_to_follow
                 int numberSolutions = rrt_star(startNode, goalNode, obstacle_list, path_to_follow);
                 fprintf(fileDebug, "\trrt_star found %d solution(s)\n", numberSolutions);
+                printLogVar(message_id, "numberSolutions", numberSolutions);
 
-                // Fill path_clothoid
-                for (int i = 0; i < path_to_follow.size() - 1; i++)
-                {
-                    G2lib::ClothoidCurve this_clothoid("segment_" + to_string(i));
-                    double x1 = path_to_follow[i].p.x;
-                    double x2 = path_to_follow[i + 1].p.x;
-                    double y1 = path_to_follow[i].p.y;
-                    double y2 = path_to_follow[i + 1].p.y;
-                    this_clothoid.build_G1(x1, y1, 0., x2, y2, 0.);
-
-                    G2lib::PolyLine this_poly("poly_" + to_string(i));
-                    real_type tol = 1.0;
-                    this_poly.build(this_clothoid, tol);
-                    /*void 	build (ClothoidCurve const &C, real_type tol)
-                    but there is also void 	build (ClothoidList const &CL, real_type tol)*/
-                    path_clothoid.push_back(this_clothoid);
-                }
-
-                // ----- LATERAL CONTROL -----
-                double LatPosL = in->LatOffsLineL; // lateral offset from left line
-                logger.log_var("Lateral", "YawRateFild", in->YawRateFild);
-                logger.log_var("Lateral", "SteerWhlAg", in->SteerWhlAg);
-                logger.log_var("Lateral", "VehicleLen", in->VehicleLen);
-                logger.log_var("Lateral", "VehicleWidth", in->VehicleWidth);
-                logger.log_var("Lateral", "AutomationLevel", in->AutomationLevel);
-                logger.log_var("Lateral", "CurrentLane", in->CurrentLane);
-                logger.log_var("Lateral", "NrObjs", in->NrObjs);
-                logger.log_var("Lateral", "LaneWidth", in->LaneWidth);
-                logger.log_var("Lateral", "LatOffsLineR", in->LatOffsLineR);
-                logger.log_var("Lateral", "LatOffsLineL", in->LatOffsLineL);
-                logger.log_var("Lateral", "LaneHeading", in->LaneHeading);
-                logger.log_var("Lateral", "LaneCrvt", in->LaneCrvt);
-                for (int i = 0; i < obstacle_list.size(); ++i)
-                {
-                    logger.log_var("Lateral", ("objX[" + to_string(i) + "]").c_str(), obstacle_list[i].x);
-                    logger.log_var("Lateral", ("objY[" + to_string(i) + "]").c_str(), obstacle_list[i].y);
-                }
-                logger.write_line("Lateral");
+                getClothoid(initialYaw, path_to_follow, path_clothoid);
 
                 fprintf(fileDebug, "firstCycle END\n\n");
             }
 
             // fprintf(fileDebug, "\ncycle %d; time = %f\n", in->CycleNumber, in->ECUupTime);
+
+            // ----- LATERAL CONTROL -----
+            double theta_req = 0;          // requested steering wheel angle
+            double theta = in->SteerWhlAg; // real steering wheel angle
+            double K_US = 0;               // understeering gradient
+            double lookahead_lat = 15;     // lookahead distance [m]
+
+            double LatPosL = in->LatOffsLineL; // lateral offset from left line
+            logger.log_var("Lateral", "YawRateFild", in->YawRateFild);
+            logger.log_var("Lateral", "SteerWhlAg", in->SteerWhlAg);
+            logger.log_var("Lateral", "VehicleLen", in->VehicleLen);
+            logger.log_var("Lateral", "VehicleWidth", in->VehicleWidth);
+            logger.log_var("Lateral", "AutomationLevel", in->AutomationLevel);
+            logger.log_var("Lateral", "CurrentLane", in->CurrentLane);
+            logger.log_var("Lateral", "NrObjs", in->NrObjs);
+            logger.log_var("Lateral", "LaneWidth", in->LaneWidth);
+            logger.log_var("Lateral", "LatOffsLineR", in->LatOffsLineR);
+            logger.log_var("Lateral", "LatOffsLineL", in->LatOffsLineL);
+            logger.log_var("Lateral", "LaneHeading", in->LaneHeading);
+            logger.log_var("Lateral", "LaneCrvt", in->LaneCrvt);
+            for (int i = 0; i < obstacle_list.size(); ++i)
+            {
+                logger.log_var("Lateral", ("objX[" + to_string(i) + "]").c_str(), obstacle_list[i].x);
+                logger.log_var("Lateral", ("objY[" + to_string(i) + "]").c_str(), obstacle_list[i].y);
+            }
+            logger.write_line("Lateral");
 
             // ----- LONGITUDINAL CONTROL -----
             static double init_dist = in->TrfLightDist; // initial distance to the traffic light
