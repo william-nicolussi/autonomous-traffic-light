@@ -37,7 +37,7 @@ typedef struct
 #define POINTS_COLLINEARS 0
 #define POINTS_CLOCKWISE 1
 #define POINTS_ANTICLOCKWISE 2
-#define min_distance 1.0           // = distance*10 -> min distance between two nodes of the tree
+#define min_distance 1.5           // = distance*10 -> min distance between two nodes of the tree
 #define R_NEAR (2.0 * min_distance) // radius for RRT* (choose parent + rewiring)
 #define GOAL_THRESHOLD min_distance // = 10.0 -> threshold to be near the goal
 

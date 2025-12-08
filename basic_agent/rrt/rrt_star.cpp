@@ -1,7 +1,6 @@
 /* ----- RRT* ALGORITHM ----- */
 
 #include "rrt_star.h"
-#include "logvars.h"
 
 #include <algorithm>
 #include <cmath>
