@@ -1,5 +1,5 @@
 
-from pydrivingsim import TrafficLight, Target, TrafficCone, SuggestedSpeedSignal, GraphicObject, Vehicle, Agent, Coin, Graph, Rock
+from pydrivingsim import TrafficLight, Target, TrafficCone, SuggestedSpeedSignal, GraphicObject, Vehicle, Agent, Coin, Graph, Rock, GPS
 
 class OnlyVehicle():
     def __init__(self):
@@ -26,6 +26,7 @@ class AutonomousVehicle():
         self.vehicle = Vehicle()
         self.vehicle.set_screen_here()
         self.vehicle.set_pos_ang((0, -1, 0.1))
+        self.gps = GPS(self.vehicle)
 
         #Initialize the agent
         self.agent = Agent(self.vehicle)

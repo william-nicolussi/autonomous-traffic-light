@@ -68,7 +68,7 @@ ylabel("Velocity [m/s]");
 legend("v\_req","v\_real","Location","best");
 grid on;
 
-% --- Acceleration ---
+% --- a(s) ---
 subplot(2,1,2);
 plot(s0, a_req, s0, a0);
 xlabel("Space [m]");

@@ -16,6 +16,7 @@ from pydrivingsim.graphicobject import GraphicObject
 # My additions
 from pydrivingsim.graph import Graph
 from pydrivingsim.rock import Rock
+from pydrivingsim.gps import GPS
 
 # The Agent
 from pydrivingsim.agent import Agent

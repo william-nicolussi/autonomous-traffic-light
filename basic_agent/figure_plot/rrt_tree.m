@@ -22,7 +22,7 @@ plot(x, y, '.', 'MarkerSize', 8);
 N = height(dataCSV);
 for i = 1:N
     p = parent(i);
-    if p ~= -1 % gli indici nel file partono da 0, le righe MATLAB da 1
+    if p ~= -1 % index in matlab starts with 1 instead of 0 in c++
         parent_row = p + 1;
         plot([x(i) x(parent_row)], [y(i) y(parent_row)], '-');
     end
@@ -38,9 +38,9 @@ for i = 1:height(obs)
     vx = [obs.v1_x(i) obs.v2_x(i) obs.v4_x(i) obs.v3_x(i) obs.v1_x(i)]; 
     vy = [obs.v1_y(i) obs.v2_y(i) obs.v4_y(i) obs.v3_y(i) obs.v1_y(i)];
 
-    % disegno il poligono dell'ostacolo
-    plot(vx, vy, 'k-'); % bordo nero
-    fill(vx, vy, [0.8 0.2 0.2]); % rosso
+    % draw poly of the obstacle
+    plot(vx, vy, 'k-'); % black bordes
+    fill(vx, vy, [0.8 0.2 0.2]); % red inside
 end
 
 % Plot Obstacles
@@ -76,7 +76,7 @@ xc = cx + R * cos(theta);
 yc = cy + R * sin(theta);
 
 fill(xc, yc, [0.4 1.0 0.4], 'FaceAlpha', 0.35, 'EdgeColor', [0 0.7 0], 'LineWidth', 0.5);
-plot(cx, cy, 'g+', 'MarkerSize', 10, 'LineWidth', 2);   % centro goal
+plot(cx, cy, 'g+', 'MarkerSize', 10, 'LineWidth', 2);   % center goal
 
 xlabel('x');
 ylabel('y');
@@ -122,7 +122,7 @@ for k = 1:numPaths
 
     % Plot legend
     thisCost = path_k.cost(end);
-    legendHandles(k) = h;   % prendo linea come riferimento
+    legendHandles(k) = h;
     legendNames(k) = sprintf("Path %d – cost %.2f", pid, thisCost);
 end
 lgd = legend(legendHandles, legendNames, 'Location','best');

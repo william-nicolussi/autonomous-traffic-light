@@ -9,7 +9,7 @@ from math import *
 import agent.agent_interfaces_connector as agent_lib
 from agent.interfaces_python_data_structs import input_data_str, output_data_str
 
-from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin, Graph, Rock
+from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin, Graph, Rock, GPS
 
 
 c = agent_lib.AgentConnector()
@@ -177,6 +177,14 @@ class Agent():
                 delta_y = obj.pos[1] - v.state[1]
                 s.ObjX[objId] = delta_x * cos(v.state[2]) + delta_y * sin(v.state[2])
                 s.ObjY[objId] = - delta_x * sin(v.state[2]) + delta_y * cos(v.state[2])
+                s.ObjVel[objId] = 0
+                objId = objId + 1
+                
+            # Code for GPS information
+            if type(obj) is GPS:
+                s.ObjID[objId] = 99
+                s.ObjX[objId] = v.state[0]
+                s.ObjY[objId] = v.state[1]
                 s.ObjVel[objId] = 0
                 objId = objId + 1
 
