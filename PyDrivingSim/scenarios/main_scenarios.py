@@ -25,7 +25,7 @@ class AutonomousVehicle():
         # Initialize the vehicle
         self.vehicle = Vehicle()
         self.vehicle.set_screen_here()
-        self.vehicle.set_pos_ang((0, -1, 0))
+        self.vehicle.set_pos_ang((0, -1, 0.1))
 
         #Initialize the agent
         self.agent = Agent(self.vehicle)
@@ -49,11 +49,13 @@ class AutonomousVehicle():
 class BasicTrafficLight():
     def __init__(self):
         cone = TrafficCone()
-        cone.set_pos((10,0))
+        cone.set_pos((65, -0.5))
         cone = TrafficCone()
-        cone.set_pos((25,2))
+        cone.set_pos((65, -1.5))
         cone = TrafficCone()
-        cone.set_pos((35,-2)) #(1.0,-2)
+        cone.set_pos((90, 0.5))
+        cone = TrafficCone()
+        cone.set_pos((90, 1.5))
 
         trafficlight = TrafficLight()
         trafficlight.set_pos((160,-3))
@@ -86,9 +88,9 @@ class GetTheCoins():
 class ObstacleRocks():
     def __init__(self):
         rock = Rock()
-        rock.set_pos_size((70, 1), 1.0, 2.0)
+        rock.set_pos_size((20, -2), 2.0, 2.0)
         rock = Rock()
-        rock.set_pos_size((40, -2), 3.0, 4.0)
+        rock.set_pos_size((45, 2), 3.0, 4.0)
 
 
 class BasicSpeedLimit():

@@ -106,7 +106,7 @@ class Agent():
         # Vehicle parameters
         s.VehicleLen = v.vehicle.vehicle.L                          # double - lenght dimension [m]
         s.VehicleWidth = v.vehicle.vehicle.Wf                       # double - width dimension [m]
-        s.LaneHeading = -v.state[2]
+        s.LaneHeading = v.state[2]
         #print(v.state[2])
         #print((v.state[0],v.state[1]))
         s.VLgtFild = v.state[3]
@@ -228,8 +228,8 @@ class Agent():
                 points_world = []
                 for i in range(m.NTrajectoryPoints):
                     xr = m.TrajectoryPointIX[i]
-                    yr = m.TrajectoryPointIY[i] - 1 #remove starting position of the vehicle
-
+                    yr = m.TrajectoryPointIY[i]
+                    
                     # print("xr: " + str(xr))
                     # print("yr: " + str(yr))
                     points_world.append((xr, yr))
