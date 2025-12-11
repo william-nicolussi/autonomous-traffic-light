@@ -8,4 +8,5 @@ README.md
 *.asv
 cmake-build-debug
 .clang-format
-Clothoids
+Clothoids_backup
+compilazione.txt

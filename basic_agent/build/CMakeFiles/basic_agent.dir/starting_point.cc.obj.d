@@ -212,12 +212,7 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/matlab/tmwtypes.h \
  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/float.h \
  C:/ProgramData/mingw64/mingw64/x86_64-w64-mingw32/include/float.h \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/rrt/rrt_star.h \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/rrt/rrt_support.h \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/log/screen_print.h \
- C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/chrono \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/lib/server_lib.h \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/lib/interfaces_data_structs.h \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/rrt/rrt_clothoid.h \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids.hh \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/lib3rd/include/Utils.hh \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/lib3rd/include/Utils/Utils.hxx \
@@ -564,6 +559,7 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/lib3rd/include/Utils/ThreadPool3.hxx \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/lib3rd/include/Utils/3rd/BS_thread_pool.hpp \
  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/version \
+ C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/chrono \
  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/optional \
  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/queue \
  C:/ProgramData/mingw64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include/c++/deque \
@@ -595,4 +591,9 @@ CMakeFiles/basic_agent.dir/starting_point.cc.obj: \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids/BiarcList.hxx \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids/ClothoidList.hxx \
  C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids/Dubins.hxx \
- C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids/Dubins3p.hxx
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/Clothoids/src/Clothoids/Dubins3p.hxx \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/rrt/rrt_support.h \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/rrt/rrt_star.h \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/log/screen_print.h \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/lib/server_lib.h \
+ C:/Users/HP/Desktop/UniTn/IVAD/autonomous_traffic_light-main/basic_agent/lib/interfaces_data_structs.h

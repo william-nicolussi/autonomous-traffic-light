@@ -245,7 +245,6 @@ node extend(node &random, node &closest)
 {
     // pick the closest node to the random one and extend it in order to built the tree
     // min_distance is the minimum lenght of the branch
-
     double distance = getDistance(random, closest);
     node ext;
     const double EPS = 1e-9;

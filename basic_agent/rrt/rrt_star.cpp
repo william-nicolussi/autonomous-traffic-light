@@ -59,8 +59,8 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
 #endif
         // get random node
         node random;
-        random.p.x = getRand01() * max_X;                                           // 0 ... 180m * 10 // random.p.x = rand() % 1800;
-        random.p.y = getRand01() * (TOP_ROADWAY - BOTTOM_ROADWAY) + BOTTOM_ROADWAY; // random.p.y = rand() % 40;
+        random.p.x = getRand01() * max_X;                                           
+        random.p.y = getRand01() * (TOP_ROADWAY - BOTTOM_ROADWAY) + BOTTOM_ROADWAY;
 
         node closest = getClosestNode(all_nodes, random);
 
@@ -142,14 +142,14 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
                     }
                     std::reverse(path_car.begin(), path_car.end());
 
-                    /* salva path_car ->
-                        per il momento un file per ogni path, più avanti un unico file con numberSolutions */
+                    // save path_car into a file
                     for (int i = 0; i < path_car.size(); i++)
                     {
-                        fprintf(filePath, "%d, %f, %f, %f, %d, %d;\n", numberSolutions, path_car[i].p.x, path_car[i].p.y, path_car[i].cost, path_car[i].index, path_car[i].parent_index);
-#ifdef DEBUG
-                        fprintf(fileDebug, "path_car%d: x=%f y=%f\n", numberSolutions, path_car[i].p.x, path_car[i].p.y);
-#endif
+                        fprintf(filePath, "%d, %f, %f, %f, %d, %d;\n", 
+                            numberSolutions, 
+                            path_car[i].p.x, path_car[i].p.y, 
+                            path_car[i].cost, path_car[i].index, 
+                            path_car[i].parent_index);
                     }
                 }
             }

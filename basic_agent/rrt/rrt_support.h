@@ -30,16 +30,16 @@ typedef struct
 } obstacle;
 
 /* ----- CONSTANTS ----- */
-#define X_OFFSET 0.5       // 35.0
-#define Y_OFFSET 0.5       // 4.5
-#define TOP_ROADWAY 3 //2     // 35.0   // cone.set_pos((1.0,2)) -> +20 è il massimo della strada
-#define BOTTOM_ROADWAY -1 //-2 // 5.0 // cone.set_pos((1.0,-2)) -> -20 il minimo y
+#define X_OFFSET 0.5  
+#define Y_OFFSET 0.5       
+#define TOP_ROADWAY 2   
+#define BOTTOM_ROADWAY -2
 #define POINTS_COLLINEARS 0
 #define POINTS_CLOCKWISE 1
 #define POINTS_ANTICLOCKWISE 2
-#define min_distance 1.5           // = distance*10 -> min distance between two nodes of the tree
+#define min_distance 1.5           // min distance between two nodes of the tree
 #define R_NEAR (2.0 * min_distance) // radius for RRT* (choose parent + rewiring)
-#define GOAL_THRESHOLD min_distance // = 10.0 -> threshold to be near the goal
+#define GOAL_THRESHOLD min_distance // threshold to consider the goal reached
 
 /* ----- FUNCTIONS FOR RRT ----- */
 bool isObstacle(node &start_node, node &end_node, std::vector<obstacle> &obstacles);

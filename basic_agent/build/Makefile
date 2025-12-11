@@ -272,6 +272,30 @@ matlab/codegen/lib/primitives/rt_nonfinite.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.s
 .PHONY : matlab/codegen/lib/primitives/rt_nonfinite.c.s
 
+rrt/rrt_clothoid.obj: rrt/rrt_clothoid.cpp.obj
+.PHONY : rrt/rrt_clothoid.obj
+
+# target to build an object file
+rrt/rrt_clothoid.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/rrt/rrt_clothoid.cpp.obj
+.PHONY : rrt/rrt_clothoid.cpp.obj
+
+rrt/rrt_clothoid.i: rrt/rrt_clothoid.cpp.i
+.PHONY : rrt/rrt_clothoid.i
+
+# target to preprocess a source file
+rrt/rrt_clothoid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/rrt/rrt_clothoid.cpp.i
+.PHONY : rrt/rrt_clothoid.cpp.i
+
+rrt/rrt_clothoid.s: rrt/rrt_clothoid.cpp.s
+.PHONY : rrt/rrt_clothoid.s
+
+# target to generate assembly for a file
+rrt/rrt_clothoid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\basic_agent.dir\build.make CMakeFiles/basic_agent.dir/rrt/rrt_clothoid.cpp.s
+.PHONY : rrt/rrt_clothoid.cpp.s
+
 rrt/rrt_star.obj: rrt/rrt_star.cpp.obj
 .PHONY : rrt/rrt_star.obj
 
@@ -371,6 +395,9 @@ help:
 	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.obj
 	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.i
 	@echo ... matlab/codegen/lib/primitives/rt_nonfinite.s
+	@echo ... rrt/rrt_clothoid.obj
+	@echo ... rrt/rrt_clothoid.i
+	@echo ... rrt/rrt_clothoid.s
 	@echo ... rrt/rrt_star.obj
 	@echo ... rrt/rrt_star.i
 	@echo ... rrt/rrt_star.s

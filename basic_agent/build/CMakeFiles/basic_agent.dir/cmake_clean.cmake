@@ -14,6 +14,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rtGetNaN.c.obj.d"
   "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj"
   "CMakeFiles/basic_agent.dir/matlab/codegen/lib/primitives/rt_nonfinite.c.obj.d"
+  "CMakeFiles/basic_agent.dir/rrt/rrt_clothoid.cpp.obj"
+  "CMakeFiles/basic_agent.dir/rrt/rrt_clothoid.cpp.obj.d"
   "CMakeFiles/basic_agent.dir/rrt/rrt_star.cpp.obj"
   "CMakeFiles/basic_agent.dir/rrt/rrt_star.cpp.obj.d"
   "CMakeFiles/basic_agent.dir/rrt/rrt_support.cpp.obj"

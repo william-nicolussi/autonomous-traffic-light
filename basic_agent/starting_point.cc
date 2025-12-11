@@ -1,5 +1,6 @@
 //
 // Created by Gastone Pietro Rosati Papini on 10/08/22.
+// Edited by William Nicolussi Zom
 //
 // Shortcuts -> compile: f6; run: f7
 // Indentation -> alt+shift+f;
@@ -37,8 +38,9 @@ using namespace G2lib;
 #define ID_OBJ_TRAFFIC_CONE 1         // ID of Traffic Cone coming fron PyDrivingSim
 #define ID_OBJ_ROCK 3                 // ID of the rock coming fron PyDrivingSim
 #define ID_OBJ_TARGET 5               // ID of the Target coming fron PyDrivingSim
-#define MAX_TRAJ_POINTS 20            // Send this number of point to PyDrivingSim
-#define TH_NODE_REACHED 0.5           // Distance to consider a node reached
+#define ID_OBJ_GPS 99
+#define MAX_TRAJ_POINTS 20  // Send this number of point to PyDrivingSim
+#define TH_NODE_REACHED 0.5 // Distance to consider a node reached
 
 typedef struct
 {
@@ -55,7 +57,7 @@ void copy_m(double m1[6], double m2[6]);
 bool isAllZero(double m[6]);
 void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], double *v1, double *T1);
 bool positionReached(const node &nd, double x_veh, double y_veh);
-void get_vehicle_position(double s_init, double x_tr, double offL, double offR, double yaw, position &vehicle_position);
+void get_vehicle_position(int gps_index, input_data_str *in, position &vehicle_position);
 
 // ----- MAIN -----
 int main(int argc, const char *argv[])
@@ -116,31 +118,27 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.Status = in->Status;
 
             // Starting position of the car
+            // point gps;
+            int gps_index;
             static double s_init = in->TrfLightDist;                             // initial distance to the traffic light
             static double n_init = -(in->LatOffsLineR + in->LatOffsLineL) / 2.0; // initial distance to the center of the road
             static double path_len = 0;
 
             // ----- TRAJECTORY -----
-            // Trajectory is outside the while because is calculated just once
-
+            // Calculate the trajectory using rrt*
             if (firstCycle)
             {
                 fprintf(fileDebug, "\nfirstCycle START\n");
                 firstCycle = false;
 
-                /* Def of start and end nodes ->
-                    -> all positions are given w.r.t. the car, so its starting position is (0, 0) ->
-                    -> note in the simulator starting position of the car is (0, -1) ->
-                    -> if you put Y0=-1., then the coordinates of obj are wrong (bc simulator returns coordinates wrt the car).
-                */
-
+                // save position of the car at the beginning
                 startNode.p.x = 0.0;    // x->s
                 startNode.p.y = n_init; // y->n
                 double initialYaw = in->LaneHeading;
                 double cos_theta = cos(initialYaw);
                 double sin_theta = sin(initialYaw);
 
-                // Def objects
+                // define objects
                 for (int i = 0; i < in->NrObjs; i++)
                 {
                     // transform coordinates because everything is w.r.t. the car
@@ -166,6 +164,9 @@ int main(int argc, const char *argv[])
                         goalNode.p.y = y_global;
                         fprintf(fileDebug, "\tgoal.x=%f; goal.y=%f\n", goalNode.p.x, goalNode.p.y);
                         break;
+                    case ID_OBJ_GPS:
+                        gps_index = i;
+                        break;
                     }
                 }
 
@@ -179,7 +180,7 @@ int main(int argc, const char *argv[])
                 fprintf(fileDebug, "\trrt_star found %d solution(s)\n", numberSolutions);
 
                 getClothoid(initialYaw, path_to_follow, path_clothoid);
-                path_len = path_clothoid.length(); // Lunghezza totale del percorso generato
+                path_len = path_clothoid.length();
 
                 fprintf(fileDebug, "firstCycle END\n\n");
             }
@@ -187,12 +188,12 @@ int main(int argc, const char *argv[])
             // fprintf(fileDebug, "\ncycle %d; time = %f\n", in->CycleNumber, in->ECUupTime);
 
             // ----- INFORMATION VEHICLE -----
-            double L = in->VehicleLen;             // lenght of the vehicle
-            double s0 = s_init - in->TrfLightDist; // distance traveled -> RIMUOVERE
-            double v0 = in->VLgtFild;              // actual longitudinal velocity
-            double a0 = in->ALgtFild;              // actual longitudinal acceleration
+            double L = in->VehicleLen; // lenght of the vehicle
+            double v0 = in->VLgtFild;  // actual longitudinal velocity
+            double a0 = in->ALgtFild;  // actual longitudinal acceleration
             position vehicle_position;
-            get_vehicle_position(s_init, in->TrfLightDist, in->LatOffsLineL, in->LatOffsLineR, in->LaneHeading, vehicle_position);
+            //get_vehicle_position(s_init, in->TrfLightDist, in->LatOffsLineL, in->LatOffsLineR, in->LaneHeading, vehicle_position);
+            get_vehicle_position(gps_index, in, vehicle_position);
 
             // ----- LATERAL CONTROL -----
             double T_look = 1.0;                     // preview time [s]
@@ -217,21 +218,6 @@ int main(int argc, const char *argv[])
 
             double requested_steer = curvature * (L + K_US * pow(v0, 2));
 
-            logger.log_var("Lateral", "cycle", in->CycleNumber);
-            logger.log_var("Lateral", "time", in->ECUupTime);
-            logger.log_var("Lateral", "X0", vehicle_position.s);
-            logger.log_var("Lateral", "Y0", vehicle_position.n);
-            logger.log_var("Lateral", "Psi0", vehicle_position.xi);
-            logger.log_var("Lateral", "clos_x", closest_on_path.s);
-            logger.log_var("Lateral", "clos_y", closest_on_path.n);
-            logger.log_var("Lateral", "clos_psi", closest_on_path.xi);
-            logger.log_var("Lateral", "L", L);
-            logger.log_var("Lateral", "variable_s", variable_s);
-            logger.log_var("Lateral", "t_coordiate", t_coordiate);
-            logger.log_var("Lateral", "points_dist", points_dist);
-            logger.log_var("Lateral", "curvature", curvature);
-            logger.write_line("Lateral");
-
             // ----- LONGITUDINAL CONTROL -----
             double m_star[6], m1[6], m2[6];               // primitives
             double lookahead_long = fmax(50.0, v0 * 5.0); // lookahead distance
@@ -250,7 +236,7 @@ int main(int argc, const char *argv[])
             double final_time;
             const char *messageDebug;
 
-            // Find max curvature in the next 40 meters
+            // find max curvature in an horizon
             double max_abs_kappa = fabs(curvature);
             double v_limit_curve = in->RequestedCruisingSpeed;
             if (v0 > 0.15)
@@ -258,7 +244,7 @@ int main(int argc, const char *argv[])
                 const double SCAN_DIST = 15.0; // look forward for this meters
                 double step_size = 2.0;        // check every step_size meters
 
-                // Find worst curvature in the next SCAN_DIST meters
+                // find worst curvature in the next SCAN_DIST meters
                 for (double ds = 0; ds < SCAN_DIST; ds += step_size)
                 {
                     double s_query = variable_s + ds;
@@ -274,7 +260,7 @@ int main(int argc, const char *argv[])
                     }
                 }
 
-                // Use maximum curvature in the lookahead
+                // use maximum curvature in the lookahead
                 v_limit_curve = sqrt(a_n_max / fmax(max_abs_kappa, 1e-3));
             }
             double v_r = fmin(in->RequestedCruisingSpeed, v_limit_curve);
@@ -295,7 +281,7 @@ int main(int argc, const char *argv[])
                 free_flow(v0, a0, lookahead_long, v_r, m_star, &v1, &final_time);
                 messageDebug = "if (in->NrTrfLights==0 || x_tr>=lookahead_long)";
             }
-            else if (in->TrfLightDist + x_in < 0) // ADDED -> if we passed the intersection and it turns red do not stop
+            else if (in->TrfLightDist + x_in < 0) // if car passed the intersection and it turns red do not stop
             {
                 free_flow(v0, a0, lookahead_long, v_r, m_star, &v1, &final_time);
                 messageDebug = "else if (in->TrfLightDist<0)";
@@ -358,26 +344,21 @@ int main(int argc, const char *argv[])
                 }
             }
 
-            // double vr = in->RequestedCruisingSpeed;
-            // double minTime, maxTime;
-
             // ----- TRAPEZOIDAL JERK -----
-            static double a0_bar = 0.0; //=a0 or 0.0; (?)
+            static double a0_bar = 0.0;
             const double a_min = -5.0;
             const double a_max = 5.0;
             double j_req = 0.5 * DT * (j_from_coeffs(0.0, m_star) + j_from_coeffs(DT, m_star));
             double a_req = a0_bar + j_req;
             a_req = fmin(fmax(a_req, a_min), a_max);
-            // a_req = fmin(fmax(a0_bar+longGain*(DT*(jT1+jT0)*0.5),a_min), a_max);
             a0_bar = a_req;
-            // double v_req = v_opt(DT, v0, a0, bests, bestv, 0.0, bestT);
             double v_req = v_from_coeffs(DT, m_star);
             static double s_req = 0.0;
             s_req += s_from_coeffs(DT, m_star);
 
             // ----- PI IMPLEMENTATION -----
-            const double k_p = 0.022; // 0.02;
-            const double k_i = 0.19;  // 0.15; // 1.0;
+            const double k_p = 0.022;
+            const double k_i = 0.19;
             double error = a_req - a0;
             static double error_integral = 0.0;
             error_integral = error_integral + error * DT;
@@ -389,12 +370,11 @@ int main(int argc, const char *argv[])
             }
 
             // ----- SEND COMMANDS -----
-
-            // Send path_to_follow to PyDrivingSim
+            // send path_to_follow to PyDrivingSim
             static int idxToCheck = 0;
             if (nextIdxToReach != idxNodeToReach)
             {
-                if (positionReached(path_to_follow[idxToCheck], s0, 0.0)) // in->LatOffsLineL))
+                if (positionReached(path_to_follow[idxToCheck], vehicle_position.s, vehicle_position.n))
                 {
                     // send data only if there are any that haven't been sent
                     fprintf(fileDebug, "Sending from path_to_follow[%d] to path_to_follow[%d]\n", idxNodeToReach, nextIdxToReach);
@@ -429,7 +409,6 @@ int main(int argc, const char *argv[])
             // logger.log_var(fileName, "messageDebug", messageDebug);
             logger.log_var(fileName, "cycle", in->CycleNumber);
             logger.log_var(fileName, "time", in->ECUupTime);
-            logger.log_var(fileName, "s0", s0);
             logger.log_var(fileName, "X0", vehicle_position.s);
             logger.log_var(fileName, "Y0", vehicle_position.n);
             logger.log_var(fileName, "Psi0", vehicle_position.xi);
@@ -514,13 +493,11 @@ void free_flow(double v0, double a0, double x_f, double v_r, double m_star[6], d
     pass_primitive(v0, a0, x_f, v_r, v_r, 0.0, 0.0, m_star, v1, T1, m_star, v1, T1); // FreeFlow
 }
 
-// ----- !!!! check only distance on X !!!!! -----
 bool positionReached(const node &nd, double x_veh, double y_veh)
 {
     double dx = x_veh - nd.p.x;
     double dy = y_veh - nd.p.y;
-    double d2 = dx * dx;
-    // double d2 = dx * dx + dy * dy; // distance^2
+    double d2 = dx * dx + dy * dy; // distance^2
     if (d2 <= TH_NODE_REACHED * TH_NODE_REACHED)
     {
         return true;
@@ -528,9 +505,17 @@ bool positionReached(const node &nd, double x_veh, double y_veh)
     return false;
 }
 
+/*
 void get_vehicle_position(double s_init, double x_tr, double offL, double offR, double yaw, position &vehicle_position)
 {
     vehicle_position.s = s_init - x_tr;
     vehicle_position.n = -(offR + offL) / 2.0;
     vehicle_position.xi = yaw;
+}*/
+
+void get_vehicle_position(int gps_index, input_data_str *in, position &vehicle_position)
+{
+    vehicle_position.s = in->ObjX[gps_index];
+    vehicle_position.n = in->ObjY[gps_index];
+    vehicle_position.xi = in->LaneHeading;
 }

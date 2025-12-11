@@ -12,7 +12,7 @@ void getClothoid(double initialYaw, vector<node> &path_to_follow, ClothoidList &
     fprintf(fileClothoids, "s, x, y;\n");
     printf("Hello World");
 
-    // Fill path_clothoid
+    // fill path_clothoid
     for (int i = 0; i < path_to_follow.size() - 1; i++)
     {
         real_type x0, y0, x1, y1, x2, y2;
