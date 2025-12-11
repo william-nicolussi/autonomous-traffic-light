@@ -137,26 +137,33 @@ int main(int argc, const char *argv[])
                 startNode.p.x = 0.0;    // x->s
                 startNode.p.y = n_init; // y->n
                 double initialYaw = in->LaneHeading;
+                double cos_theta = cos(initialYaw);
+                double sin_theta = sin(initialYaw);
 
-                // Def obstacles -> the cones
+                // Def objects
                 for (int i = 0; i < in->NrObjs; i++)
                 {
+                    // transform coordinates because everything is w.r.t. the car
+                    double x_local = in->ObjX[i];
+                    double y_local = in->ObjY[i];
+                    double x_global = x_local * cos_theta - y_local * sin_theta + startNode.p.x;
+                    double y_global = x_local * sin_theta + y_local * cos_theta + startNode.p.y;
                     switch (in->ObjID[i])
                     {
                     case ID_OBJ_TRAFFIC_CONE:
                     case ID_OBJ_ROCK:
                         obstacle obs;
                         obs.ID = in->ObjID[i];
-                        obs.x = in->ObjX[i];
-                        obs.y = in->ObjY[i];
+                        obs.x = x_global;
+                        obs.y = y_global;
                         obs.lenght = in->ObjLen[i];
                         obs.width = in->ObjWidth[i];
                         obstacle_list.push_back(obs);
                         fprintf(fileDebug, "\tobs.ID=%d; obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.ID, obs.x, obs.y, obs.lenght, obs.lenght);
                         break;
                     case ID_OBJ_TARGET:
-                        goalNode.p.x = in->ObjX[i];
-                        goalNode.p.y = in->ObjY[i];
+                        goalNode.p.x = x_global;
+                        goalNode.p.y = y_global;
                         fprintf(fileDebug, "\tgoal.x=%f; goal.y=%f\n", goalNode.p.x, goalNode.p.y);
                         break;
                     }
@@ -185,7 +192,7 @@ int main(int argc, const char *argv[])
             double v0 = in->VLgtFild;              // actual longitudinal velocity
             double a0 = in->ALgtFild;              // actual longitudinal acceleration
             position vehicle_position;
-            get_vehicle_position(s_init, in->TrfLightDist, in->LatOffsLineL, in->LatOffsLineR, -in->LaneHeading, vehicle_position);
+            get_vehicle_position(s_init, in->TrfLightDist, in->LatOffsLineL, in->LatOffsLineR, in->LaneHeading, vehicle_position);
 
             // ----- LATERAL CONTROL -----
             double T_look = 1.0;                     // preview time [s]
