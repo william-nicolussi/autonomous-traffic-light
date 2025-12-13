@@ -12,16 +12,10 @@
 
 #define MAX_ITER 20000 // max n. of iterations
 
-double getRand01() // random in [0,1]
-{
-    static std::mt19937 rng(std::random_device{}());
-    static std::uniform_real_distribution<double> dist(0.0, 1.0);
-    return dist(rng);
-}
-
-int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car)
+int rrt_star(node start, node goal, std::vector<road_segment> &road, std::vector<obstacle> &obstacles, std::vector<node> &path_car)
 {
     csvObstacle(obstacles);
+    csvRoad(road);
     csvEndNode(goal);
     FILE *fileTree = fopen("../rrt/tree.csv", "w");
     fprintf(fileTree, "x, y, cost, index, parent_index;\n");
@@ -58,9 +52,7 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
         fprintf(fileDebug, "iter=%d:\n", iter);
 #endif
         // get random node
-        node random;
-        random.p.x = getRand01() * max_X;                                           
-        random.p.y = getRand01() * (TOP_ROADWAY - BOTTOM_ROADWAY) + BOTTOM_ROADWAY;
+        node random = getRandomNodeInRoad(road);
 
         node closest = getClosestNode(all_nodes, random);
 
@@ -77,7 +69,7 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
         fprintf(fileDebug, "bestParent.x=%f, bestParent.y=%f\n", bestParent.p.x, bestParent.p.y);
 #endif
 
-        if (!isObstacle(bestParent, extended, obstacles))
+        if (!isObstacle(bestParent, extended, obstacles) && isOnRoad(bestParent, extended, road))
         {
 #ifdef DEBUG
             fprintf(fileDebug, "ENTERED\tif(!isObstacle(bestParent, extended, obstacles))\n");
@@ -85,16 +77,16 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
             number_of_nodes++;
             extended.parent_index = bestParent.index;
             extended.index = number_of_nodes;
-            extended.cost = bestParent.cost + getDistance(bestParent, extended);
+            extended.cost = bestParent.cost + getWeightedDistance(bestParent, extended, road);
             all_nodes.push_back(extended);
 
-            /* REWIRING ->
-                        try upgrade nodes in ball using extended as new parent */
+            // REWIRING ->
+            //            try upgrade nodes in ball using extended as new parent
             for (node &nd : all_nodes)
             {
                 if (nd.index != extended.index) // avoid self rewiring
                 {
-                    distance = getDistance(extended, nd);
+                    distance = getWeightedDistance(extended, nd, road);
 
                     if (distance <= R_NEAR)
                     {
@@ -102,7 +94,7 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
 
                         if (cost_through_extended < nd.cost) // new cost is better than before
                         {
-                            if (!isObstacle(extended, nd, obstacles)) // check rewired arc is collision-free
+                            if (!isObstacle(extended, nd, obstacles) && isOnRoad(extended, nd, road)) // check rewired arc is collision-free
                             {
                                 nd.parent_index = extended.index;
                                 nd.cost = cost_through_extended;
@@ -132,9 +124,9 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
 
                     int idx = best_goal_index;
 
-                    /* BUILD THE PATH
-                        -> add the nodes of the path in the vector,
-                        then reverse the vector in order to have path_car=[goal, ..., root]*/
+                    // BUILD THE PATH
+                    //  -> add the nodes of the path in the vector,
+                    //  then reverse the vector in order to have path_car=[goal, ..., root]
                     while (idx != -1)
                     {
                         path_car.push_back(all_nodes[idx]);
@@ -145,11 +137,11 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
                     // save path_car into a file
                     for (int i = 0; i < path_car.size(); i++)
                     {
-                        fprintf(filePath, "%d, %f, %f, %f, %d, %d;\n", 
-                            numberSolutions, 
-                            path_car[i].p.x, path_car[i].p.y, 
-                            path_car[i].cost, path_car[i].index, 
-                            path_car[i].parent_index);
+                        fprintf(filePath, "%d, %f, %f, %f, %d, %d;\n",
+                                numberSolutions,
+                                path_car[i].p.x, path_car[i].p.y,
+                                path_car[i].cost, path_car[i].index,
+                                path_car[i].parent_index);
                     }
                 }
             }
@@ -163,4 +155,54 @@ int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vecto
     fclose(fileTree);
 
     return numberSolutions;
+}
+
+// ----- RETURN RANDOM DOUBLE IN [0,1] -----
+double getRand01()
+{
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_real_distribution<double> dist(0.0, 1.0);
+    return dist(rng);
+}
+
+// ----- GET A RANDOM NODE IN THE ROAD -----
+node getRandomNodeInRoad(std::vector<road_segment> &road)
+{
+    node nd;
+
+    // find a random area target
+    double total_area = 0.0;
+    for (road_segment &seg : road)
+    {
+        total_area += (seg.length * seg.width);
+    }
+    double random_area_value = getRand01() * total_area;
+
+    // find road_segment in that area
+    int selected_idx = -1;
+    double current_sum = 0.0;
+    for (int i = 0; i < road.size(); i++)
+    {
+        current_sum += (road[i].length * road[i].width);
+        if (random_area_value <= current_sum)
+        {
+            selected_idx = i;
+            break;
+        }
+    }
+    if (selected_idx == -1) // if procedure failed take the last point
+    {
+        selected_idx = road.size() - 1;
+    }
+    road_segment seg = road[selected_idx];
+
+    // get local coordinates ot the road_segment
+    double r_x = (getRand01() - 0.5) * seg.length;
+    double r_y = (getRand01() - 0.5) * seg.width;
+
+    // get global coordinates of the road_segment
+    nd.p.x = seg.x + r_x;
+    nd.p.y = seg.y + r_y;
+
+    return nd;
 }

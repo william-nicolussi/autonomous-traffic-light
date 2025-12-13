@@ -6,6 +6,44 @@
 
 // #define DEBUG
 
+// -- return true if the nodes and the segments are on the road --
+bool isOnRoad(node &start_node, node &end_node, std::vector<road_segment> &road)
+{
+    // check nodes are on road
+    if (!isNodeOnAnyRoad(start_node, road))
+    {
+        return false;
+    }
+    if (!isNodeOnAnyRoad(end_node, road))
+    {
+        return false;
+    }
+
+    double dist = getDistance(start_node, end_node);
+
+    // if segment is very small do not check the segment
+    if (dist < DIST_SEGMENT_SMALL)
+    {
+        return true;
+    }
+
+    // discretize the segment to check if it is on the road
+    int steps = (int)(dist / CHECK_SEGMENT_STEP);
+    double dx = (end_node.p.x - start_node.p.x) / steps;
+    double dy = (end_node.p.y - start_node.p.y) / steps;
+    node nd = start_node;
+    for (int i = 1; i < steps; i++)
+    {
+        nd.p.x += dx;
+        nd.p.y += dy;
+        if (!isNodeOnAnyRoad(nd, road))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 // -- return true if the segment of two nodes intersects ANY obstacle --
 bool isObstacle(node &start_node, node &end_node, std::vector<obstacle> &obstacles)
 {
@@ -54,7 +92,7 @@ bool segmentIntersectsObstacle(node &n1, node &n2, obstacle &obs)
 
     double cx = obs.x;     // x of the CENTER of the obstacle
     double cy = obs.y;     // y of the CENTER of the obstacle
-    double L = obs.lenght; // lenght of the obstacle
+    double L = obs.length; // lenght of the obstacle
     double W = obs.width;  // width of the obstacle
 
     double L_half = L / 2.0;
@@ -92,31 +130,6 @@ bool segmentIntersectsObstacle(node &n1, node &n2, obstacle &obs)
 #endif
         return true;
     }
-
-    // check point B (new point) is on the roadway (carreggiata)
-    if (B.y > TOP_ROADWAY)
-    {
-#ifdef DEBUG
-        fprintf(fileDebug, "return true\t\tB.y > TOP_ROADWAY\n");
-        fprintf(fileDebug, "print_obstacles FINISHED\n\n");
-        fclose(fileDebug);
-#endif
-        return true;
-    }
-    if (B.y < BOTTOM_ROADWAY)
-    {
-#ifdef DEBUG
-        fprintf(fileDebug, "return true\t\tB.y < BOTTOM_ROADWAY\n");
-        fprintf(fileDebug, "print_obstacles FINISHED\n\n");
-        fclose(fileDebug);
-#endif
-        return true;
-    }
-#ifdef DEBUG
-    fprintf(fileDebug, "return false\n");
-    fprintf(fileDebug, "print_obstacles FINISHED\n\n");
-    fclose(fileDebug);
-#endif
     return false;
 }
 
@@ -173,6 +186,40 @@ bool pointInsideObstacle(point P, point v1, point v4)
     return false;
 }
 
+// -- check if a node is inside a segment --
+bool nodeInsideRoadSegment(node &nd, road_segment &seg)
+{
+    point P = nd.p; // coordinates of the node
+    point v1, v4;
+
+    double half_L = seg.length / 2.0;
+    double half_W = seg.width / 2.0;
+
+    // v1 -> TOP LEFT
+    v1.x = seg.x - half_L;
+    v1.y = seg.y + half_W;
+
+    // v4 -> BOTTOM RIGHT
+    v4.x = seg.x + half_L;
+    v4.y = seg.y - half_W;
+
+    // use the function to check if the point is inside a rectangle
+    return pointInsideObstacle(P, v1, v4);
+}
+
+// -- check if a nod is inside any of the existing segments --
+bool isNodeOnAnyRoad(node &nd, std::vector<road_segment> &road)
+{
+    for (road_segment &seg : road)
+    {
+        if (nodeInsideRoadSegment(nd, seg))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 // -- check if segment AB intersect segment CD --
 bool segmentsIntersect(point A, point B, point C, point D)
 {
@@ -220,6 +267,22 @@ double getDistance(node &random, node &closest)
     return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
+// -- return weighted distance --
+double getWeightedDistance(node &nd1, node &nd2, std::vector<road_segment> &segments)
+{
+    double dist = getDistance(nd1, nd2);
+    double multiplier = 1.0;
+    for (road_segment &seg : segments)
+    {
+        if (nodeInsideRoadSegment(nd2, seg))
+        {
+            multiplier = seg.cost;
+            break;
+        }
+    }
+    return dist * multiplier;
+}
+
 // -- get closest node to x_new --
 node getClosestNode(std::vector<node> &nodevec, node &x_new)
 {
@@ -259,7 +322,7 @@ node extend(node &random, node &closest)
         /* FORMULAS ->
                 x = x1+(x2-x1)*(smax/dist)
                 y = y1+(y2-y1)*(smax/dist) */
-        ext.p.x = closest.p.x + fabs(random.p.x - closest.p.x) * min_distance / distance; // search only to the right
+        ext.p.x = closest.p.x + (random.p.x - closest.p.x) * min_distance / distance;
         ext.p.y = closest.p.y + (random.p.y - closest.p.y) * min_distance / distance;
     }
 
@@ -288,7 +351,7 @@ node getLeastCostNodeInBall(node &new_node, node &closest, std::vector<node> &no
     return minCostNode;
 }
 
-void csvNode(const char* nameFile, node &nd)
+void csvNode(const char *nameFile, node &nd)
 {
     FILE *fileNode = fopen(nameFile, "w");
     fprintf(fileNode, "x, y, GOAL_THRESHOLD;\n");
@@ -320,7 +383,7 @@ void csvObstacle(std::vector<obstacle> &obstacles)
 
         double cx = obs.x;     // x of the CENTER of the obstacle
         double cy = obs.y;     // y of the CENTER of the obstacle
-        double L = obs.lenght; // lenght of the obstacle
+        double L = obs.length; // lenght of the obstacle
         double W = obs.width;  // width of the obstacle
         fprintf(fileObstacle, "%d, %f, %f, %f, %f, ", obs.ID, cx, cy, L, W);
 
@@ -350,4 +413,38 @@ void csvObstacle(std::vector<obstacle> &obstacles)
         fprintf(fileObstacle, "%f, %f, %f, %f, %f, %f, %f, %f;\n", v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
     }
     fclose(fileObstacle);
+}
+
+void csvRoad(std::vector<road_segment> &road)
+{
+    /* Obstacle is a ractangle with vertexes ob1, ob2, ob3, ob4.
+    Enlarged obstacle (using OFFSETS) has v1, v2, v3, v4*/
+    FILE *fileRoad = fopen("../rrt/road.csv", "w");
+    fprintf(fileRoad, "ID, cx, cy, L, W, ");
+    // fprintf(fileRoad, "ob1_x, ob1_y, ob2_x, ob2_y, ob3_x, ob3_y, ob4_x, ob4_y, ");
+    fprintf(fileRoad, "v1_x, v1_y, v2_x, v2_y, v3_x, v3_y, v4_x, v4_y;\n");
+
+    for (road_segment seg : road)
+    {
+        double cx = seg.x; // x of the CENTER
+        double cy = seg.y; // y of the CENTER
+        double L = seg.length;
+        double W = seg.width;
+        fprintf(fileRoad, "%d, %f, %f, %f, %f, ", seg.ID, cx, cy, L, W);
+
+        double L_half = L / 2.0;
+        double W_half = W / 2.0;
+
+        point v1, v2, v3, v4;
+        v1.x = cx - L_half;
+        v1.y = cy + W_half;
+        v2.x = cx + L_half;
+        v2.y = cy + W_half;
+        v3.x = cx - L_half;
+        v3.y = cy - W_half;
+        v4.x = cx + L_half;
+        v4.y = cy - W_half;
+        fprintf(fileRoad, "%f, %f, %f, %f, %f, %f, %f, %f;\n", v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+    }
+    fclose(fileRoad);
 }

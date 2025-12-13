@@ -4,8 +4,8 @@
 #include "rrt_support.h"
 #include <vector>
 
-// FUNZIONE ALGORITMO RRT
 double getRand01();
-int rrt_star(node start, node goal, std::vector<obstacle> &obstacles, std::vector<node> &path_car);
+node getRandomNodeInRoad(std::vector<road_segment> &road);
+int rrt_star(node start, node goal, std::vector<road_segment> &road, std::vector<obstacle> &obstacles, std::vector<node> &path_car);
 
 #endif
