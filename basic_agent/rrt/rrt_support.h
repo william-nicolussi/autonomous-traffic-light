@@ -41,8 +41,6 @@ typedef struct
 /* ----- CONSTANTS ----- */
 #define X_OFFSET 0.5
 #define Y_OFFSET 0.5
-// #define TOP_ROADWAY 2
-// #define BOTTOM_ROADWAY -2
 #define POINTS_COLLINEARS 0
 #define POINTS_CLOCKWISE 1
 #define POINTS_ANTICLOCKWISE 2
@@ -52,7 +50,7 @@ typedef struct
 #define DIST_SEGMENT_SMALL 0.5      // set when distance between nodes is too short
 #define CHECK_SEGMENT_STEP 0.2      // value to discretize a segment
 
-/* ----- FUNCTIONS FOR RRT ----- */
+// ----- FUNCTIONS FOR RRT -----
 bool isOnRoad(node &start_node, node &end_node, std::vector<road_segment> &road);
 bool isObstacle(node &start_node, node &end_node, std::vector<obstacle> &obstacles);
 bool segmentIntersectsObstacle(node &n1, node &n2, obstacle &obs);

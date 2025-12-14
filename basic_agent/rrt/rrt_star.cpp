@@ -56,9 +56,9 @@ int rrt_star(node start, node goal, std::vector<road_segment> &road, std::vector
 
         node closest = getClosestNode(all_nodes, random);
 
-        /* STEER ->
-                    new node with distance <= s_max
-                    if distance <= s_max, then return random */
+        // STEER ->
+        //            new node with distance <= s_max
+        //            if distance <= s_max, then return random
         node extended = extend(random, closest);
         node bestParent = getLeastCostNodeInBall(extended, closest, all_nodes);
 
