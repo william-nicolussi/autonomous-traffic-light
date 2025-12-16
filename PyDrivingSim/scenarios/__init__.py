@@ -1,2 +1,2 @@
 # The basic scenarios
-from scenarios.main_scenarios import AutonomousVehicle, OnlyVehicle, BasicSpeedLimit, BasicTrafficLight, GetTheCoins, DrawPath, ObstacleRocks, GPS
+from scenarios.main_scenarios import AutonomousVehicle, OnlyVehicle, BasicSpeedLimit, BasicTrafficLight, GetTheCoins, DrawPath, ObstacleRocks, GPS, MixedTerrain, Scenario1, Scenario2
