@@ -1,7 +1,3 @@
-# Authors : Gastone Pietro Rosati Papini
-# Date    : 09/08/2022
-# License : MIT
-
 import ctypes as ct
 from datetime import datetime
 from math import *
@@ -9,7 +5,7 @@ from math import *
 import agent.agent_interfaces_connector as agent_lib
 from agent.interfaces_python_data_structs import input_data_str, output_data_str
 
-from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin, Graph, Rock, GPS
+from pydrivingsim import World, Vehicle, TrafficLight, TrafficCone, Target, SuggestedSpeedSignal, Coin, Graph, Rock, GPS, RoadSegment
 
 
 c = agent_lib.AgentConnector()
@@ -106,7 +102,7 @@ class Agent():
         # Vehicle parameters
         s.VehicleLen = v.vehicle.vehicle.L                          # double - lenght dimension [m]
         s.VehicleWidth = v.vehicle.vehicle.Wf                       # double - width dimension [m]
-        s.LaneHeading = v.state[2]
+        s.LaneHeading = v.state[2]  # note '-'
         #print(v.state[2])
         #print((v.state[0],v.state[1]))
         s.VLgtFild = v.state[3]
@@ -187,6 +183,18 @@ class Agent():
                 s.ObjY[objId] = v.state[1]
                 s.ObjVel[objId] = 0
                 objId = objId + 1
+                
+            # Code for sending RoadSegment information
+            if type(obj) is RoadSegment:
+                s.ObjID[objId] = obj.type_id  # 4=Asphalt; 6=Dirt
+                delta_x = obj.pos[0] - v.state[0]
+                delta_y = obj.pos[1] - v.state[1]
+                s.ObjX[objId] = delta_x * cos(v.state[2]) + delta_y * sin(v.state[2])
+                s.ObjY[objId] = - delta_x * sin(v.state[2]) + delta_y * cos(v.state[2])
+                s.ObjVel[objId] = 0
+                s.ObjLen[objId] = obj.length
+                s.ObjWidth[objId] = obj.width
+                objId = objId + 1
 
             if type(obj) is SuggestedSpeedSignal:
                 s.AdasisSpeedLimitValues[speedlimitId] = obj.vel
@@ -232,14 +240,14 @@ class Agent():
         # --- UPDATE GRAPH FROM RRT PATH (after receiving manoeuvre_msg) ---
         if hasattr(self, "graph") and self.graph is not None:
             if m.NTrajectoryPoints > 0:
-                # print("Received points: " + str(m.NTrajectoryPoints))
+                #print("Received points: " + str(m.NTrajectoryPoints))
                 points_world = []
                 for i in range(m.NTrajectoryPoints):
                     xr = m.TrajectoryPointIX[i]
                     yr = m.TrajectoryPointIY[i]
                     
-                    # print("xr: " + str(xr))
-                    # print("yr: " + str(yr))
+                    #print("xr: " + str(xr))
+                    #print("yr: " + str(yr))
                     points_world.append((xr, yr))
 
                 self.graph.set_points_world(points_world)
