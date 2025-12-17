@@ -6,13 +6,13 @@ csvPath = fullfile(projPath, "bin\log_internal");
 matlabPath = fullfile(projPath, 'matlab\functions_exported');
 addpath(matlabPath);
 
-fileName = 'Longitudinal_control.csv';
+fileName = 'Follow_path.csv';
 filePath = fullfile(csvPath, fileName);
 dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
 %% Save data into vectors
 cycle = dataCSV.cycle;
-s0 = dataCSV.s0;
+s0 = dataCSV.variable_s;
 t = dataCSV.time;
 TL_state = dataCSV.TL_state;
 a0 = dataCSV.a0;
@@ -68,13 +68,14 @@ end
 plot_step = 10; % plot every cycle
 
 
-%% Plot: v(t)
+%% Plot: a(t)
 
 figure (1); hold on;
 
 title("Longitudinal Control in time");
 xlabel('time [s]');
 ylabel('acceleration [m/s^2]');
+ylim([-1,20]);
 
 % Draw Background same color as TL_state
 for k = 1:nSeg
@@ -154,13 +155,14 @@ for k = 1:nSeg
     rectY{k} = y_rect;
 end
 
-%% Plot v(s)
+%% Plot a(s)
 
 figure(2); hold on;
 
 title("Longitudinal Control in space");
 xlabel('space [m]');
 ylabel('acceleration [m/s^2]');
+ylim([-1,20]);
 
 % Draw Background same color as TL_state
 for k = 1:nSeg

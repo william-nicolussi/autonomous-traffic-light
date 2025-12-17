@@ -56,8 +56,17 @@ path_k = dataCSV(dataCSV.path_nbr==numPath, :);
 p_x = path_k.x;
 p_y = path_k.y;
 
-numPath = max(path_ids);
 lineRRT = plot(p_x, p_y, '-o', LineWidth=1, MarkerSize=4, LineStyle="--", Color=[0, 1, 1]);
+
+% Plot the rrt* refined
+fileRefined = 'path_refined.csv';
+filePath = fullfile(csvPath, fileRefined);
+dataCSV_refined = readtable(filePath, 'Delimiter', {',',';'});
+
+p_x = dataCSV_refined.x;
+p_y = dataCSV_refined.y;
+
+lineRRT_refined = plot(p_x, p_y, '-o', LineWidth=1, MarkerSize=4, LineStyle="--", Color=[1, 0, 1]);
 
 % Plot the clothoid
 fileClothoids = 'clothoid.csv';
@@ -72,5 +81,5 @@ lineCloth = plot(x, y, LineWidth=1.5, Color=[0, 0, 1]);
 
 xlabel('x [m]');
 ylabel('y [m]');
-legend([lineRRT, lineCloth], {"rrt*","clothoid"}, Location="best");
+legend([lineRRT, lineRRT_refined, lineCloth], {"rrt*", "rrt* refined","clothoid"}, Location="best");
 hold off;

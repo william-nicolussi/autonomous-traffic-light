@@ -7,14 +7,14 @@ csvPath = fullfile(projPath, "bin\log_internal");
 matlabPath = fullfile(projPath, 'matlab\functions_exported');
 addpath(matlabPath);
 
-fileName = 'Longitudinal_control.csv';
+fileName = 'Follow_path.csv';
 filePath = fullfile(csvPath, fileName);
 dataCSV = readtable(filePath, 'Delimiter', {',',';'});
 
 %% Save data into vectors
 
 cycle = dataCSV.cycle;
-s0 = dataCSV.s0;
+s0 = dataCSV.variable_s;
 s_req = dataCSV.s_req;
 t = dataCSV.time;
 v0 = dataCSV.v0;
