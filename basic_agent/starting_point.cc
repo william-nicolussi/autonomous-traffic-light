@@ -1,10 +1,3 @@
-//
-// Created by Gastone Pietro Rosati Papini on 10/08/22.
-// Edited by William Nicolussi Zom
-//
-// Shortcuts -> compile: f6; run: f7
-// Indentation -> alt+shift+f;
-
 // ----- #include <> -----
 #include <algorithm>
 #include <math.h>
@@ -21,7 +14,9 @@ extern "C"
 #include "logvars.h"
 #include "primitives.h"
 #include "rrt_clothoid.h"
+#include "rrt_read.h" // debug
 #include "rrt_star.h"
+#include "rrt_star_refine.h"
 #include "screen_print.h"
 #include "server_lib.h"
 
@@ -32,15 +27,20 @@ using namespace G2lib;
 #define DEFAULT_SERVER_IP "127.0.0.1" // IP Address
 #define SERVER_PORT 30000             // Server ports
 #define DT 0.05                       // Time step_size
+#define COST_DIRT_ROAD 3.0            // Multiply this to the distance between nodes
+#define COST_ASPHALT_ROAD 1.0         // Multiply this to the distance between nodes
 #define GREEN_TL 1                    // State corresponding to green  traffic light
 #define YELLOW_TL 2                   // State corresponding to yellow  traffic light
 #define RED_TL 3                      // State corresponding to red  traffic light
 #define ID_OBJ_TRAFFIC_CONE 1         // ID of Traffic Cone coming fron PyDrivingSim
 #define ID_OBJ_ROCK 3                 // ID of the rock coming fron PyDrivingSim
 #define ID_OBJ_TARGET 5               // ID of the Target coming fron PyDrivingSim
-#define ID_OBJ_GPS 99
-#define MAX_TRAJ_POINTS 20  // Send this number of point to PyDrivingSim
-#define TH_NODE_REACHED 0.5 // Distance to consider a node reached
+#define ID_OBJ_ASPHALT 6              // ID of an asphalt road segment
+#define ID_OBJ_DIRT 7                 // ID of a dirt road segment
+#define ID_OBJ_GPS 99                 // ID of the object GPS
+#define MAX_TRAJ_POINTS 20            // Send this number of point to PyDrivingSim
+#define TH_NODE_REACHED 1.5           // Distance to consider a node reached
+#define SCAN_DIST_CURVE 20.0          // Distance of the lookahead if high curvature
 
 typedef struct
 {
@@ -91,6 +91,7 @@ int main(int argc, const char *argv[])
     printLine();
 
     bool firstCycle = true;
+    vector<road_segment> road;
     node startNode, goalNode;
     vector<node> path_to_follow; // rrt* fills this
     int idxNodeToReach = 0, nextIdxToReach = MAX_TRAJ_POINTS;
@@ -118,10 +119,7 @@ int main(int argc, const char *argv[])
             manoeuvre_msg.data_struct.Status = in->Status;
 
             // Starting position of the car
-            // point gps;
             int gps_index;
-            static double s_init = in->TrfLightDist;                             // initial distance to the traffic light
-            static double n_init = -(in->LatOffsLineR + in->LatOffsLineL) / 2.0; // initial distance to the center of the road
             static double path_len = 0;
 
             // ----- TRAJECTORY -----
@@ -132,8 +130,17 @@ int main(int argc, const char *argv[])
                 firstCycle = false;
 
                 // save position of the car at the beginning
-                startNode.p.x = 0.0;    // x->s
-                startNode.p.y = n_init; // y->n
+                for (int i = 0; i < in->NrObjs; i++)
+                {
+
+                    if (in->ObjID[i] == ID_OBJ_GPS)
+                    {
+                        startNode.p.x = in->ObjX[i];
+                        startNode.p.y = in->ObjY[i];
+                        gps_index = i;
+                        break;
+                    }
+                }
                 double initialYaw = in->LaneHeading;
                 double cos_theta = cos(initialYaw);
                 double sin_theta = sin(initialYaw);
@@ -154,24 +161,44 @@ int main(int argc, const char *argv[])
                         obs.ID = in->ObjID[i];
                         obs.x = x_global;
                         obs.y = y_global;
-                        obs.lenght = in->ObjLen[i];
+                        obs.length = in->ObjLen[i];
                         obs.width = in->ObjWidth[i];
                         obstacle_list.push_back(obs);
-                        fprintf(fileDebug, "\tobs.ID=%d; obs.x=%f; obs.y=%f; obs.lenght=%f; obs.width=%f\n", obs.ID, obs.x, obs.y, obs.lenght, obs.lenght);
+                        fprintf(fileDebug, "\tObstacle ID=%d; x=%f; y=%f; lenght=%f; width=%f\n",
+                                obs.ID, obs.x, obs.y, obs.length, obs.length);
                         break;
                     case ID_OBJ_TARGET:
                         goalNode.p.x = x_global;
                         goalNode.p.y = y_global;
-                        fprintf(fileDebug, "\tgoal.x=%f; goal.y=%f\n", goalNode.p.x, goalNode.p.y);
+                        fprintf(fileDebug, "\tGoal x=%f; y=%f\n", goalNode.p.x, goalNode.p.y);
                         break;
-                    case ID_OBJ_GPS:
-                        gps_index = i;
+                    case ID_OBJ_ASPHALT:
+                    case ID_OBJ_DIRT:
+                        road_segment seg;
+                        seg.ID = in->ObjID[i];
+                        seg.x = x_global;
+                        seg.y = y_global;
+                        seg.length = in->ObjLen[i];
+                        seg.width = in->ObjWidth[i];
+
+                        if (seg.ID == ID_OBJ_DIRT)
+                        {
+                            seg.cost = COST_DIRT_ROAD;
+                        }
+                        else
+                        {
+                            seg.cost = COST_ASPHALT_ROAD;
+                        }
+
+                        road.push_back(seg);
+                        fprintf(fileDebug, "\tRoadSegment ID=%d; Cost=%.1f; x=%f; y=%f; lenght=%f; width=%f\n",
+                                seg.ID, seg.cost, seg.x, seg.y, seg.length, seg.width);
                         break;
                     }
                 }
-
+  
                 // Define path_to_follow
-                int numberSolutions = rrt_star(startNode, goalNode, obstacle_list, path_to_follow);
+                int numberSolutions = rrt_star(startNode, goalNode, road, obstacle_list, path_to_follow);
                 if (numberSolutions == 0)
                 {
                     perror("error rrt_star did not found any solution.S");
@@ -179,91 +206,129 @@ int main(int argc, const char *argv[])
                 }
                 fprintf(fileDebug, "\trrt_star found %d solution(s)\n", numberSolutions);
 
+                rrt_star_refine(road, obstacle_list, path_to_follow);
+                
+                //rrt_from_csv("../rrt/path_refined.csv", path_to_follow); // for DEBUG
+
+                // to send the points to PyDrivingSim
+                if (nextIdxToReach > path_to_follow.size())
+                {
+                    nextIdxToReach = path_to_follow.size();
+                }
+
                 getClothoid(initialYaw, path_to_follow, path_clothoid);
                 path_len = path_clothoid.length();
 
                 fprintf(fileDebug, "firstCycle END\n\n");
             }
 
-            // fprintf(fileDebug, "\ncycle %d; time = %f\n", in->CycleNumber, in->ECUupTime);
-
             // ----- INFORMATION VEHICLE -----
             double L = in->VehicleLen; // lenght of the vehicle
             double v0 = in->VLgtFild;  // actual longitudinal velocity
             double a0 = in->ALgtFild;  // actual longitudinal acceleration
             position vehicle_position;
-            //get_vehicle_position(s_init, in->TrfLightDist, in->LatOffsLineL, in->LatOffsLineR, in->LaneHeading, vehicle_position);
             get_vehicle_position(gps_index, in, vehicle_position);
 
             // ----- LATERAL CONTROL -----
-            double T_look = 1.0;                     // preview time [s]
-            double L0 = 2.0;                         // minimum lookahead distance [m]
-            double lookahead_lat = L0 + T_look * v0; // lookahead distance [m]
-            double K_US = 0.08;                      // understeering gradient
-            position closest_on_path;                // point of the path wich is the closest to the vehicle
-            double dist_vehl_path;                   // distance (module) from vehicle to path
-            real_type variable_s, t_coordiate, points_dist;
+            const double T_look = 0.7;               // preview time [s]
+            const double L0 = 1.0;                   // minimum lookahead distance [m]
+            double lookahead_lat = L0 + T_look * v0; // end of C1 in s on path_clothoid
+            const double K_US = 0.0;                 // understeering gradient
+            position closest_on_path;                // point of the path which is the closest to the vehicle
+            real_type variable_s, t_coordinate, points_dist;
 
             path_clothoid.closest_point_ISO(vehicle_position.s, vehicle_position.n,
                                             closest_on_path.s, closest_on_path.n,
-                                            variable_s, t_coordiate, points_dist);
+                                            variable_s, t_coordinate, points_dist);
 
             path_clothoid.eval(variable_s + lookahead_lat, closest_on_path.s, closest_on_path.n);
             closest_on_path.xi = path_clothoid.theta(variable_s + lookahead_lat);
 
+            // build C1 connecting from the car position to the path_clothoid
             ClothoidCurve C1("C1");
             C1.build_G1(vehicle_position.s, vehicle_position.n, vehicle_position.xi,
                         closest_on_path.s, closest_on_path.n, closest_on_path.xi);
             double curvature = C1.kappa_begin(); // return curvature at the beginning
-
             double requested_steer = curvature * (L + K_US * pow(v0, 2));
 
-            // ----- LONGITUDINAL CONTROL -----
-            double m_star[6], m1[6], m2[6];               // primitives
-            double lookahead_long = fmax(50.0, v0 * 5.0); // lookahead distance
-            const double v_min = 3.0, v_max = 15.0;       // vel min & max to pass the traffic light
-            const double x_s = 5.0;                       // safety space before traffic light
-            const double x_in = 10.0;                     // length of the intersection
-            const double a_n_max = 2.5;                   // maximum lateral acceleration
-            const double T_s = x_s / v_min;               // time to travel the safety space
-            const double T_in = x_in / v_min;             // time to safety space
-            static double x_tr = 0;                       // distance to the traffic light
-            static double x_stop = 0;                     // distance to the stop the vehicle
-            double v1, T1, v2, T2;
-            double T_green, T_red;
-            double x_stop_max, T_stop;
-            double sf_j0, tf_stop_j0;
-            double final_time;
-            const char *messageDebug;
+            // ----- find v_r -----
+            double max_abs_kappa_future = 0.0;
+            double dist_to_max_kappa = 0.0;
+            double SCAN_DIST = fmax(20.0, v0 * 5.0);    // scan at minimum next 20m
+            const double step_size = 1.0;
+            const double a_n_max = 3.0;                 // maximum lateral acceleration
+            const double lat_error_speed_penalty = 0.6; // if distant from path_clothoid, reduce v_r
 
             // find max curvature in an horizon
-            double max_abs_kappa = fabs(curvature);
-            double v_limit_curve = in->RequestedCruisingSpeed;
-            if (v0 > 0.15)
+            for (double ds = 0; ds < SCAN_DIST; ds += step_size)
             {
-                const double SCAN_DIST = 15.0; // look forward for this meters
-                double step_size = 2.0;        // check every step_size meters
-
-                // find worst curvature in the next SCAN_DIST meters
-                for (double ds = 0; ds < SCAN_DIST; ds += step_size)
+                double s_query = variable_s + ds;
+                if (s_query > path_len)
                 {
-                    double s_query = variable_s + ds;
-                    if (s_query > path_len)
-                    {
-                        break;
-                    }
-                    double k_future = path_clothoid.kappa(s_query);
-
-                    if (fabs(k_future) > max_abs_kappa)
-                    {
-                        max_abs_kappa = fabs(k_future);
-                    }
+                    break;
                 }
 
-                // use maximum curvature in the lookahead
-                v_limit_curve = sqrt(a_n_max / fmax(max_abs_kappa, 1e-3));
+                double k_future = path_clothoid.kappa(s_query);
+                if (fabs(k_future) > max_abs_kappa_future)
+                {
+                    max_abs_kappa_future = fabs(k_future);
+                    dist_to_max_kappa = ds;
+                }
             }
-            double v_r = fmin(in->RequestedCruisingSpeed, v_limit_curve);
+            max_abs_kappa_future = fmax(max_abs_kappa_future, 1e-4);
+            double v_limit_curve = sqrt(a_n_max / max_abs_kappa_future);
+            position point_max_abs; // need for debug
+            path_clothoid.eval(variable_s + dist_to_max_kappa, point_max_abs.s, point_max_abs.n);
+
+            double v_limit_stability = v_limit_curve / (1.0 + lat_error_speed_penalty * points_dist);
+            double v_r = fmin(in->RequestedCruisingSpeed, v_limit_stability);
+            v_r = fmax(v_r, 1.0);
+
+            /// ----- find lookahead_long -----
+            const double T_horizon = 3.0;
+            const double recovery_lookahead_scale = 0.5;
+            double lookahead_long = 0.0;
+
+            // case we are far from the trajectory
+            if (points_dist > 0.4)
+            {
+                lookahead_long = v0 * T_horizon * recovery_lookahead_scale;
+                lookahead_long = fmax(lookahead_long, v0 * 1.0); // saturate to avoid too short primitive
+            }
+            // case there is a curve in the horizon
+            else if (v_r < v0 - 1.0)
+            {
+                lookahead_long = dist_to_max_kappa;
+            }
+            // case normal driving
+            else
+            {
+                lookahead_long = v_r * T_horizon;
+            }
+
+            // --- avoid m=[0] when braking ---
+            const double stopping_safety_factor = 2.0;
+            const double min_planning_margin = 10.0;
+            if (a0 < -0.1)
+            {
+                double stopping_dist = (v0 * v0) / (2.0 * fabs(a0));
+                double max_physical_dist = stopping_dist * stopping_safety_factor + min_planning_margin;
+                lookahead_long = max_physical_dist;
+            }
+
+            // ----- LONGITUDINAL CONTROL -----
+            double m_star[6], m1[6], m2[6];         // primitives
+            const double v_min = 3.0, v_max = 15.0; // vel min & max to pass the traffic light
+            const double x_s = 5.0;                 // safety space before traffic light
+            const double x_in = 10.0;               // length of the intersection
+            const double T_s = x_s / v_min;         // time to travel the safety space
+            const double T_in = x_in / v_min;       // time to safety space
+            static double x_tr = 0;                 // distance to the traffic light
+            static double x_stop = 0;               // distance to the stop the vehicle
+            double v1, T1, v2, T2;
+            double T_green, T_red;
+            double final_time, final_space;
+            const char *messageDebug;
 
             // ----- LOGIC FOR TRAFFIC LIGHT -----
             if (in->NrTrfLights != 0) // if there is a traffic light
@@ -315,14 +380,14 @@ int main(int argc, const char *argv[])
                     pass_primitive(v0, a0, x_tr, v_min, v_max, T_green, T_red, m1, &v1, &T1, m2, &v2, &T2);
                     if (isAllZero(m1) && isAllZero(m2))
                     {
-                        stop_primitive(v0, a0, x_stop, m_star, &x_stop_max, &final_time);
+                        stop_primitive(v0, a0, x_stop, m_star, &final_space, &final_time);
                         messageDebug = "if (isAllZero(m1) && isAllZero(m2))";
                     }
                     else
                     {
                         if ((m1[3] < 0 && m2[3] > 0) || (m1[3] > 0 && m2[3] < 0))
                         {
-                            pass_primitive_j0(v0, a0, x_tr, v_min, v_max, m_star, &sf_j0, &final_time);
+                            pass_primitive_j0(v0, a0, x_tr, v_min, v_max, m_star, &final_space, &final_time);
                             messageDebug = "if ((m1[3]<0 && m2[3]>0) || (m1[3]>0 && m2[3]<0))";
                         }
                         else
@@ -357,8 +422,8 @@ int main(int argc, const char *argv[])
             s_req += s_from_coeffs(DT, m_star);
 
             // ----- PI IMPLEMENTATION -----
-            const double k_p = 0.022;
-            const double k_i = 0.19;
+            const double k_p = 0.018;//0.022;
+            const double k_i = 0.3;//0.19;
             double error = a_req - a0;
             static double error_integral = 0.0;
             error_integral = error_integral + error * DT;
@@ -406,12 +471,15 @@ int main(int argc, const char *argv[])
             const char *fileName = "Follow_path";
 
             // Log_vars for csv
-            // logger.log_var(fileName, "messageDebug", messageDebug);
+            logger.log_var(fileName, "messageDebug", messageDebug);
             logger.log_var(fileName, "cycle", in->CycleNumber);
             logger.log_var(fileName, "time", in->ECUupTime);
             logger.log_var(fileName, "X0", vehicle_position.s);
             logger.log_var(fileName, "Y0", vehicle_position.n);
             logger.log_var(fileName, "Psi0", vehicle_position.xi);
+            logger.log_var(fileName, "X_closest", closest_on_path.s);
+            logger.log_var(fileName, "Y_closest", closest_on_path.n);
+            logger.log_var(fileName, "Psi_closest", closest_on_path.xi);
             logger.log_var(fileName, "s_req", s_req);
             logger.log_var(fileName, "x_tr", x_tr);
             logger.log_var(fileName, "x_stop", x_stop);
@@ -423,7 +491,12 @@ int main(int argc, const char *argv[])
             logger.log_var(fileName, "k_p", k_p);
             logger.log_var(fileName, "k_i", k_i);
             logger.log_var(fileName, "K_US", K_US);
+            logger.log_var(fileName, "curvature", curvature);
+            logger.log_var(fileName, "variable_s", variable_s);
+            logger.log_var(fileName, "t_coordinate", t_coordinate);
+            logger.log_var(fileName, "points_dist", points_dist);
             logger.log_var(fileName, "lookahead_long", lookahead_long);
+            logger.log_var(fileName, "lookahead_lat", lookahead_lat);
             logger.log_var(fileName, "error_integral", error_integral);
             logger.log_var(fileName, "TL_state", in->TrfLightCurrState);
             logger.log_var(fileName, "T_green", T_green);
@@ -431,6 +504,13 @@ int main(int argc, const char *argv[])
             logger.log_var(fileName, "m1[3]", m1[3]);
             logger.log_var(fileName, "m2[3]", m2[3]);
             logger.log_var(fileName, "final_time", final_time);
+            logger.log_var(fileName, "lookahed_lat", lookahead_lat);
+            logger.log_var(fileName, "dist_to_max_kappa", dist_to_max_kappa);
+            logger.log_var(fileName, "max_kappa", max_abs_kappa_future);
+            logger.log_var(fileName, "X_max_abs", point_max_abs.s);
+            logger.log_var(fileName, "Y_max_abs", point_max_abs.n);
+            logger.log_var(fileName, "v_limit_curve", v_limit_curve);
+            logger.log_var(fileName, "v_limit_stability", v_limit_stability);
             logger.log_var(fileName, "c0", m_star[0]);
             logger.log_var(fileName, "c1", m_star[1]);
             logger.log_var(fileName, "c2", m_star[2]);
@@ -504,14 +584,6 @@ bool positionReached(const node &nd, double x_veh, double y_veh)
     }
     return false;
 }
-
-/*
-void get_vehicle_position(double s_init, double x_tr, double offL, double offR, double yaw, position &vehicle_position)
-{
-    vehicle_position.s = s_init - x_tr;
-    vehicle_position.n = -(offR + offL) / 2.0;
-    vehicle_position.xi = yaw;
-}*/
 
 void get_vehicle_position(int gps_index, input_data_str *in, position &vehicle_position)
 {
