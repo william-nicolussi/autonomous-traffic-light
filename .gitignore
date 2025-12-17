@@ -10,3 +10,10 @@ cmake-build-debug
 .clang-format
 Clothoids_backup
 compilazione.txt
+draw_map_guide.py
+*.xcf
+paths_saved
+basic_agent/rrt/*.csv
+basic_agent/figure_plot/*
+!basic_agent/figure_plot/*.m
+basic_agent/build
