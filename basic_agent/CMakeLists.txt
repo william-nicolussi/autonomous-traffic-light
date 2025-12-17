@@ -35,6 +35,8 @@ add_executable(basic_agent
         rrt/rrt_star.cpp
         rrt/rrt_support.cpp
         rrt/rrt_clothoid.cpp
+        rrt/rrt_star_refine.cpp
+        rrt/rrt_read.cpp
 )
 
 target_link_libraries(basic_agent agent_lib ${lib_ws32} ${CMAKE_DL_LIBS})
