@@ -28,7 +28,7 @@ void getClothoid(double initialYaw, vector<node> &path_to_follow, ClothoidList &
             theta0 = initialYaw;
             theta1 = atan2(y2 - y1, x2 - x1);
         }
-        else if ((i + 2) < path_to_follow.size() - 1) // slope for segments not first nor last
+        else if ((i + 2) < path_to_follow.size()) // slope for segments not first nor last
         {
             x0 = path_to_follow[i].p.x;
             y0 = path_to_follow[i].p.y;
