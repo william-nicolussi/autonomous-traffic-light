@@ -9,7 +9,6 @@ The goal is to develop an autonomous driving agent capable of handling complex s
 * Longitudinal control with velocity profiling.
 
 ## How to compile
-This project uses **Git Submodules** for the Clothoids library.
 
 Clone the project:
 ```bash
