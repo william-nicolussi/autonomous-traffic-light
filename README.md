@@ -53,11 +53,15 @@ It is possible to select the scenario by commenting/uncommenting the desired cla
 Scenario2(av)
 ```
 ### Scenario 1
+<p align="center">
 <img src="PyDrivingSim/imgs/Scenario_1.png" alt="Scenario 1" width="600"/>
+</p>
 This scenario is designed for path planning and trajectory tracking validation. It does not include a traffic light. 
 
 ### Scenario 2
+<p align="center">
 <img src="PyDrivingSim/imgs/Scenario_2.png" alt="Scenario 2" width="600"/>
+</p>
 
 This scenario features a traffic light and offers two possible routes to the target. It is designed to validate the RRT* cost function optimization: traveling on dirt roads has a higher cost than asphalt. The planner must identify the optimal path while minimizing the total cost.
 
@@ -74,8 +78,12 @@ This function populates a vector representing the graph. Nodes are generated ran
 
 Once the graph is built, it identifies the best solution.
 
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/paths_scenario_2_bg.png" alt="Scenario 1" width="600"/>
+</p>
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/Paths_Scenario_2.jpg" width="600"/>
+</p>
 
 ### rrt_star_refine([...])
 This function simplifies the graph by removing aligned nodes and merging them into single segments.
@@ -94,9 +102,13 @@ This refinement prevents clothoids from being squeezed into excessively short di
 ### rrt_clothoid([...])
 This function generates the actual trajectory using the Clothoids (G2Lib) library (https://github.com/ebertolazzi/Clothoids).
 
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/clothoid_refined_1.png" alt="Scenario 1" width="600"/>
+</p>
 
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/clothoid_refined_2.png" alt="Scenario 1" width="600"/>
+</p>
 
 ---
 
@@ -105,7 +117,9 @@ The folder `basic_agent/rrt` contains the source code for RRT* graph generation 
 ## Lateral Control
 At each cycle in `starting_point.cc`, the algorithm identifies a lookahead point on the reference trajectory (at distance $L_{lookahead}=L_0+T_{look}\cdot u$) and calculates a clothoid $C1$ connecting the car's current position to the reference trajectory.
 
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/lateral_control_drawing.png" width="600"/>
+</p>
 
 The steering angle is set using the formula:
 $$\delta (s) = k(s) \cdot (L + K_{US} \cdot u^2)$$
@@ -126,8 +140,12 @@ The agent uses motion primitives to determine the longitudinal velocity profile.
 
 * **Stop**: Brake smoothly before the traffic light if the red phase is active or approaching.
 
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/clothoid_2_ticks.png" width="600" /> 
+</p>
+<p align="center">
 <img src="PyDrivingSim/imgs/forReadMe/v(s)_primitives.jpg" width="600" /> 
+</p>
 
 The primitive generation code is located in the `basic_agent/matlab` folder.
 
