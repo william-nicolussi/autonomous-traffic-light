@@ -150,8 +150,10 @@ The agent uses motion primitives to determine the longitudinal velocity profile.
 The primitive generation code is located in the `basic_agent/matlab` folder.
 
 ### Actuation (PI Controller)
-To track the required acceleration, a PI controller is implemented:
-$$Pedal = K_p \cdot e(t) + K_i \cdot \int e(t) dt$$
+To track the required acceleration, a PI controller is implemented:  
+
+$$Pedal = K_p \cdot e(t) + K_i \cdot \int e(t) dt$$  
+
 Where $e(t) = a_{req} - a_{actual}$ is the error.
 
 
