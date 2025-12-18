@@ -14,7 +14,7 @@ void rrt_from_csv(const char *filename, std::vector<node> &path_to_follow)
 
     if (!file.is_open())
     {
-        perror("Errore: Impossibile aprire il file CSV del percorso");
+        perror("CSV file did not open");
         return;
     }
 
@@ -39,5 +39,4 @@ void rrt_from_csv(const char *filename, std::vector<node> &path_to_follow)
     }
 
     file.close();
-    printf("Caricati %lu nodi da %s\n", path_to_follow.size(), filename);
 }
